@@ -183,7 +183,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { cuisines } from '@/config/cuisines'
 import RecipeCard from '@/components/RecipeCard.vue'
 import { generateMultipleRecipes, generateCustomRecipe } from '@/services/aiService'

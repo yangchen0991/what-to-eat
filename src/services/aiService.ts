@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Recipe, CuisineType, AIResponse } from '@/types'
+import type { Recipe, CuisineType } from '@/types'
 
 // AI服务配置 - 智谱AI
 const AI_CONFIG = {
