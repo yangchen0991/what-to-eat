@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc --noEmit && vite build",
-        "build:netlify": "vite build",
+        "build:netlify": "NODE_ENV=production vite build",
+        "build:simple": "vite build --mode production",
         "preview": "vite preview",
         "type-check": "vue-tsc --noEmit"
     },
