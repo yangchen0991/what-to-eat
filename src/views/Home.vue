@@ -1,150 +1,220 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-primary-50 to-primary-200">
-        <!-- 头部 -->
-        <header class="relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-accent-600 via-accent-500 to-primary-500"></div>
-            <div class="absolute inset-0 bg-black/10"></div>
-            <div class="relative max-w-6xl mx-auto px-4 py-8">
-                <div class="text-center">
-                    <div class="inline-flex items-center gap-4 mb-3">
-                        <div class="text-4xl cooking-animation">🍳</div>
-                        <h1 class="text-4xl font-black text-white tracking-tight">一饭封神</h1>
-                    </div>
-                    <p class="text-white/80 text-lg font-medium">让AI厨艺大师为您的食材创造美味</p>
-                </div>
+    <div class="min-h-screen bg-yellow-400">
+        <!-- 头部 - 粉色区域 -->
+        <header class="bg-pink-400 border-4 border-black mx-4 mt-4 rounded-lg relative">
+            <div class="absolute top-2 right-2">
+                <button class="bg-white/20 hover:bg-white/30 rounded-full px-3 py-1 text-sm text-white transition-colors">中文</button>
+            </div>
+            <div class="text-center py-8">
+                <h1 class="text-5xl font-black text-yellow-300 mb-2 tracking-wider">一饭封神</h1>
+                <p class="text-white text-lg font-medium">UPLOAD YOUR INGREDIENTS | SPIT OUT RECIPES!</p>
             </div>
         </header>
 
-        <main class="max-w-6xl mx-auto px-4 py-8">
-            <!-- 主要输入区域 -->
-            <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-12 mb-8 pulse-glow">
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl font-bold text-neutral-800 mb-4">🥬 告诉我你有什么食材</h2>
-                    <p class="text-neutral-600 text-xl">输入你现有的食材，让AI大师为你创造美味</p>
-                </div>
-
-                <!-- 食材输入框 -->
-                <div class="relative mb-8">
-                    <div
-                        class="flex flex-wrap gap-4 min-h-[120px] p-10 border-4 border-dashed border-accent-300 rounded-3xl bg-gradient-to-r from-accent-50 to-primary-50 hover:border-accent-400 transition-all duration-300 focus-within:border-accent-500 focus-within:shadow-xl"
-                    >
-                        <div
-                            v-for="ingredient in ingredients"
-                            :key="ingredient"
-                            class="inline-flex items-center gap-3 bg-accent-500 text-white px-6 py-3 rounded-full text-xl font-medium shadow-lg hover:bg-accent-600 transition-colors"
-                        >
-                            {{ ingredient }}
-                            <button @click="removeIngredient(ingredient)" class="hover:bg-accent-700 rounded-full p-1 transition-colors">
-                                <span class="text-lg">✕</span>
-                            </button>
-                        </div>
-                        <input
-                            v-model="currentIngredient"
-                            @keyup.enter="addIngredient"
-                            placeholder="输入食材名称，按回车添加..."
-                            class="flex-1 min-w-[350px] bg-transparent outline-none text-neutral-800 placeholder-neutral-500 text-2xl font-medium"
-                        />
+        <!-- 使用量显示 -->
+        <!-- <div class="mx-4 mt-4">
+            <div class="bg-white border-2 border-black rounded-lg p-4 max-w-sm mx-auto">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">⚡</span>
+                        <span class="font-bold text-dark-800">DAILY USAGE</span>
                     </div>
+                    <span class="font-bold text-xl">0/5</span>
                 </div>
-
-                <!-- 生成按钮 -->
-                <div class="text-center">
-                    <button
-                        @click="generateRecipes"
-                        :disabled="ingredients.length === 0 || isLoading"
-                        class="bg-gradient-to-r from-accent-600 to-accent-700 hover:from-accent-700 hover:to-accent-800 disabled:from-gray-300 disabled:to-gray-400 text-white px-12 py-4 rounded-2xl font-bold text-xl shadow-xl transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
-                    >
-                        <span v-if="!isLoading" class="flex items-center gap-3"> 👨‍🍳 交给大师 </span>
-                    </button>
+                <div class="mt-2 bg-gray-200 rounded-full h-2">
+                    <div class="bg-dark-800 h-2 rounded-full" style="width: 0%"></div>
                 </div>
             </div>
+        </div> -->
 
-            <!-- 厨艺大师选择区域 -->
-            <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-md p-6 mb-8">
-                <details class="group">
-                    <summary class="cursor-pointer text-center p-4 hover:bg-neutral-50 rounded-xl transition-colors">
-                        <h3 class="text-lg font-medium text-neutral-700 inline-flex items-center gap-2">
-                            👨‍🍳 选择厨艺大师
-                            <span class="text-sm text-neutral-500">(可选，默认随机选择)</span>
-                            <span class="group-open:rotate-180 transition-transform duration-300">▼</span>
-                        </h3>
-                    </summary>
+        <div class="max-w-4xl mx-auto px-4 py-6">
+            <!-- 步骤1: 输入食材 -->
+            <div class="mb-6">
+                <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                    <span class="font-bold">1. 输入食材</span>
+                </div>
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-8">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <span class="text-white text-2xl">🥬</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-dark-800 mb-2">添加食材</h2>
+                        <p class="text-gray-600">输入你现有的食材，按回车添加</p>
+                        <p class="text-xs text-gray-500 mt-1">支持蔬菜、肉类、调料等 (最多10种)</p>
+                    </div>
 
-                    <div class="mt-4 grid grid-cols-3 gap-4">
-                        <div
-                            v-for="cuisine in cuisines"
-                            :key="cuisine.id"
-                            @click="selectCuisine(cuisine)"
-                            :class="[
-                                'cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105',
-                                selectedCuisines.includes(cuisine.id)
-                                    ? 'border-accent-500 bg-accent-100 shadow-lg ring-2 ring-accent-200'
-                                    : 'border-neutral-200 bg-white hover:border-accent-300 hover:shadow-md'
-                            ]"
-                        >
-                            <div class="text-center">
-                                <div class="text-3xl mb-2">{{ cuisine.avatar }}</div>
-                                <h4 class="font-semibold text-neutral-800 text-base">{{ cuisine.name }}</h4>
-                                <p class="text-sm text-neutral-600 mt-1">{{ cuisine.specialty }}</p>
+                    <!-- 食材输入区域 -->
+                    <div class="space-y-4">
+                        <!-- 已添加的食材 -->
+                        <div v-if="ingredients.length > 0" class="flex flex-wrap gap-2">
+                            <div
+                                v-for="ingredient in ingredients"
+                                :key="ingredient"
+                                class="inline-flex items-center gap-2 bg-yellow-400 text-dark-800 px-3 py-2 rounded-full text-sm font-medium border-2 border-black"
+                            >
+                                {{ ingredient }}
+                                <button @click="removeIngredient(ingredient)" class="hover:bg-yellow-500 rounded-full p-1 transition-colors">
+                                    <span class="text-xs">✕</span>
+                                </button>
                             </div>
                         </div>
+
+                        <!-- 输入框 -->
+                        <div class="relative">
+                            <input
+                                v-model="currentIngredient"
+                                @keyup.enter="addIngredient"
+                                placeholder="输入食材名称，按回车添加..."
+                                class="w-full p-4 border-2 border-black rounded-lg text-lg font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
+                            />
+                        </div>
+
+                        <!-- 生成按钮 -->
+                        <div class="text-center pt-4">
+                            <button
+                                @click="generateRecipes"
+                                :disabled="ingredients.length === 0 || isLoading"
+                                class="bg-dark-800 hover:bg-dark-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-lg font-bold text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
+                            >
+                                <span v-if="!isLoading" class="flex items-center gap-2 justify-center"> ✨ {{ customPrompt.trim() ? '按要求生成' : '交给大师' }} </span>
+                            </button>
+                            <p v-if="customPrompt.trim()" class="text-xs text-gray-600 mt-2">将根据您的自定义要求生成菜谱</p>
+                            <p v-else-if="selectedCuisines.length > 0" class="text-xs text-gray-600 mt-2">将生成 {{ selectedCuisines.length }} 个菜系的菜谱</p>
+                            <p v-else class="text-xs text-gray-600 mt-2">将随机选择菜系生成菜谱</p>
+                        </div>
                     </div>
-                </details>
+                </div>
             </div>
 
-            <!-- 加载动效 -->
-            <div v-if="isLoading" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                <CookingLoader />
-            </div>
-
-            <!-- 菜谱展示区域 -->
-            <div v-if="recipes.length > 0" class="space-y-8">
-                <h2 class="text-4xl font-bold text-neutral-800 text-center mb-8">🍽️ 大师们的杰作</h2>
-
-                <!-- 菜谱网格布局 -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div
-                        v-for="recipe in recipes"
-                        :key="recipe.id"
-                        class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-accent-200 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] flex flex-col"
-                    >
-                        <RecipeCard :recipe="recipe" />
+            <!-- 步骤2和3: 选择风格 OR 自定义提示 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <!-- 选择菜系 -->
+                <div>
+                    <div class="bg-green-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                        <span class="font-bold">2. 选择菜系</span>
+                    </div>
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
+                        <div v-if="customPrompt.trim()" class="text-center py-8 text-gray-500">
+                            <p class="text-sm">已设置自定义要求，将忽略菜系选择</p>
+                            <button @click="customPrompt = ''" class="text-blue-600 hover:text-blue-700 underline text-sm mt-2">清除自定义要求以选择菜系</button>
+                        </div>
+                        <div v-else class="grid grid-cols-2 gap-3">
+                            <button
+                                v-for="cuisine in cuisines.slice(0, 6)"
+                                :key="cuisine.id"
+                                @click="selectCuisine(cuisine)"
+                                :class="[
+                                    'p-3 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200',
+                                    selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ]"
+                            >
+                                {{ cuisine.name.replace('大师', '') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 如果菜谱较多，添加一个回到顶部按钮 -->
-                <div v-if="recipes.length > 3" class="text-center mt-8">
-                    <button
-                        @click="scrollToTop"
-                        class="bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-full font-medium shadow-lg transition-all duration-300 transform hover:scale-105"
-                    >
-                        ⬆️ 回到顶部
-                    </button>
+                <!-- 自定义提示 -->
+                <div>
+                    <div class="bg-blue-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                        <span class="font-bold">3. 或自定义要求</span>
+                    </div>
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
+                        <div class="mb-3">
+                            <label class="block text-sm font-bold text-dark-800 mb-2">描述你的需求：</label>
+                            <textarea
+                                v-model="customPrompt"
+                                placeholder="例如：做一道清淡的汤，适合老人食用..."
+                                class="w-full p-3 border-2 border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:border-blue-400"
+                                rows="4"
+                            ></textarea>
+                            <div v-if="customPrompt.trim()" class="mt-2 flex justify-between items-center">
+                                <span class="text-xs text-green-600">✓ 已设置自定义要求</span>
+                                <button @click="customPrompt = ''" class="text-xs text-red-600 hover:text-red-700 underline">清除</button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500">越具体越好！</p>
+                    </div>
                 </div>
             </div>
-        </main>
+
+            <!-- 中间的OR -->
+            <div class="text-center mb-6">
+                <span class="bg-yellow-400 text-dark-800 px-4 py-2 rounded-full font-bold text-xl border-2 border-black"> OR </span>
+            </div>
+
+            <!-- 步骤4: 结果 -->
+            <div>
+                <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                    <span class="font-bold">4. 菜谱结果</span>
+                </div>
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-8">
+                    <!-- 加载状态 -->
+                    <div v-if="isLoading" class="text-center py-12">
+                        <div class="w-16 h-16 border-4 border-gray-300 border-t-dark-800 rounded-full animate-spin mx-auto mb-4"></div>
+                        <h3 class="text-xl font-bold text-dark-800 mb-2">大师正在创作中...</h3>
+                        <p class="text-gray-600">{{ loadingText }}</p>
+                    </div>
+
+                    <!-- 空状态 -->
+                    <div v-else-if="recipes.length === 0" class="text-center py-12">
+                        <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <span class="text-gray-400 text-2xl">⭐</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-400 mb-2">等待魔法发生...</h3>
+                        <p class="text-gray-500">添加食材并选择菜系开始创作</p>
+                    </div>
+
+                    <!-- 菜谱结果 -->
+                    <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div v-for="recipe in recipes" :key="recipe.id" class="border-2 border-black rounded-lg overflow-hidden">
+                            <RecipeCard :recipe="recipe" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部 -->
+        <footer class="bg-white border-2 border-black mx-4 mb-4 rounded-lg p-4 text-center">
+            <p class="text-sm text-gray-600">© 2025 一饭封神 | Made with ❤️ and 🤖</p>
+        </footer>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { cuisines } from '@/config/cuisines'
 import RecipeCard from '@/components/RecipeCard.vue'
-import CookingLoader from '@/components/CookingLoader.vue'
-import { generateMultipleRecipes } from '@/services/aiService'
+import { generateMultipleRecipes, generateCustomRecipe } from '@/services/aiService'
 import type { Recipe, CuisineType } from '@/types'
 
 // 响应式数据
 const ingredients = ref<string[]>([])
 const currentIngredient = ref('')
 const selectedCuisines = ref<string[]>([])
+const customPrompt = ref('')
 const recipes = ref<Recipe[]>([])
 const isLoading = ref(false)
+const loadingText = ref('大师正在挑选食材...')
+
+// 加载文字轮播
+const loadingTexts = [
+    '大师正在挑选食材...',
+    '大师正在起火热锅...',
+    '大师正在爆香配料...',
+    '大师正在调制秘制酱料...',
+    '大师正在掌控火候...',
+    '大师正在精心摆盘...',
+    '美味佳肴即将出炉...'
+]
+
+let loadingInterval: NodeJS.Timeout | null = null
 
 // 添加食材
 const addIngredient = () => {
     const ingredient = currentIngredient.value.trim()
-    if (ingredient && !ingredients.value.includes(ingredient)) {
+    if (ingredient && !ingredients.value.includes(ingredient) && ingredients.value.length < 10) {
         ingredients.value.push(ingredient)
         currentIngredient.value = ''
     }
@@ -177,26 +247,44 @@ const generateRecipes = async () => {
     isLoading.value = true
     recipes.value = []
 
+    // 开始加载文字轮播
+    let textIndex = 0
+    loadingInterval = setInterval(() => {
+        loadingText.value = loadingTexts[textIndex]
+        textIndex = (textIndex + 1) % loadingTexts.length
+    }, 2000)
+
     try {
-        // 根据选择的菜系数量决定生成菜谱
-        let selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id))
+        // 检查是否有自定义提示词
+        if (customPrompt.value.trim()) {
+            // 使用自定义提示词生成菜谱
+            const customRecipe = await generateCustomRecipe(ingredients.value, customPrompt.value.trim())
+            recipes.value = [customRecipe]
+        } else {
+            // 使用菜系生成菜谱
+            let selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id))
 
-        if (selectedCuisineObjects.length === 0) {
-            // 随机选择2-3个菜系
-            const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
-            selectedCuisineObjects = shuffled.slice(0, Math.floor(Math.random() * 2) + 2)
+            if (selectedCuisineObjects.length === 0) {
+                // 随机选择2-3个菜系
+                const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
+                selectedCuisineObjects = shuffled.slice(0, Math.floor(Math.random() * 2) + 2)
+            }
+
+            // 调用AI服务生成菜谱
+            const generatedRecipes = await generateMultipleRecipes(ingredients.value, selectedCuisineObjects, customPrompt.value.trim() || undefined)
+
+            recipes.value = generatedRecipes
         }
-
-        // 调用AI服务生成菜谱
-        const generatedRecipes = await generateMultipleRecipes(ingredients.value, selectedCuisineObjects)
-
-        recipes.value = generatedRecipes
     } catch (error) {
         console.error('生成菜谱失败:', error)
         // 如果AI调用失败，使用模拟数据作为后备
         await simulateAICall()
     } finally {
         isLoading.value = false
+        if (loadingInterval) {
+            clearInterval(loadingInterval)
+            loadingInterval = null
+        }
     }
 }
 
@@ -212,25 +300,49 @@ const simulateAICall = async () => {
                 cuisinesToUse = shuffled.slice(0, Math.floor(Math.random() * 2) + 2)
             }
 
-            // 模拟生成菜谱数据
-            const mockRecipes: Recipe[] = cuisinesToUse.map((cuisine, index) => {
-                return {
-                    id: `recipe-${cuisine.id}-${Date.now()}-${index}`,
-                    name: `${cuisine.name}推荐：${ingredients.value.join('')}料理`,
-                    cuisine: cuisine.name,
-                    ingredients: ingredients.value,
-                    steps: [
-                        { step: 1, description: '准备所有食材，清洗干净', time: 5 },
-                        { step: 2, description: '热锅下油，爆香配料', time: 3 },
-                        { step: 3, description: '下主料翻炒至半熟', time: 8 },
-                        { step: 4, description: '调味炒制至熟透', time: 5 },
-                        { step: 5, description: '装盘即可享用', time: 1 }
-                    ],
-                    cookingTime: 22,
-                    difficulty: 'medium',
-                    tips: ['火候要掌握好，避免炒糊', '调料要适量，突出食材本味', '炒制过程中要勤翻动']
-                }
-            })
+            // 检查是否有自定义提示词
+            let mockRecipes: Recipe[] = []
+
+            if (customPrompt.value.trim()) {
+                // 生成自定义菜谱
+                mockRecipes = [
+                    {
+                        id: `recipe-custom-${Date.now()}`,
+                        name: `自定义：${ingredients.value.join('')}料理`,
+                        cuisine: '自定义',
+                        ingredients: ingredients.value,
+                        steps: [
+                            { step: 1, description: '准备所有食材，清洗干净', time: 5 },
+                            { step: 2, description: '根据要求进行烹饪处理', time: 10 },
+                            { step: 3, description: '调味并完成最后的制作', time: 8 },
+                            { step: 4, description: '装盘即可享用', time: 2 }
+                        ],
+                        cookingTime: 25,
+                        difficulty: 'medium',
+                        tips: ['根据个人喜好调整口味', '注意食材的新鲜度', '掌握好火候']
+                    }
+                ]
+            } else {
+                // 生成菜系菜谱
+                mockRecipes = cuisinesToUse.map((cuisine, index) => {
+                    return {
+                        id: `recipe-${cuisine.id}-${Date.now()}-${index}`,
+                        name: `${cuisine.name}推荐：${ingredients.value.join('')}料理`,
+                        cuisine: cuisine.name,
+                        ingredients: ingredients.value,
+                        steps: [
+                            { step: 1, description: '准备所有食材，清洗干净', time: 5 },
+                            { step: 2, description: '热锅下油，爆香配料', time: 3 },
+                            { step: 3, description: '下主料翻炒至半熟', time: 8 },
+                            { step: 4, description: '调味炒制至熟透', time: 5 },
+                            { step: 5, description: '装盘即可享用', time: 1 }
+                        ],
+                        cookingTime: 22,
+                        difficulty: 'medium',
+                        tips: ['火候要掌握好，避免炒糊', '调料要适量，突出食材本味', '炒制过程中要勤翻动']
+                    }
+                })
+            }
 
             recipes.value = mockRecipes
             resolve(mockRecipes)
@@ -238,11 +350,9 @@ const simulateAICall = async () => {
     })
 }
 
-// 回到顶部功能
-const scrollToTop = () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    })
-}
+onUnmounted(() => {
+    if (loadingInterval) {
+        clearInterval(loadingInterval)
+    }
+})
 </script>

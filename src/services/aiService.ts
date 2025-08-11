@@ -24,14 +24,24 @@ const aiClient = axios.create({
  * 调用AI接口生成菜谱
  * @param ingredients 食材列表
  * @param cuisine 菜系信息
+ * @param customPrompt 自定义提示词（可选）
  * @returns Promise<Recipe>
  */
-export const generateRecipe = async (ingredients: string[], cuisine: CuisineType): Promise<Recipe> => {
+export const generateRecipe = async (ingredients: string[], cuisine: CuisineType, customPrompt?: string): Promise<Recipe> => {
     try {
         // 构建提示词
-        const prompt = `${cuisine.prompt}
+        let prompt = `${cuisine.prompt}
 
-用户提供的食材：${ingredients.join('、')}
+用户提供的食材：${ingredients.join('、')}`
+
+        // 如果有自定义要求，添加到提示词中
+        if (customPrompt) {
+            prompt += `
+
+用户的特殊要求：${customPrompt}`
+        }
+
+        prompt += `
 
 请按照以下JSON格式返回菜谱：
 {
@@ -126,12 +136,13 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
  * 批量生成多个菜系的菜谱
  * @param ingredients 食材列表
  * @param cuisines 菜系列表
+ * @param customPrompt 自定义提示词（可选）
  * @returns Promise<Recipe[]>
  */
-export const generateMultipleRecipes = async (ingredients: string[], cuisines: CuisineType[]): Promise<Recipe[]> => {
+export const generateMultipleRecipes = async (ingredients: string[], cuisines: CuisineType[], customPrompt?: string): Promise<Recipe[]> => {
     try {
         // 并发调用多个AI接口
-        const promises = cuisines.map(cuisine => generateRecipe(ingredients, cuisine))
+        const promises = cuisines.map(cuisine => generateRecipe(ingredients, cuisine, customPrompt))
 
         const recipes = await Promise.all(promises)
         return recipes
@@ -151,6 +162,109 @@ export const updateAIConfig = (config: Partial<typeof AI_CONFIG>) => {
     // 更新axios实例配置
     aiClient.defaults.baseURL = AI_CONFIG.baseURL
     aiClient.defaults.headers['Authorization'] = `Bearer ${AI_CONFIG.apiKey}`
+}
+
+/**
+ * 使用自定义提示词生成菜谱
+ * @param ingredients 食材列表
+ * @param customPrompt 自定义提示词
+ * @returns Promise<Recipe>
+ */
+export const generateCustomRecipe = async (ingredients: string[], customPrompt: string): Promise<Recipe> => {
+    try {
+        // 构建自定义提示词
+        const prompt = `你是一位专业的厨师，请根据用户提供的食材和特殊要求，生成详细的菜谱。请严格按照JSON格式返回，不要包含任何其他文字。
+
+用户提供的食材：${ingredients.join('、')}
+
+用户的特殊要求：${customPrompt}
+
+请按照以下JSON格式返回菜谱：
+{
+  "name": "菜品名称",
+  "ingredients": ["食材1", "食材2"],
+  "steps": [
+    {
+      "step": 1,
+      "description": "步骤描述",
+      "time": 5,
+      "temperature": "中火"
+    }
+  ],
+  "cookingTime": 30,
+  "difficulty": "medium",
+  "tips": ["技巧1", "技巧2"]
+}`
+
+        // 调用智谱AI接口
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的厨师，请根据用户提供的食材和特殊要求，生成详细的菜谱。请严格按照JSON格式返回，不要包含任何其他文字。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: AI_CONFIG.temperature,
+            max_tokens: 2000,
+            stream: false
+        })
+
+        // 解析AI响应
+        const aiResponse = response.data.choices[0].message.content
+
+        // 清理响应内容，提取JSON部分
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const recipeData = JSON.parse(cleanResponse)
+
+        // 构建完整的Recipe对象
+        const recipe: Recipe = {
+            id: `recipe-custom-${Date.now()}`,
+            name: recipeData.name || '自定义菜品',
+            cuisine: '自定义',
+            ingredients: recipeData.ingredients || ingredients,
+            steps: recipeData.steps || [
+                { step: 1, description: '准备所有食材', time: 5 },
+                { step: 2, description: '按照要求烹饪', time: 20 }
+            ],
+            cookingTime: recipeData.cookingTime || 25,
+            difficulty: recipeData.difficulty || 'medium',
+            tips: recipeData.tips || ['根据个人口味调整', '注意火候控制']
+        }
+
+        return recipe
+    } catch (error) {
+        console.error('生成自定义菜谱失败:', error)
+
+        // 如果AI调用失败，返回一个基础的菜谱模板
+        const fallbackRecipe: Recipe = {
+            id: `recipe-custom-${Date.now()}`,
+            name: `自定义：${ingredients.join('')}料理`,
+            cuisine: '自定义',
+            ingredients: ingredients,
+            steps: [
+                { step: 1, description: '准备所有食材，清洗干净', time: 5 },
+                { step: 2, description: '根据要求进行烹饪处理', time: 10 },
+                { step: 3, description: '调味并完成最后的制作', time: 8 },
+                { step: 4, description: '装盘即可享用', time: 2 }
+            ],
+            cookingTime: 25,
+            difficulty: 'medium',
+            tips: ['根据个人喜好调整口味', '注意食材的新鲜度', '掌握好火候']
+        }
+
+        return fallbackRecipe
+    }
 }
 
 // 导出配置更新函数，供外部使用
