@@ -76,7 +76,13 @@
                                 :disabled="ingredients.length === 0 || isLoading"
                                 class="bg-dark-800 hover:bg-dark-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-lg font-bold text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
                             >
-                                <span v-if="!isLoading" class="flex items-center gap-2 justify-center"> ✨ {{ customPrompt.trim() ? '按要求生成' : '交给大师' }} </span>
+                                <span class="flex items-center gap-2 justify-center">
+                                    <template v-if="isLoading">
+                                        <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                                        生成中...
+                                    </template>
+                                    <template v-else> ✨ {{ customPrompt.trim() ? '按要求生成' : '交给大师' }} </template>
+                                </span>
                             </button>
                             <p v-if="customPrompt.trim()" class="text-xs text-gray-600 mt-2">将根据您的自定义要求生成菜谱</p>
                             <p v-else-if="selectedCuisines.length > 0" class="text-xs text-gray-600 mt-2">将生成 {{ selectedCuisines.length }} 个菜系的菜谱</p>
