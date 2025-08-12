@@ -254,9 +254,9 @@
                 top: tooltipPosition.y + 'px'
             }"
         >
-            <div class="bg-white border-2 border-black rounded-lg shadow-lg p-4 max-w-xs mb-2">
+            <div class="bg-white border-2 border-black rounded-lg shadow-lg p-2 max-w-xs mb-2">
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="text-lg">{{ getHoveredCuisine()?.avatar }}</span>
+                    <!-- <span class="text-lg">{{ getHoveredCuisine()?.avatar }}</span> -->
                     <h4 class="font-bold text-dark-800">{{ getHoveredCuisine()?.name }}</h4>
                 </div>
                 <p class="text-sm text-gray-600 mb-2">{{ getHoveredCuisine()?.description }}</p>
