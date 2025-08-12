@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-screen bg-yellow-400">
         <!-- 头部 - 粉色区域 -->
-        <header class="bg-pink-400 border-4 border-black mx-4 mt-4 rounded-lg relative">
+        <header class="bg-pink-400 border-4 border-black mx-2 md:mx-4 mt-4 rounded-lg relative">
             <!-- <div class="absolute top-2 right-2">
                 <button class="bg-white/20 hover:bg-white/30 rounded-full px-3 py-1 text-sm text-white transition-colors">中文</button>
             </div> -->
@@ -27,7 +27,7 @@
             </div>
         </div> -->
 
-        <div class="max-w-6xl mx-auto px-4 py-6">
+        <div class="max-w-7xl mx-auto px-2 md:px-4 py-6">
             <!-- 步骤1: 输入食材 -->
             <div class="mb-6">
                 <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
@@ -131,7 +131,7 @@
                             <button
                                 @click="generateRecipes"
                                 :disabled="ingredients.length === 0 || isLoading"
-                                class="bg-dark-800 hover:bg-dark-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-lg font-bold text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
+                                class="sm:w-auto w-full bg-dark-800 hover:bg-dark-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-lg font-bold text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
                             >
                                 <span class="flex items-center gap-2 justify-center">
                                     <template v-if="isLoading">
@@ -157,7 +157,7 @@
                     <div class="bg-green-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                         <span class="font-bold">2. 选择菜系</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6 h-full">
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8 h-full">
                         <div v-if="customPrompt.trim()" class="text-center py-8 text-gray-500">
                             <p class="text-sm">已设置自定义要求，将忽略菜系选择</p>
                             <button @click="customPrompt = ''" class="text-blue-600 hover:text-blue-700 underline text-sm mt-2">清除自定义要求以选择菜系</button>
@@ -212,7 +212,7 @@
                     <div class="bg-blue-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                         <span class="font-bold">3. 或自定义要求</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6 h-full flex flex-col">
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8 h-full flex flex-col">
                         <!-- 快速预设选项 -->
                         <div class="mb-4">
                             <button
@@ -320,7 +320,7 @@
                         </div>
 
                         <!-- 底部提示 -->
-                        <div class="mt-4 pt-3 border-t border-gray-200">
+                        <div class="mt-4 pt-3 border-t border-gray-200 mb-4">
                             <div class="flex items-center justify-between text-xs text-gray-500">
                                 <span>💡 提示：越具体越好！</span>
                                 <span :class="{ 'text-red-500': customPrompt.length > 180 }">{{ customPrompt.length }}/200</span>
@@ -341,7 +341,7 @@
                 <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                     <span class="font-bold">4. 菜谱结果</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-2 md:p-8">
                     <!-- 加载状态 -->
                     <div v-if="isLoading && recipes.length === 0" class="text-center py-12">
                         <div class="w-16 h-16 border-4 border-gray-300 border-t-dark-800 rounded-full animate-spin mx-auto mb-4"></div>
@@ -435,7 +435,7 @@
         </div>
 
         <!-- 底部 -->
-        <footer class="bg-white border-2 border-black mx-4 mb-4 rounded-lg p-4 text-center">
+        <footer class="bg-white border-2 border-black mx-2 md:mx-4 mb-4 rounded-lg p-4 text-center">
             <p class="text-sm text-gray-600">
                 © 2025 一饭封神 | <a href="https://github.com/liu-ziting/what-to-eat" target="_blank" class="text-retro-blue hover:underline">Powered by Liuziting</a>
             </p>

@@ -1,7 +1,7 @@
 <template>
     <div class="recipe-card bg-white">
         <!-- 菜谱头部 -->
-        <div class="bg-pink-400 text-white p-4 border-b-2 border-black">
+        <div class="bg-pink-400 text-white p-4 md:p-6 border-b-2 border-black">
             <div class="flex items-center justify-between">
                 <div class="flex-1">
                     <h3 class="text-lg font-bold mb-1 line-clamp-2">{{ recipe.name }}</h3>
@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <div class="p-4">
+        <div class="p-2 md:p-6">
             <!-- 食材列表 -->
             <div class="mb-4">
                 <h4 class="text-sm font-bold text-dark-800 mb-2 flex items-center gap-1">🥬 所需食材</h4>
