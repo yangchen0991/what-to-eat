@@ -33,7 +33,7 @@
                 <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                     <span class="font-bold">1. 输入食材</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-8">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8">
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span class="text-white text-2xl">🥬</span>
@@ -153,7 +153,7 @@
                 <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                     <span class="font-bold">4. 菜谱结果</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-8">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8">
                     <!-- 加载状态 -->
                     <div v-if="isLoading" class="text-center py-12">
                         <div class="w-16 h-16 border-4 border-gray-300 border-t-dark-800 rounded-full animate-spin mx-auto mb-4"></div>
