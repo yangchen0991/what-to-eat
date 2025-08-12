@@ -97,7 +97,6 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
                 }
             ],
             temperature: AI_CONFIG.temperature,
-            max_tokens: 2000,
             stream: false
         })
 
@@ -134,26 +133,8 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
     } catch (error) {
         console.error(`生成${cuisine.name}菜谱失败:`, error)
 
-        // 如果AI调用失败，返回一个基础的菜谱模板
-        const fallbackRecipe: Recipe = {
-            id: `recipe-${cuisine.id}-${Date.now()}`,
-            name: `${cuisine.name}推荐：${ingredients.join('')}料理`,
-            cuisine: cuisine.name,
-            ingredients: ingredients,
-            steps: [
-                { step: 1, description: '准备所有食材，清洗干净', time: 5 },
-                { step: 2, description: '热锅下油，爆香配料', time: 3 },
-                { step: 3, description: '下主料翻炒至半熟', time: 8 },
-                { step: 4, description: '调味炒制至熟透', time: 5 },
-                { step: 5, description: '装盘即可享用', time: 1 }
-            ],
-            cookingTime: 22,
-            difficulty: 'medium',
-            tips: ['火候要掌握好，避免炒糊', '调料要适量，突出食材本味', '炒制过程中要勤翻动'],
-            nutritionAnalysis: generateFallbackNutrition(ingredients)
-        }
-
-        return fallbackRecipe
+        // 抛出错误，让上层处理
+        throw new Error(`AI生成${cuisine.name}菜谱失败，请稍后重试`)
     }
 }
 
@@ -290,25 +271,8 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
     } catch (error) {
         console.error('生成自定义菜谱失败:', error)
 
-        // 如果AI调用失败，返回一个基础的菜谱模板
-        const fallbackRecipe: Recipe = {
-            id: `recipe-custom-${Date.now()}`,
-            name: `自定义：${ingredients.join('')}料理`,
-            cuisine: '自定义',
-            ingredients: ingredients,
-            steps: [
-                { step: 1, description: '准备所有食材，清洗干净', time: 5 },
-                { step: 2, description: '根据要求进行烹饪处理', time: 10 },
-                { step: 3, description: '调味并完成最后的制作', time: 8 },
-                { step: 4, description: '装盘即可享用', time: 2 }
-            ],
-            cookingTime: 25,
-            difficulty: 'medium',
-            tips: ['根据个人喜好调整口味', '注意食材的新鲜度', '掌握好火候'],
-            nutritionAnalysis: generateFallbackNutrition(ingredients)
-        }
-
-        return fallbackRecipe
+        // 抛出错误，让上层处理
+        throw new Error('AI生成自定义菜谱失败，请稍后重试')
     }
 }
 
