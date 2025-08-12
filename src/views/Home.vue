@@ -1,7 +1,7 @@
 <template>
-    <div class="min-h-screen bg-yellow-400">
+    <div class="min-h-screen bg-yellow-400 px-2 md:px-4 py-6">
         <!-- 头部 - 粉色区域 -->
-        <header class="bg-pink-400 border-4 border-black mx-2 md:mx-4 mt-4 rounded-lg relative">
+        <header class="bg-pink-400 border-4 border-black max-w-7xl mx-auto px-2 rounded-lg relative">
             <!-- <div class="absolute top-2 right-2">
                 <button class="bg-white/20 hover:bg-white/30 rounded-full px-3 py-1 text-sm text-white transition-colors">中文</button>
             </div> -->
@@ -27,7 +27,7 @@
             </div>
         </div> -->
 
-        <div class="max-w-7xl mx-auto px-2 md:px-4 py-6">
+        <div class="max-w-7xl mx-auto py-6">
             <!-- 步骤1: 输入食材 -->
             <div class="mb-6">
                 <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
@@ -435,7 +435,7 @@
         </div>
 
         <!-- 底部 -->
-        <footer class="bg-white border-2 border-black mx-2 md:mx-4 mb-4 rounded-lg p-4 text-center">
+        <footer class="bg-white border-4 border-black max-w-7xl mx-auto px-2 mb-4 rounded-lg p-4 text-center">
             <p class="text-sm text-gray-600">
                 © 2025 一饭封神 | <a href="https://github.com/liu-ziting/what-to-eat" target="_blank" class="text-retro-blue hover:underline">Powered by Liuziting</a>
             </p>
