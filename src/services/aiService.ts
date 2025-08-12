@@ -1,15 +1,10 @@
 import axios from 'axios'
 import type { Recipe, CuisineType, NutritionAnalysis, WinePairing } from '@/types'
 
-// AI服务配置 - 智谱AI
+// AI服务配置 - 从环境变量读取
 const AI_CONFIG = {
-    // baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    // apiKey: 'a835b9f6866d48ec956d341418df8a50.NuhlKYn58EkCb5iP',
-    // model: 'glm-4-flash-250414',
-    // temperature: 0.7,
-    // timeout: 30000
     baseURL: 'https://api.deepseek.com/v1/',
-    apiKey: 'sk-78d4fed678fa4a5ebc5f7beac54b1a78',
+    apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
     model: 'deepseek-chat',
     temperature: 0.7,
     timeout: 300000
@@ -48,7 +43,7 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
 
         prompt += `
 
-请按照以下JSON格式返回菜谱，包含营养分析和酒水搭配：
+请按照以下JSON格式返回菜谱，不包含营养分析和酒水搭配：
 {
   "name": "菜品名称",
   "ingredients": ["食材1", "食材2"],
@@ -62,35 +57,7 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
   ],
   "cookingTime": 30,
   "difficulty": "medium",
-  "tips": ["技巧1", "技巧2"],
-  "nutritionAnalysis": {
-    "nutrition": {
-      "calories": 350,
-      "protein": 25,
-      "carbs": 45,
-      "fat": 12,
-      "fiber": 8,
-      "sodium": 800,
-      "sugar": 6,
-      "vitaminC": 30,
-      "calcium": 150,
-      "iron": 3
-    },
-    "healthScore": 8,
-    "balanceAdvice": ["建议搭配蔬菜沙拉增加维生素", "可适量减少盐分"],
-    "dietaryTags": ["高蛋白", "低脂"],
-    "servingSize": "1人份"
-  },
-  "winePairing": {
-    "name": "推荐酒水名称",
-    "type": "red_wine",
-    "reason": "搭配理由说明",
-    "servingTemperature": "16-18°C",
-    "glassType": "波尔多杯",
-    "alcoholContent": "13.5%",
-    "flavor": "风味描述",
-    "origin": "产地"
-  }
+  "tips": ["技巧1", "技巧2"]
 }`
 
         // 调用智谱AI接口
@@ -136,8 +103,8 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
             cookingTime: recipeData.cookingTime || 25,
             difficulty: recipeData.difficulty || 'medium',
             tips: recipeData.tips || ['注意火候控制', '调味要适中'],
-            nutritionAnalysis: recipeData.nutritionAnalysis || generateFallbackNutrition(ingredients),
-            winePairing: recipeData.winePairing || generateFallbackWinePairing(cuisine, ingredients)
+            nutritionAnalysis: undefined,
+            winePairing: undefined
         }
 
         return recipe
@@ -150,17 +117,131 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
 }
 
 /**
- * 批量生成多个菜系的菜谱
- * @param ingredients 食材列表
- * @param cuisines 菜系列表
- * @param customPrompt 自定义提示词（可选）
- * @returns Promise<Recipe[]>
+ * 获取菜谱的营养分析
+ * @param recipe 菜谱信息
+ * @returns Promise<NutritionAnalysis>
  */
+export const getNutritionAnalysis = async (recipe: Recipe): Promise<NutritionAnalysis> => {
+    try {
+        const prompt = `请为以下菜谱生成详细的营养分析：
+菜名：${recipe.name}
+食材：${recipe.ingredients.join('、')}
+烹饪方法：${recipe.steps.map(step => step.description).join('，')}
+
+请按照以下JSON格式返回营养分析：
+{
+  "nutrition": {
+    "calories": 350,
+    "protein": 25,
+    "carbs": 45,
+    "fat": 12,
+    "fiber": 8,
+    "sodium": 800,
+    "sugar": 6,
+    "vitaminC": 30,
+    "calcium": 150,
+    "iron": 3
+  },
+  "healthScore": 8,
+  "balanceAdvice": ["建议搭配蔬菜沙拉增加维生素", "可适量减少盐分"],
+  "dietaryTags": ["高蛋白", "低脂"],
+  "servingSize": "1人份"
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的营养师，请根据菜谱信息生成详细的营养分析。请严格按照JSON格式返回，不要包含任何其他文字。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.5, // 使用更低的temperature以获得更准确的分析
+            stream: false
+        })
+
+        // 解析AI响应
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const nutritionData = JSON.parse(cleanResponse)
+        return nutritionData
+    } catch (error) {
+        console.error('获取营养分析失败:', error)
+        return generateFallbackNutrition(recipe.ingredients)
+    }
+}
+
+/**
+ * 获取菜谱的酒水搭配建议
+ * @param recipe 菜谱信息
+ * @returns Promise<WinePairing>
+ */
+export const getWinePairing = async (recipe: Recipe): Promise<WinePairing> => {
+    try {
+        const prompt = `请为以下菜谱推荐合适的酒水搭配：
+菜名：${recipe.name}
+菜系：${recipe.cuisine}
+食材：${recipe.ingredients.join('、')}
+
+请按照以下JSON格式返回酒水搭配建议：
+{
+  "name": "推荐酒水名称",
+  "type": "red_wine",
+  "reason": "搭配理由说明",
+  "servingTemperature": "16-18°C",
+  "glassType": "波尔多杯",
+  "alcoholContent": "13.5%",
+  "flavor": "风味描述",
+  "origin": "产地"
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的侍酒师，请根据菜谱信息推荐合适的酒水搭配。请严格按照JSON格式返回，不要包含任何其他文字。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            stream: false
+        })
+
+        // 解析AI响应
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const wineData = JSON.parse(cleanResponse)
+        return wineData
+    } catch (error) {
+        console.error('获取酒水搭配失败:', error)
+        return generateFallbackWinePairing({ id: 'custom', name: recipe.cuisine } as CuisineType, recipe.ingredients)
+    }
+}
+
+// 批量生成多个菜系的菜谱
 export const generateMultipleRecipes = async (ingredients: string[], cuisines: CuisineType[], customPrompt?: string): Promise<Recipe[]> => {
     try {
-        // 并发调用多个AI接口
         const promises = cuisines.map(cuisine => generateRecipe(ingredients, cuisine, customPrompt))
-
         const recipes = await Promise.all(promises)
         return recipes
     } catch (error) {
@@ -169,14 +250,7 @@ export const generateMultipleRecipes = async (ingredients: string[], cuisines: C
     }
 }
 
-/**
- * 流式生成多个菜系的菜谱，每完成一个就通过回调返回
- * @param ingredients 食材列表
- * @param cuisines 菜系列表
- * @param onRecipeGenerated 每生成一个菜谱时的回调函数
- * @param customPrompt 自定义提示词（可选）
- * @returns Promise<void>
- */
+// 流式生成多个菜系的菜谱
 export const generateMultipleRecipesStream = async (
     ingredients: string[],
     cuisines: CuisineType[],
@@ -186,12 +260,10 @@ export const generateMultipleRecipesStream = async (
     const total = cuisines.length
     let completedCount = 0
 
-    // 创建所有的Promise，但不等待全部完成
     const promises = cuisines.map(async (cuisine, index) => {
         try {
             const recipe = await generateRecipe(ingredients, cuisine, customPrompt)
             completedCount++
-            // 每完成一个就立即回调
             onRecipeGenerated(recipe, index, total)
             return { success: true, recipe, index }
         } catch (error) {
@@ -200,51 +272,28 @@ export const generateMultipleRecipesStream = async (
         }
     })
 
-    // 等待所有Promise完成（无论成功还是失败）
     const results = await Promise.allSettled(promises)
-
-    // 检查是否有失败的情况
     const failedResults = results.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && !result.value.success))
 
-    // 如果所有菜谱都失败了，抛出错误
     if (completedCount === 0 && failedResults.length > 0) {
         throw new Error('所有菜系生成都失败了，请稍后重试')
     }
 
-    // 如果部分失败，在控制台记录但不抛出错误
     if (failedResults.length > 0) {
         console.warn(`${failedResults.length}个菜系生成失败，但已成功生成${completedCount}个菜谱`)
     }
 }
 
-/**
- * 更新AI配置
- * @param config 新的配置
- */
-export const updateAIConfig = (config: Partial<typeof AI_CONFIG>) => {
-    Object.assign(AI_CONFIG, config)
-
-    // 更新axios实例配置
-    aiClient.defaults.baseURL = AI_CONFIG.baseURL
-    aiClient.defaults.headers['Authorization'] = `Bearer ${AI_CONFIG.apiKey}`
-}
-
-/**
- * 使用自定义提示词生成菜谱
- * @param ingredients 食材列表
- * @param customPrompt 自定义提示词
- * @returns Promise<Recipe>
- */
+// 使用自定义提示词生成菜谱
 export const generateCustomRecipe = async (ingredients: string[], customPrompt: string): Promise<Recipe> => {
     try {
-        // 构建自定义提示词
         const prompt = `你是一位专业的厨师，请根据用户提供的食材和特殊要求，生成详细的菜谱。请严格按照JSON格式返回，不要包含任何其他文字。
 
 用户提供的食材：${ingredients.join('、')}
 
 用户的特殊要求：${customPrompt}
 
-请按照以下JSON格式返回菜谱，包含营养分析和酒水搭配：
+请按照以下JSON格式返回菜谱，不包含营养分析和酒水搭配：
 {
   "name": "菜品名称",
   "ingredients": ["食材1", "食材2"],
@@ -258,38 +307,9 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
   ],
   "cookingTime": 30,
   "difficulty": "medium",
-  "tips": ["技巧1", "技巧2"],
-  "nutritionAnalysis": {
-    "nutrition": {
-      "calories": 350,
-      "protein": 25,
-      "carbs": 45,
-      "fat": 12,
-      "fiber": 8,
-      "sodium": 800,
-      "sugar": 6,
-      "vitaminC": 30,
-      "calcium": 150,
-      "iron": 3
-    },
-    "healthScore": 8,
-    "balanceAdvice": ["建议搭配蔬菜沙拉增加维生素", "可适量减少盐分"],
-    "dietaryTags": ["高蛋白", "低脂"],
-    "servingSize": "1人份"
-  },
-  "winePairing": {
-    "name": "推荐酒水名称",
-    "type": "red_wine",
-    "reason": "搭配理由说明",
-    "servingTemperature": "16-18°C",
-    "glassType": "波尔多杯",
-    "alcoholContent": "13.5%",
-    "flavor": "风味描述",
-    "origin": "产地"
-  }
+  "tips": ["技巧1", "技巧2"]
 }`
 
-        // 调用智谱AI接口
         const response = await aiClient.post('/chat/completions', {
             model: AI_CONFIG.model,
             messages: [
@@ -307,10 +327,7 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
             stream: false
         })
 
-        // 解析AI响应
         const aiResponse = response.data.choices[0].message.content
-
-        // 清理响应内容，提取JSON部分
         let cleanResponse = aiResponse.trim()
         if (cleanResponse.startsWith('```json')) {
             cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
@@ -320,7 +337,6 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
 
         const recipeData = JSON.parse(cleanResponse)
 
-        // 构建完整的Recipe对象
         const recipe: Recipe = {
             id: `recipe-custom-${Date.now()}`,
             name: recipeData.name || '自定义菜品',
@@ -333,32 +349,24 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
             cookingTime: recipeData.cookingTime || 25,
             difficulty: recipeData.difficulty || 'medium',
             tips: recipeData.tips || ['根据个人口味调整', '注意火候控制'],
-            nutritionAnalysis: recipeData.nutritionAnalysis || generateFallbackNutrition(ingredients),
-            winePairing: recipeData.winePairing || generateFallbackWinePairing({ id: 'custom', name: '自定义' } as any, ingredients)
+            nutritionAnalysis: undefined,
+            winePairing: undefined
         }
 
         return recipe
     } catch (error) {
         console.error('生成自定义菜谱失败:', error)
-
-        // 抛出错误，让上层处理
         throw new Error('AI生成自定义菜谱失败，请稍后重试')
     }
 }
 
-/**
- * 生成后备营养分析数据
- * @param ingredients 食材列表
- * @returns NutritionAnalysis
- */
+// 生成后备营养分析数据
 const generateFallbackNutrition = (ingredients: string[]): NutritionAnalysis => {
-    // 基于食材数量和类型估算营养成分
     const baseCalories = ingredients.length * 50 + Math.floor(Math.random() * 100) + 200
     const hasVegetables = ingredients.some(ing => ['菜', '瓜', '豆', '萝卜', '白菜', '菠菜', '西红柿', '黄瓜', '茄子', '土豆'].some(veg => ing.includes(veg)))
     const hasMeat = ingredients.some(ing => ['肉', '鸡', '鱼', '虾', '蛋', '牛', '猪', '羊'].some(meat => ing.includes(meat)))
     const hasGrains = ingredients.some(ing => ['米', '面', '粉', '饭', '面条', '馒头'].some(grain => ing.includes(grain)))
 
-    // 生成饮食标签
     const dietaryTags: string[] = []
     if (hasVegetables && !hasMeat) dietaryTags.push('素食')
     if (hasMeat) dietaryTags.push('高蛋白')
@@ -366,7 +374,6 @@ const generateFallbackNutrition = (ingredients: string[]): NutritionAnalysis => 
     if (!hasGrains) dietaryTags.push('低碳水')
     if (baseCalories < 300) dietaryTags.push('低卡路里')
 
-    // 生成营养建议
     const balanceAdvice: string[] = []
     if (!hasVegetables) balanceAdvice.push('建议搭配新鲜蔬菜增加维生素和膳食纤维')
     if (!hasMeat && !ingredients.some(ing => ['豆', '蛋', '奶'].some(protein => ing.includes(protein)))) {
@@ -395,19 +402,13 @@ const generateFallbackNutrition = (ingredients: string[]): NutritionAnalysis => 
     }
 }
 
-/**
- * 生成后备酒水搭配数据
- * @param cuisine 菜系信息
- * @param ingredients 食材列表
- * @returns WinePairing
- */
+// 生成后备酒水搭配数据
 const generateFallbackWinePairing = (cuisine: CuisineType, ingredients: string[]): WinePairing => {
     const hasSpicy = ingredients.some(ing => ['辣椒', '花椒', '胡椒', '姜', '蒜', '洋葱'].some(spice => ing.includes(spice)))
     const hasMeat = ingredients.some(ing => ['肉', '鸡', '鱼', '虾', '蛋', '牛', '猪', '羊'].some(meat => ing.includes(meat)))
     const hasSeafood = ingredients.some(ing => ['鱼', '虾', '蟹', '贝', '海带', '紫菜'].some(seafood => ing.includes(seafood)))
     const isLight = ingredients.some(ing => ['菜', '瓜', '豆腐', '蛋'].some(light => ing.includes(light)))
 
-    // 根据菜系推荐酒水
     const cuisineWineMap: Record<string, Partial<WinePairing>> = {
         川菜大师: {
             name: '德国雷司令',
@@ -471,10 +472,8 @@ const generateFallbackWinePairing = (cuisine: CuisineType, ingredients: string[]
         }
     }
 
-    // 获取菜系推荐，如果没有则根据食材特点推荐
     let winePairing = cuisineWineMap[cuisine.name] || {}
 
-    // 如果没有菜系特定推荐，根据食材特点推荐
     if (!winePairing.name) {
         if (hasSpicy) {
             winePairing = {

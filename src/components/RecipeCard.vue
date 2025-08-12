@@ -80,12 +80,76 @@
 
             <!-- 营养分析 -->
             <div v-if="isExpanded" class="mb-4">
-                <NutritionAnalysis :nutritionAnalysis="recipe.nutritionAnalysis" />
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-sm font-bold text-dark-800 flex items-center gap-1">📊 营养分析</h4>
+                    <button
+                        @click="fetchNutritionAnalysis"
+                        :disabled="isFetchingNutrition"
+                        class="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white px-3 py-1 rounded text-xs font-medium border border-black transition-all duration-200 disabled:cursor-not-allowed"
+                    >
+                        <span class="flex items-center gap-1">
+                            <template v-if="isFetchingNutrition">
+                                <div class="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full"></div>
+                                获取中...
+                            </template>
+                            <template v-else-if="recipe.nutritionAnalysis"> 🔄 重新获取 </template>
+                            <template v-else> ✨ 获取营养分析 </template>
+                        </span>
+                    </button>
+                </div>
+
+                <div v-if="isFetchingNutrition" class="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 text-center">
+                    <div class="w-12 h-12 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin mx-auto mb-3"></div>
+                    <h5 class="text-sm font-bold text-dark-800 mb-1">营养师正在分析中...</h5>
+                    <p class="text-gray-600 text-xs">{{ nutritionLoadingText }}</p>
+                </div>
+
+                <div v-else-if="nutritionError" class="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-xs mb-3">
+                    {{ nutritionError }}
+                </div>
+
+                <NutritionAnalysis v-if="recipe.nutritionAnalysis" :nutritionAnalysis="recipe.nutritionAnalysis" />
+                <div v-else-if="!isFetchingNutrition" class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <div class="text-gray-400 text-2xl mb-2">🥗</div>
+                    <p class="text-gray-500 text-xs">点击上方按钮获取营养分析</p>
+                </div>
             </div>
 
             <!-- 酒水搭配 -->
             <div v-if="isExpanded" class="mb-4">
-                <WinePairing :winePairing="recipe.winePairing" />
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-sm font-bold text-dark-800 flex items-center gap-1">🍷 酒水搭配</h4>
+                    <button
+                        @click="fetchWinePairing"
+                        :disabled="isFetchingWine"
+                        class="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white px-3 py-1 rounded text-xs font-medium border border-black transition-all duration-200 disabled:cursor-not-allowed"
+                    >
+                        <span class="flex items-center gap-1">
+                            <template v-if="isFetchingWine">
+                                <div class="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full"></div>
+                                获取中...
+                            </template>
+                            <template v-else-if="recipe.winePairing"> 🔄 重新获取 </template>
+                            <template v-else> ✨ 获取酒水搭配 </template>
+                        </span>
+                    </button>
+                </div>
+
+                <div v-if="isFetchingWine" class="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 text-center">
+                    <div class="w-12 h-12 border-4 border-gray-300 border-t-purple-500 rounded-full animate-spin mx-auto mb-3"></div>
+                    <h5 class="text-sm font-bold text-dark-800 mb-1">侍酒师正在推荐中...</h5>
+                    <p class="text-gray-600 text-xs">{{ wineLoadingText }}</p>
+                </div>
+
+                <div v-else-if="wineError" class="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-xs mb-3">
+                    {{ wineError }}
+                </div>
+
+                <WinePairing v-if="recipe.winePairing" :winePairing="recipe.winePairing" />
+                <div v-else-if="!isFetchingWine" class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <div class="text-gray-400 text-2xl mb-2">🍾</div>
+                    <p class="text-gray-500 text-xs">点击上方按钮获取酒水搭配</p>
+                </div>
             </div>
 
             <!-- 效果图区域 -->
@@ -138,6 +202,7 @@
 import { computed, ref, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
 import { generateRecipeImage, type GeneratedImage } from '@/services/imageService'
+import { getNutritionAnalysis, getWinePairing } from '@/services/aiService'
 import NutritionAnalysis from './NutritionAnalysis.vue'
 import WinePairing from './WinePairing.vue'
 
@@ -151,6 +216,12 @@ const isGeneratingImage = ref(false)
 const generatedImage = ref<GeneratedImage | null>(null)
 const imageError = ref<string>('')
 const imageLoadingText = ref('正在构思画面布局...')
+const nutritionLoadingText = ref('营养师正在分析中...')
+const wineLoadingText = ref('侍酒师正在推荐中...')
+const isFetchingNutrition = ref(false)
+const nutritionError = ref('')
+const isFetchingWine = ref(false)
+const wineError = ref('')
 
 // 图片生成加载文字轮播
 const imageLoadingTexts = [
@@ -161,6 +232,28 @@ const imageLoadingTexts = [
     '正在精修画面质感...',
     '正在添加最后润色...',
     '精美效果图即将完成...'
+]
+
+// 营养分析加载文字轮播
+const nutritionLoadingTexts = [
+    '营养师正在分析中...',
+    '正在计算卡路里...',
+    '正在分析蛋白质含量...',
+    '正在评估维生素含量...',
+    '正在生成健康建议...',
+    '正在准备饮食建议...',
+    '营养分析即将完成...'
+]
+
+// 酒水搭配加载文字轮播
+const wineLoadingTexts = [
+    '侍酒师正在推荐中...',
+    '正在匹配风味特征...',
+    '正在考虑酒体平衡...',
+    '正在评估搭配效果...',
+    '正在选择最佳温度...',
+    '正在准备搭配理由...',
+    '完美搭配即将呈现...'
 ]
 
 let imageLoadingInterval: NodeJS.Timeout | null = null
@@ -209,6 +302,54 @@ const generateImage = async () => {
 const handleImageError = () => {
     imageError.value = '图片加载失败'
     generatedImage.value = null
+}
+
+const fetchNutritionAnalysis = async () => {
+    if (isFetchingNutrition.value) return
+
+    isFetchingNutrition.value = true
+    nutritionError.value = ''
+
+    let textIndex = 0
+    const interval = setInterval(() => {
+        nutritionLoadingText.value = nutritionLoadingTexts[textIndex]
+        textIndex = (textIndex + 1) % nutritionLoadingTexts.length
+    }, 2000)
+
+    try {
+        const analysis = await getNutritionAnalysis(props.recipe)
+        props.recipe.nutritionAnalysis = analysis
+    } catch (error) {
+        console.error('获取营养分析失败:', error)
+        nutritionError.value = '获取营养分析失败，请稍后重试'
+    } finally {
+        isFetchingNutrition.value = false
+        clearInterval(interval)
+    }
+}
+
+const fetchWinePairing = async () => {
+    if (isFetchingWine.value) return
+
+    isFetchingWine.value = true
+    wineError.value = ''
+
+    let textIndex = 0
+    const interval = setInterval(() => {
+        wineLoadingText.value = wineLoadingTexts[textIndex]
+        textIndex = (textIndex + 1) % wineLoadingTexts.length
+    }, 2000)
+
+    try {
+        const pairing = await getWinePairing(props.recipe)
+        props.recipe.winePairing = pairing
+    } catch (error) {
+        console.error('获取酒水搭配失败:', error)
+        wineError.value = '获取酒水搭配失败，请稍后重试'
+    } finally {
+        isFetchingWine.value = false
+        clearInterval(interval)
+    }
 }
 
 onUnmounted(() => {

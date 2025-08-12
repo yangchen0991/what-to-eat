@@ -27,7 +27,7 @@
             </div>
         </div> -->
 
-        <div class="max-w-5xl mx-auto px-4 py-6">
+        <div class="max-w-6xl mx-auto px-4 py-6">
             <!-- 步骤1: 输入食材 -->
             <div class="mb-6">
                 <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">

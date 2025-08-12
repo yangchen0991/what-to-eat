@@ -1,7 +1,5 @@
 <template>
     <div v-if="winePairing" class="wine-pairing">
-        <h4 class="text-sm font-bold text-dark-800 mb-3 flex items-center gap-1">🍷 酒水搭配</h4>
-
         <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
             <!-- 酒水信息卡片 -->
             <div class="bg-white rounded-lg p-4 border border-purple-300 mb-3">
