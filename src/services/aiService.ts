@@ -170,6 +170,54 @@ export const generateMultipleRecipes = async (ingredients: string[], cuisines: C
 }
 
 /**
+ * 流式生成多个菜系的菜谱，每完成一个就通过回调返回
+ * @param ingredients 食材列表
+ * @param cuisines 菜系列表
+ * @param onRecipeGenerated 每生成一个菜谱时的回调函数
+ * @param customPrompt 自定义提示词（可选）
+ * @returns Promise<void>
+ */
+export const generateMultipleRecipesStream = async (
+    ingredients: string[],
+    cuisines: CuisineType[],
+    onRecipeGenerated: (recipe: Recipe, index: number, total: number) => void,
+    customPrompt?: string
+): Promise<void> => {
+    const total = cuisines.length
+    let completedCount = 0
+
+    // 创建所有的Promise，但不等待全部完成
+    const promises = cuisines.map(async (cuisine, index) => {
+        try {
+            const recipe = await generateRecipe(ingredients, cuisine, customPrompt)
+            completedCount++
+            // 每完成一个就立即回调
+            onRecipeGenerated(recipe, index, total)
+            return { success: true, recipe, index }
+        } catch (error) {
+            console.error(`生成${cuisine.name}菜谱失败:`, error)
+            return { success: false, error, index, cuisine: cuisine.name }
+        }
+    })
+
+    // 等待所有Promise完成（无论成功还是失败）
+    const results = await Promise.allSettled(promises)
+
+    // 检查是否有失败的情况
+    const failedResults = results.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && !result.value.success))
+
+    // 如果所有菜谱都失败了，抛出错误
+    if (completedCount === 0 && failedResults.length > 0) {
+        throw new Error('所有菜系生成都失败了，请稍后重试')
+    }
+
+    // 如果部分失败，在控制台记录但不抛出错误
+    if (failedResults.length > 0) {
+        console.warn(`${failedResults.length}个菜系生成失败，但已成功生成${completedCount}个菜谱`)
+    }
+}
+
+/**
  * 更新AI配置
  * @param config 新的配置
  */
