@@ -144,37 +144,40 @@ npm run preview
 
 ## 🤖 AI 配置
 
-### DeepSeek API 配置
+### 文本生成服务配置
+
+项目使用 DeepSeek API 进行菜谱生成和营养分析：
 
 ```typescript
 const AI_CONFIG = {
     baseURL: 'https://api.deepseek.com/v1/',
-    apiKey: 'sk-your_api_key_here',
+    apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY, // 从环境变量读取
     model: 'deepseek-chat',
     temperature: 0.7,
-    timeout: 30000
+    timeout: 300000
 }
 ```
 
-### 智谱 AI 备用配置
+### 图像生成服务配置
+
+项目使用独立的图像生成 API：
 
 ```typescript
-const AI_CONFIG_BACKUP = {
-    baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    apiKey: 'your_zhipu_api_key',
-    model: 'glm-4-flash-250414',
-    temperature: 0.7,
-    timeout: 30000
+const IMAGE_CONFIG = {
+    apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY // 从环境变量读取
 }
 ```
 
 ### 环境变量配置
 
-创建 `.env` 文件：
+创建 `.env` 文件（基于 `.env.example` 模板）：
 
 ```env
-VITE_AI_API_KEY=your_api_key_here
-VITE_AI_BASE_URL=https://api.deepseek.com/v1/
+# Text Generation Service Configuration
+VITE_TEXT_GENERATION_API_KEY=your_deepseek_api_key_here
+
+# Image Generation Service Configuration
+VITE_IMAGE_GENERATION_API_KEY=your_image_api_key_here
 ```
 
 ## 🎯 使用指南
