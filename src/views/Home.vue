@@ -136,7 +136,8 @@
                                 <span class="flex items-center gap-2 justify-center">
                                     <template v-if="isLoading">
                                         <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                                        生成中...
+                                        <span v-if="recipes.length === 0">生成中...</span>
+                                        <span v-else>{{ loadingText }}</span>
                                     </template>
                                     <template v-else> ✨ {{ customPrompt.trim() ? '按要求生成' : '交给大师' }} </template>
                                 </span>
@@ -165,7 +166,7 @@
                             <!-- 中华八大菜系 -->
                             <div class="mb-4">
                                 <h5 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">🇨🇳 中华八大菜系</h5>
-                                <div class="grid grid-cols-2 gap-2">
+                                <div class="grid grid-cols-3 gap-2">
                                     <button
                                         v-for="cuisine in cuisines.slice(0, 8)"
                                         :key="cuisine.id"
@@ -173,7 +174,7 @@
                                         @mouseenter="showCuisineTooltip(cuisine, $event)"
                                         @mouseleave="hideCuisineTooltip"
                                         :class="[
-                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative',
+                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative text-center',
                                             selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >
@@ -185,7 +186,7 @@
                             <!-- 国际菜系 -->
                             <div>
                                 <h5 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">🌍 国际菜系</h5>
-                                <div class="grid grid-cols-2 gap-2">
+                                <div class="grid grid-cols-3 gap-2">
                                     <button
                                         v-for="cuisine in cuisines.slice(8)"
                                         :key="cuisine.id"
@@ -193,7 +194,7 @@
                                         @mouseenter="showCuisineTooltip(cuisine, $event)"
                                         @mouseleave="hideCuisineTooltip"
                                         :class="[
-                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative flex items-center gap-1',
+                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative flex items-center justify-center gap-1',
                                             selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >
@@ -342,10 +343,32 @@
                 </div>
                 <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8">
                     <!-- 加载状态 -->
-                    <div v-if="isLoading" class="text-center py-12">
+                    <div v-if="isLoading && recipes.length === 0" class="text-center py-12">
                         <div class="w-16 h-16 border-4 border-gray-300 border-t-dark-800 rounded-full animate-spin mx-auto mb-4"></div>
                         <h3 class="text-xl font-bold text-dark-800 mb-2">大师正在创作中...</h3>
                         <p class="text-gray-600">{{ loadingText }}</p>
+                    </div>
+
+                    <!-- 流式加载状态 - 当已有菜谱但还在加载更多时 -->
+                    <div v-else-if="isLoading && recipes.length > 0">
+                        <!-- 已生成的菜谱 -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <div
+                                v-for="(recipe, index) in recipes"
+                                :key="recipe.id"
+                                class="border-2 border-black rounded-lg overflow-hidden animate-fade-in-up"
+                                :style="{ animationDelay: `${index * 0.2}s` }"
+                            >
+                                <RecipeCard :recipe="recipe" />
+                            </div>
+                        </div>
+
+                        <!-- 继续加载提示 -->
+                        <div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+                            <div class="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-3"></div>
+                            <p class="text-gray-600 font-medium">{{ loadingText }}</p>
+                            <p class="text-sm text-gray-500 mt-1">更多精彩菜谱正在路上...</p>
+                        </div>
                     </div>
 
                     <!-- 错误状态 -->
@@ -375,7 +398,12 @@
 
                     <!-- 菜谱结果 -->
                     <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div v-for="recipe in recipes" :key="recipe.id" class="border-2 border-black rounded-lg overflow-hidden">
+                        <div
+                            v-for="(recipe, index) in recipes"
+                            :key="recipe.id"
+                            class="border-2 border-black rounded-lg overflow-hidden animate-fade-in-up"
+                            :style="{ animationDelay: `${index * 0.2}s` }"
+                        >
                             <RecipeCard :recipe="recipe" />
                         </div>
                     </div>
@@ -415,12 +443,30 @@
     </div>
 </template>
 
+<style scoped>
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+    opacity: 0;
+}
+</style>
+
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue'
 import { cuisines } from '@/config/cuisines'
 import { ingredientCategories } from '@/config/ingredients'
 import RecipeCard from '@/components/RecipeCard.vue'
-import { generateMultipleRecipes, generateCustomRecipe } from '@/services/aiService'
+import { generateMultipleRecipes, generateCustomRecipe, generateMultipleRecipesStream } from '@/services/aiService'
 import type { Recipe, CuisineType, NutritionAnalysis } from '@/types'
 
 // 响应式数据
@@ -615,9 +661,17 @@ const generateRecipes = async () => {
         return
     }
 
+    // 重置状态
     isLoading.value = true
-    recipes.value = []
+    recipes.value = [] // 清空之前的菜谱
     errorMessage.value = ''
+    loadingText.value = '大师正在挑选食材...' // 重置加载文字
+
+    // 清除之前的加载定时器
+    if (loadingInterval) {
+        clearInterval(loadingInterval)
+        loadingInterval = null
+    }
 
     // 滚动到结果区域
     if (resultsSection.value) {
@@ -650,17 +704,38 @@ const generateRecipes = async () => {
                 selectedCuisineObjects = shuffled.slice(0, 2)
             }
 
-            // 调用AI服务生成菜谱
-            const generatedRecipes = await generateMultipleRecipes(ingredients.value, selectedCuisineObjects, customPrompt.value.trim() || undefined)
+            // 使用流式生成菜谱，每完成一个就立即显示
+            await generateMultipleRecipesStream(
+                ingredients.value,
+                selectedCuisineObjects,
+                (recipe: Recipe, index: number, total: number) => {
+                    // 每生成一个菜谱就立即添加到列表中
+                    recipes.value.push(recipe)
 
-            recipes.value = generatedRecipes
+                    // 更新加载文字，显示进度
+                    loadingText.value = `已完成 ${recipes.value.length}/${total} 道菜谱...`
+
+                    // 如果是最后一个菜谱，停止加载状态
+                    if (recipes.value.length === total) {
+                        isLoading.value = false
+                        if (loadingInterval) {
+                            clearInterval(loadingInterval)
+                            loadingInterval = null
+                        }
+                    }
+                },
+                customPrompt.value.trim() || undefined
+            )
         }
     } catch (error) {
         console.error('生成菜谱失败:', error)
         // 显示错误信息
         errorMessage.value = error instanceof Error ? error.message : 'AI生成菜谱失败，请稍后重试'
     } finally {
-        isLoading.value = false
+        // 确保加载状态被清除
+        if (isLoading.value) {
+            isLoading.value = false
+        }
         if (loadingInterval) {
             clearInterval(loadingInterval)
             loadingInterval = null
