@@ -156,8 +156,10 @@
                                 v-for="cuisine in cuisines.slice(0, 10)"
                                 :key="cuisine.id"
                                 @click="selectCuisine(cuisine)"
+                                @mouseenter="showCuisineTooltip(cuisine, $event)"
+                                @mouseleave="hideCuisineTooltip"
                                 :class="[
-                                    'p-3 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200',
+                                    'p-3 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200 relative',
                                     selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                 ]"
                             >
@@ -243,6 +245,29 @@
             </div>
         </div>
 
+        <!-- 菜系Tooltip -->
+        <div
+            v-if="hoveredCuisine && getHoveredCuisine()"
+            class="fixed z-50 pointer-events-none transform -translate-x-1/2 -translate-y-full"
+            :style="{
+                left: tooltipPosition.x + 'px',
+                top: tooltipPosition.y + 'px'
+            }"
+        >
+            <div class="bg-white border-2 border-black rounded-lg shadow-lg p-4 max-w-xs mb-2">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-lg">{{ getHoveredCuisine()?.avatar }}</span>
+                    <h4 class="font-bold text-dark-800">{{ getHoveredCuisine()?.name }}</h4>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">{{ getHoveredCuisine()?.description }}</p>
+                <div class="text-xs text-gray-500"><span class="font-medium">特色：</span>{{ getHoveredCuisine()?.specialty }}</div>
+            </div>
+            <!-- 小箭头 -->
+            <div class="flex justify-center">
+                <div class="w-3 h-3 bg-white border-r-2 border-b-2 border-black transform rotate-45"></div>
+            </div>
+        </div>
+
         <!-- 底部 -->
         <footer class="bg-white border-2 border-black mx-4 mb-4 rounded-lg p-4 text-center">
             <p class="text-sm text-gray-600">
@@ -271,6 +296,8 @@ const loadingText = ref('大师正在挑选食材...')
 const resultsSection = ref<HTMLElement | null>(null)
 const errorMessage = ref('')
 const showIngredientPicker = ref(false)
+const hoveredCuisine = ref<string | null>(null)
+const tooltipPosition = ref({ x: 0, y: 0 })
 
 // 加载文字轮播
 const loadingTexts = [
@@ -312,6 +339,26 @@ const quickAddIngredient = (ingredient: string) => {
 // 切换食材选择器显示
 const toggleIngredientPicker = () => {
     showIngredientPicker.value = !showIngredientPicker.value
+}
+
+// 显示菜系tooltip
+const showCuisineTooltip = (cuisine: CuisineType, event: MouseEvent) => {
+    hoveredCuisine.value = cuisine.id
+    const rect = (event.target as HTMLElement).getBoundingClientRect()
+    tooltipPosition.value = {
+        x: rect.left + rect.width / 2,
+        y: rect.top - 10
+    }
+}
+
+// 隐藏菜系tooltip
+const hideCuisineTooltip = () => {
+    hoveredCuisine.value = null
+}
+
+// 获取当前悬停的菜系信息
+const getHoveredCuisine = () => {
+    return cuisines.find(c => c.id === hoveredCuisine.value)
 }
 
 // 选择菜系
