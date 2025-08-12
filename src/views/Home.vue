@@ -76,32 +76,30 @@
                                 快速选择食材
                             </button>
 
-                            <div v-if="showIngredientPicker" class="mt-3 p-4 bg-gray-50 border-2 border-gray-200 rounded-lg">
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    <div v-for="category in ingredientCategories" :key="category.id" class="border border-gray-300 rounded-lg overflow-hidden">
-                                        <!-- 分类标题 -->
-                                        <button
-                                            @click="toggleCategory(category.id)"
-                                            :class="category.color"
-                                            class="w-full px-3 py-2 text-sm font-medium flex items-center justify-between hover:opacity-80 transition-opacity"
-                                        >
-                                            <span class="flex items-center gap-1">
-                                                <span>{{ category.icon }}</span>
-                                                <span>{{ category.name }}</span>
-                                            </span>
-                                            <span class="transform transition-transform duration-200 text-xs" :class="{ 'rotate-90': expandedCategories.has(category.id) }">▶</span>
-                                        </button>
+                            <div v-if="showIngredientPicker" class="mt-3 border-2 border-gray-200 rounded-lg overflow-hidden bg-white">
+                                <!-- 食材展示区域 -->
+                                <div class="p-3 max-h-80 overflow-y-auto">
+                                    <div class="space-y-4">
+                                        <div v-for="category in ingredientCategories" :key="category.id">
+                                            <!-- 分类标题 -->
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="text-sm">{{ category.icon }}</span>
+                                                <span class="text-sm font-bold text-gray-700">{{ category.name }}</span>
+                                                <div class="flex-1 h-px bg-gray-200"></div>
+                                            </div>
 
-                                        <!-- 食材列表 -->
-                                        <div v-if="expandedCategories.has(category.id)" class="p-2 bg-white">
-                                            <div class="flex flex-wrap gap-1">
+                                            <!-- 食材按钮 -->
+                                            <div class="flex flex-wrap gap-1.5">
                                                 <button
                                                     v-for="item in category.items"
                                                     :key="item"
                                                     @click="quickAddIngredient(item)"
                                                     :disabled="ingredients.includes(item) || ingredients.length >= 10"
-                                                    class="px-2 py-1 text-xs rounded border border-gray-300 hover:bg-gray-100 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-                                                    :class="{ 'bg-yellow-200 border-yellow-400': ingredients.includes(item) }"
+                                                    class="px-2 py-1 text-xs rounded border border-gray-300 hover:border-pink-400 hover:bg-pink-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200 transition-all duration-200"
+                                                    :class="{
+                                                        'bg-yellow-100 border-yellow-400 text-yellow-800': ingredients.includes(item),
+                                                        'hover:scale-105': !ingredients.includes(item) && ingredients.length < 10
+                                                    }"
                                                 >
                                                     {{ item }}
                                                 </button>
@@ -110,7 +108,11 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-3 text-xs text-gray-500 text-center">点击食材快速添加 • 已选择 {{ ingredients.length }}/10</div>
+                                <!-- 底部状态栏 -->
+                                <div class="px-3 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500 flex justify-between items-center">
+                                    <span>点击食材快速添加到列表</span>
+                                    <span class="font-medium">已选择 {{ ingredients.length }}/10</span>
+                                </div>
                             </div>
                         </div>
 
@@ -269,7 +271,6 @@ const loadingText = ref('大师正在挑选食材...')
 const resultsSection = ref<HTMLElement | null>(null)
 const errorMessage = ref('')
 const showIngredientPicker = ref(false)
-const expandedCategories = ref<Set<string>>(new Set())
 
 // 加载文字轮播
 const loadingTexts = [
@@ -311,15 +312,6 @@ const quickAddIngredient = (ingredient: string) => {
 // 切换食材选择器显示
 const toggleIngredientPicker = () => {
     showIngredientPicker.value = !showIngredientPicker.value
-}
-
-// 切换分类展开状态
-const toggleCategory = (categoryId: string) => {
-    if (expandedCategories.value.has(categoryId)) {
-        expandedCategories.value.delete(categoryId)
-    } else {
-        expandedCategories.value.add(categoryId)
-    }
 }
 
 // 选择菜系
