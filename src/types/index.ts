@@ -26,6 +26,8 @@ export interface Recipe {
     difficulty: 'easy' | 'medium' | 'hard'
     tips: string[]
     nutritionAnalysis?: NutritionAnalysis // 营养分析
+    winePairing?: WinePairing // 酒水搭配
+    winePairing?: WinePairing // 酒水搭配
 }
 
 // 制作步骤
@@ -58,6 +60,30 @@ export interface NutritionAnalysis {
     balanceAdvice: string[] // 营养均衡建议
     dietaryTags: string[] // 饮食标签，如"低脂"、"高蛋白"等
     servingSize: string // 建议份量
+}
+
+// 酒水搭配
+export interface WinePairing {
+    name: string // 酒水名称
+    type: 'red_wine' | 'white_wine' | 'beer' | 'sake' | 'tea' | 'cocktail' | 'spirits' | 'non_alcoholic' // 酒水类型
+    reason: string // 搭配理由
+    servingTemperature: string // 侍酒温度
+    glassType?: string // 推荐酒杯
+    alcoholContent?: string // 酒精度
+    flavor: string // 风味描述
+    origin?: string // 产地
+}
+
+// 酒水搭配类型
+export interface WinePairing {
+    name: string // 酒水名称
+    type: 'red_wine' | 'white_wine' | 'beer' | 'sake' | 'tea' | 'cocktail' | 'spirits' | 'non_alcoholic' // 酒水类型
+    reason: string // 搭配理由
+    flavor: string // 风味描述
+    servingTemperature: string // 侍酒温度
+    glassType?: string // 推荐酒杯
+    alcoholContent?: string // 酒精度
+    origin?: string // 产地
 }
 
 // AI响应类型

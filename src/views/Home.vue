@@ -71,12 +71,22 @@
 
                         <!-- 快速选择食材 -->
                         <div class="mt-4">
-                            <button @click="toggleIngredientPicker" class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
-                                <span class="transform transition-transform duration-200" :class="{ 'rotate-90': showIngredientPicker }">▶</span>
-                                快速选择食材
+                            <button
+                                @click="toggleIngredientPicker"
+                                class="flex items-center justify-between w-full p-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-base">🥬</span>
+                                    <span class="font-medium">快速选择食材</span>
+                                </span>
+                                <span class="transform transition-transform duration-200 text-gray-400" :class="{ 'rotate-180': showIngredientPicker }">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </span>
                             </button>
 
-                            <div v-if="showIngredientPicker" class="mt-3 border-2 border-gray-200 rounded-lg overflow-hidden bg-white">
+                            <div v-if="showIngredientPicker" class="mt-2 border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                                 <!-- 食材展示区域 -->
                                 <div class="p-3 max-h-80 overflow-y-auto">
                                     <div class="space-y-4">
@@ -95,9 +105,9 @@
                                                     :key="item"
                                                     @click="quickAddIngredient(item)"
                                                     :disabled="ingredients.includes(item) || ingredients.length >= 10"
-                                                    class="px-2 py-1 text-xs rounded border border-gray-300 hover:border-pink-400 hover:bg-pink-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200 transition-all duration-200"
+                                                    class="px-3 py-1.5 text-xs font-medium rounded-full border border-gray-300 hover:border-pink-400 hover:bg-pink-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200 transition-all duration-200 hover:shadow-sm"
                                                     :class="{
-                                                        'bg-yellow-100 border-yellow-400 text-yellow-800': ingredients.includes(item),
+                                                        'bg-yellow-100 border-yellow-400 text-yellow-800 shadow-sm': ingredients.includes(item),
                                                         'hover:scale-105': !ingredients.includes(item) && ingredients.length < 10
                                                     }"
                                                 >
@@ -151,20 +161,47 @@
                             <p class="text-sm">已设置自定义要求，将忽略菜系选择</p>
                             <button @click="customPrompt = ''" class="text-blue-600 hover:text-blue-700 underline text-sm mt-2">清除自定义要求以选择菜系</button>
                         </div>
-                        <div v-else class="grid grid-cols-2 gap-3">
-                            <button
-                                v-for="cuisine in cuisines.slice(0, 10)"
-                                :key="cuisine.id"
-                                @click="selectCuisine(cuisine)"
-                                @mouseenter="showCuisineTooltip(cuisine, $event)"
-                                @mouseleave="hideCuisineTooltip"
-                                :class="[
-                                    'p-3 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200 relative',
-                                    selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                ]"
-                            >
-                                {{ cuisine.name.replace('大师', '') }}
-                            </button>
+                        <div v-else>
+                            <!-- 中华八大菜系 -->
+                            <div class="mb-4">
+                                <h5 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">🇨🇳 中华八大菜系</h5>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button
+                                        v-for="cuisine in cuisines.slice(0, 8)"
+                                        :key="cuisine.id"
+                                        @click="selectCuisine(cuisine)"
+                                        @mouseenter="showCuisineTooltip(cuisine, $event)"
+                                        @mouseleave="hideCuisineTooltip"
+                                        :class="[
+                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative',
+                                            selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        ]"
+                                    >
+                                        {{ cuisine.name.replace('大师', '') }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 国际菜系 -->
+                            <div>
+                                <h5 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">🌍 国际菜系</h5>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button
+                                        v-for="cuisine in cuisines.slice(8)"
+                                        :key="cuisine.id"
+                                        @click="selectCuisine(cuisine)"
+                                        @mouseenter="showCuisineTooltip(cuisine, $event)"
+                                        @mouseleave="hideCuisineTooltip"
+                                        :class="[
+                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative flex items-center gap-1',
+                                            selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        ]"
+                                    >
+                                        <span>{{ cuisine.avatar }}</span>
+                                        <span>{{ cuisine.name.replace('料理大师', '').replace('大师', '') }}</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,19 +212,120 @@
                         <span class="font-bold">3. 或自定义要求</span>
                     </div>
                     <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6 h-full flex flex-col">
+                        <!-- 快速预设选项 -->
+                        <div class="mb-4">
+                            <button
+                                @click="togglePresetPicker"
+                                class="flex items-center justify-between w-full p-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200 mb-3"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-base">⚡</span>
+                                    <span class="font-medium">快速预设</span>
+                                </span>
+                                <span class="transform transition-transform duration-200 text-gray-400" :class="{ 'rotate-180': showPresetPicker }">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </span>
+                            </button>
+
+                            <div v-if="showPresetPicker" class="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
+                                <!-- 场景预设 -->
+                                <div>
+                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">🎯 场景需求</h6>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <button
+                                            v-for="preset in scenePresets"
+                                            :key="preset.id"
+                                            @click="applyPreset(preset.prompt)"
+                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-blue-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
+                                        >
+                                            {{ preset.name }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 口味偏好 -->
+                                <div>
+                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">👅 口味偏好</h6>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <button
+                                            v-for="preset in tastePresets"
+                                            :key="preset.id"
+                                            @click="applyPreset(preset.prompt)"
+                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-green-300 hover:border-green-400 hover:bg-green-50 hover:text-green-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
+                                        >
+                                            {{ preset.name }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 健康需求 -->
+                                <div>
+                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">💚 健康需求</h6>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <button
+                                            v-for="preset in healthPresets"
+                                            :key="preset.id"
+                                            @click="applyPreset(preset.prompt)"
+                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-purple-300 hover:border-purple-400 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
+                                        >
+                                            {{ preset.name }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 烹饪方式 -->
+                                <div>
+                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">🔥 烹饪方式</h6>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <button
+                                            v-for="preset in cookingPresets"
+                                            :key="preset.id"
+                                            @click="applyPreset(preset.prompt)"
+                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-orange-300 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
+                                        >
+                                            {{ preset.name }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 自定义输入区域 -->
                         <div class="flex-1">
-                            <label class="block text-sm font-bold text-dark-800 mb-2">描述你的需求：</label>
+                            <label class="block text-sm font-bold text-dark-800 mb-2">或自由描述：</label>
                             <textarea
                                 v-model="customPrompt"
-                                placeholder="例如：做一道清淡的汤，适合老人食用..."
-                                class="w-full p-4 border-2 border-gray-300 rounded-lg text-base resize-none focus:outline-none focus:border-blue-400 h-40"
+                                @input="limitCustomPrompt"
+                                placeholder="例如：做一道清淡的汤，适合老人食用，不要太咸..."
+                                class="w-full p-4 border-2 border-gray-300 rounded-lg text-base resize-none focus:outline-none focus:border-blue-400 h-32"
+                                maxlength="200"
                             ></textarea>
                             <div v-if="customPrompt.trim()" class="mt-2 flex justify-between items-center">
                                 <span class="text-xs text-green-600">✓ 已设置自定义要求</span>
                                 <button @click="customPrompt = ''" class="text-xs text-red-600 hover:text-red-700 underline">清除</button>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-auto">越具体越好！</p>
+
+                        <!-- 随机灵感 -->
+                        <div class="mt-3 mb-3">
+                            <button
+                                @click="getRandomInspiration"
+                                class="w-full py-2 px-3 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform hover:scale-105"
+                            >
+                                ✨ 随机灵感
+                            </button>
+                        </div>
+
+                        <!-- 底部提示 -->
+                        <div class="mt-4 pt-3 border-t border-gray-200">
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <span>💡 提示：越具体越好！</span>
+                                <span :class="{ 'text-red-500': customPrompt.length > 180 }">{{ customPrompt.length }}/200</span>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">可以组合多个预设，或完全自定义描述</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -296,6 +434,7 @@ const loadingText = ref('大师正在挑选食材...')
 const resultsSection = ref<HTMLElement | null>(null)
 const errorMessage = ref('')
 const showIngredientPicker = ref(false)
+const showPresetPicker = ref(false)
 const hoveredCuisine = ref<string | null>(null)
 const tooltipPosition = ref({ x: 0, y: 0 })
 
@@ -311,6 +450,43 @@ const loadingTexts = [
 ]
 
 let loadingInterval: NodeJS.Timeout | null = null
+
+// 预设选项数据
+const scenePresets = [
+    { id: 'family', name: '家庭聚餐', prompt: '适合全家人一起享用的家常菜，老少皆宜，营养均衡' },
+    { id: 'romantic', name: '浪漫晚餐', prompt: '适合情侣约会的精致菜品，卖相精美，氛围浪漫' },
+    { id: 'quick', name: '快手菜', prompt: '制作简单快速的菜品，15分钟内完成，适合忙碌时光' },
+    { id: 'party', name: '聚会小食', prompt: '适合朋友聚会的下酒菜或小食，方便分享' },
+    { id: 'breakfast', name: '营养早餐', prompt: '健康营养的早餐搭配，提供一天的活力' },
+    { id: 'lunch', name: '工作午餐', prompt: '适合上班族的午餐，营养丰富且不油腻' }
+]
+
+const tastePresets = [
+    { id: 'light', name: '清淡口味', prompt: '口味清淡，少油少盐，突出食材本味' },
+    { id: 'spicy', name: '香辣过瘾', prompt: '香辣刺激，层次丰富，适合喜欢辣味的人' },
+    { id: 'sweet', name: '微甜可口', prompt: '带有淡淡甜味，口感温和，老少皆宜' },
+    { id: 'sour', name: '酸爽开胃', prompt: '酸味突出，开胃解腻，适合夏天享用' },
+    { id: 'savory', name: '鲜香浓郁', prompt: '鲜味十足，香气浓郁，回味无穷' },
+    { id: 'crispy', name: '酥脆爽口', prompt: '口感酥脆，层次分明，嚼劲十足' }
+]
+
+const healthPresets = [
+    { id: 'lowfat', name: '低脂健康', prompt: '低脂肪制作，健康营养，适合减脂期间食用' },
+    { id: 'highprotein', name: '高蛋白', prompt: '富含优质蛋白质，适合健身人群和成长期儿童' },
+    { id: 'vegetarian', name: '素食主义', prompt: '纯素食制作，不含任何动物性食材，营养均衡' },
+    { id: 'diabetic', name: '控糖友好', prompt: '低糖低GI，适合糖尿病患者或需要控制血糖的人群' },
+    { id: 'elderly', name: '老人友好', prompt: '软烂易消化，营养丰富，适合老年人食用' },
+    { id: 'children', name: '儿童喜爱', prompt: '造型可爱，营养全面，适合儿童的口味偏好' }
+]
+
+const cookingPresets = [
+    { id: 'steam', name: '清蒸', prompt: '采用蒸制方法，保持食材原味和营养' },
+    { id: 'stirfry', name: '爆炒', prompt: '大火爆炒，锁住食材鲜味，口感脆嫩' },
+    { id: 'braise', name: '红烧', prompt: '红烧制作，色泽红亮，味道浓郁' },
+    { id: 'soup', name: '煲汤', prompt: '制作成汤品，清香鲜美，营养丰富' },
+    { id: 'cold', name: '凉拌', prompt: '凉拌制作，清爽开胃，适合夏季' },
+    { id: 'grill', name: '烧烤', prompt: '烧烤方式制作，香气四溢，口感独特' }
+]
 
 // 添加食材
 const addIngredient = () => {
@@ -339,6 +515,68 @@ const quickAddIngredient = (ingredient: string) => {
 // 切换食材选择器显示
 const toggleIngredientPicker = () => {
     showIngredientPicker.value = !showIngredientPicker.value
+}
+
+// 切换预设选择器显示
+const togglePresetPicker = () => {
+    showPresetPicker.value = !showPresetPicker.value
+}
+
+// 应用预设
+const applyPreset = (presetPrompt: string) => {
+    if (customPrompt.value.trim()) {
+        // 如果已有内容，询问是否替换或追加
+        const newContent = customPrompt.value.trim() + '，' + presetPrompt
+        if (newContent.length <= 200) {
+            customPrompt.value = newContent
+        }
+    } else {
+        customPrompt.value = presetPrompt
+    }
+}
+
+// 限制自定义提示词长度
+const limitCustomPrompt = () => {
+    if (customPrompt.value.length > 200) {
+        customPrompt.value = customPrompt.value.substring(0, 200)
+    }
+}
+
+// 随机灵感数据
+const randomInspirations = [
+    '制作一道有故事的菜，让人回味童年',
+    '融合东西方口味，创新搭配',
+    '用最简单的方法，做出最温暖的味道',
+    '适合雨天享用的暖心料理',
+    '颜值超高的网红打卡菜品',
+    '妈妈味道的现代演绎',
+    '适合深夜的治愈系美食',
+    '带有节日氛围的特色菜',
+    '健康养生的药膳料理',
+    '适合野餐的便携美食',
+    '有仪式感的精致小食',
+    '适合看剧时享用的小零食',
+    '能够暖胃暖心的汤品',
+    '适合和朋友分享的下酒菜',
+    '充满创意的摆盘艺术菜',
+    '适合运动后补充能量的料理'
+]
+
+// 获取随机灵感
+const getRandomInspiration = () => {
+    const randomIndex = Math.floor(Math.random() * randomInspirations.length)
+    const inspiration = randomInspirations[randomIndex]
+
+    if (customPrompt.value.trim()) {
+        const newContent = customPrompt.value.trim() + '，' + inspiration
+        if (newContent.length <= 200) {
+            customPrompt.value = newContent
+        } else {
+            customPrompt.value = inspiration
+        }
+    } else {
+        customPrompt.value = inspiration
+    }
 }
 
 // 显示菜系tooltip

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Recipe, CuisineType, NutritionAnalysis } from '@/types'
+import type { Recipe, CuisineType, NutritionAnalysis, WinePairing } from '@/types'
 
 // AI服务配置 - 智谱AI
 const AI_CONFIG = {
@@ -48,7 +48,7 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
 
         prompt += `
 
-请按照以下JSON格式返回菜谱，包含营养分析：
+请按照以下JSON格式返回菜谱，包含营养分析和酒水搭配：
 {
   "name": "菜品名称",
   "ingredients": ["食材1", "食材2"],
@@ -80,6 +80,16 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
     "balanceAdvice": ["建议搭配蔬菜沙拉增加维生素", "可适量减少盐分"],
     "dietaryTags": ["高蛋白", "低脂"],
     "servingSize": "1人份"
+  },
+  "winePairing": {
+    "name": "推荐酒水名称",
+    "type": "red_wine",
+    "reason": "搭配理由说明",
+    "servingTemperature": "16-18°C",
+    "glassType": "波尔多杯",
+    "alcoholContent": "13.5%",
+    "flavor": "风味描述",
+    "origin": "产地"
   }
 }`
 
@@ -126,7 +136,8 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
             cookingTime: recipeData.cookingTime || 25,
             difficulty: recipeData.difficulty || 'medium',
             tips: recipeData.tips || ['注意火候控制', '调味要适中'],
-            nutritionAnalysis: recipeData.nutritionAnalysis || generateFallbackNutrition(ingredients)
+            nutritionAnalysis: recipeData.nutritionAnalysis || generateFallbackNutrition(ingredients),
+            winePairing: recipeData.winePairing || generateFallbackWinePairing(cuisine, ingredients)
         }
 
         return recipe
@@ -185,7 +196,7 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
 
 用户的特殊要求：${customPrompt}
 
-请按照以下JSON格式返回菜谱，包含营养分析：
+请按照以下JSON格式返回菜谱，包含营养分析和酒水搭配：
 {
   "name": "菜品名称",
   "ingredients": ["食材1", "食材2"],
@@ -217,6 +228,16 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
     "balanceAdvice": ["建议搭配蔬菜沙拉增加维生素", "可适量减少盐分"],
     "dietaryTags": ["高蛋白", "低脂"],
     "servingSize": "1人份"
+  },
+  "winePairing": {
+    "name": "推荐酒水名称",
+    "type": "red_wine",
+    "reason": "搭配理由说明",
+    "servingTemperature": "16-18°C",
+    "glassType": "波尔多杯",
+    "alcoholContent": "13.5%",
+    "flavor": "风味描述",
+    "origin": "产地"
   }
 }`
 
@@ -264,7 +285,8 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
             cookingTime: recipeData.cookingTime || 25,
             difficulty: recipeData.difficulty || 'medium',
             tips: recipeData.tips || ['根据个人口味调整', '注意火候控制'],
-            nutritionAnalysis: recipeData.nutritionAnalysis || generateFallbackNutrition(ingredients)
+            nutritionAnalysis: recipeData.nutritionAnalysis || generateFallbackNutrition(ingredients),
+            winePairing: recipeData.winePairing || generateFallbackWinePairing({ id: 'custom', name: '自定义' } as any, ingredients)
         }
 
         return recipe
@@ -322,6 +344,146 @@ const generateFallbackNutrition = (ingredients: string[]): NutritionAnalysis => 
         balanceAdvice: balanceAdvice.length > 0 ? balanceAdvice : ['营养搭配合理，可以放心享用'],
         dietaryTags: dietaryTags.length > 0 ? dietaryTags : ['家常菜'],
         servingSize: '1人份'
+    }
+}
+
+/**
+ * 生成后备酒水搭配数据
+ * @param cuisine 菜系信息
+ * @param ingredients 食材列表
+ * @returns WinePairing
+ */
+const generateFallbackWinePairing = (cuisine: CuisineType, ingredients: string[]): WinePairing => {
+    const hasSpicy = ingredients.some(ing => ['辣椒', '花椒', '胡椒', '姜', '蒜', '洋葱'].some(spice => ing.includes(spice)))
+    const hasMeat = ingredients.some(ing => ['肉', '鸡', '鱼', '虾', '蛋', '牛', '猪', '羊'].some(meat => ing.includes(meat)))
+    const hasSeafood = ingredients.some(ing => ['鱼', '虾', '蟹', '贝', '海带', '紫菜'].some(seafood => ing.includes(seafood)))
+    const isLight = ingredients.some(ing => ['菜', '瓜', '豆腐', '蛋'].some(light => ing.includes(light)))
+
+    // 根据菜系推荐酒水
+    const cuisineWineMap: Record<string, Partial<WinePairing>> = {
+        川菜大师: {
+            name: '德国雷司令',
+            type: 'white_wine',
+            reason: '雷司令的甜度和酸度能很好地平衡川菜的麻辣，清洁口腔',
+            servingTemperature: '8-10°C',
+            glassType: '雷司令杯',
+            alcoholContent: '11-12%',
+            flavor: '清新果香，微甜带酸',
+            origin: '德国莱茵河谷'
+        },
+        粤菜大师: {
+            name: '香槟',
+            type: 'white_wine',
+            reason: '香槟的气泡和酸度与粤菜的清淡鲜美完美搭配',
+            servingTemperature: '6-8°C',
+            glassType: '香槟杯',
+            alcoholContent: '12%',
+            flavor: '清爽气泡，柑橘香气',
+            origin: '法国香槟区'
+        },
+        日式料理大师: {
+            name: '清酒',
+            type: 'sake',
+            reason: '清酒的清淡甘甜与日式料理的鲜美本味相得益彰',
+            servingTemperature: '10-15°C',
+            glassType: '清酒杯',
+            alcoholContent: '15-16%',
+            flavor: '清香甘甜，口感顺滑',
+            origin: '日本'
+        },
+        法式料理大师: {
+            name: '勃艮第红酒',
+            type: 'red_wine',
+            reason: '勃艮第红酒的优雅单宁与法式料理的精致风味完美融合',
+            servingTemperature: '16-18°C',
+            glassType: '勃艮第杯',
+            alcoholContent: '13-14%',
+            flavor: '优雅果香，单宁柔顺',
+            origin: '法国勃艮第'
+        },
+        意式料理大师: {
+            name: '基安帝红酒',
+            type: 'red_wine',
+            reason: '基安帝的酸度和果香与意式料理的番茄和香草完美搭配',
+            servingTemperature: '16-18°C',
+            glassType: '波尔多杯',
+            alcoholContent: '12-13%',
+            flavor: '樱桃果香，酸度适中',
+            origin: '意大利托斯卡纳'
+        },
+        印度料理大师: {
+            name: '拉西酸奶饮',
+            type: 'non_alcoholic',
+            reason: '拉西的奶香和清凉感能很好地缓解印度香料的辛辣',
+            servingTemperature: '4-6°C',
+            glassType: '高脚杯',
+            alcoholContent: '0%',
+            flavor: '奶香浓郁，清凉甘甜',
+            origin: '印度'
+        }
+    }
+
+    // 获取菜系推荐，如果没有则根据食材特点推荐
+    let winePairing = cuisineWineMap[cuisine.name] || {}
+
+    // 如果没有菜系特定推荐，根据食材特点推荐
+    if (!winePairing.name) {
+        if (hasSpicy) {
+            winePairing = {
+                name: '德国雷司令',
+                type: 'white_wine',
+                reason: '甜白酒能很好地平衡辛辣食物，清洁口腔',
+                servingTemperature: '8-10°C',
+                glassType: '白酒杯',
+                alcoholContent: '11-12%',
+                flavor: '果香浓郁，微甜清新',
+                origin: '德国'
+            }
+        } else if (hasSeafood) {
+            winePairing = {
+                name: '长相思白酒',
+                type: 'white_wine',
+                reason: '白酒的酸度和矿物质感与海鲜的鲜味完美搭配',
+                servingTemperature: '8-10°C',
+                glassType: '白酒杯',
+                alcoholContent: '12-13%',
+                flavor: '清新草本，柑橘香气',
+                origin: '新西兰'
+            }
+        } else if (hasMeat && !isLight) {
+            winePairing = {
+                name: '赤霞珠红酒',
+                type: 'red_wine',
+                reason: '红酒的单宁与肉类的蛋白质结合，提升整体风味',
+                servingTemperature: '16-18°C',
+                glassType: '波尔多杯',
+                alcoholContent: '13-14%',
+                flavor: '浓郁果香，单宁丰富',
+                origin: '法国波尔多'
+            }
+        } else {
+            winePairing = {
+                name: '绿茶',
+                type: 'tea',
+                reason: '绿茶的清香淡雅与清淡菜品相得益彰，有助消化',
+                servingTemperature: '70-80°C',
+                glassType: '茶杯',
+                alcoholContent: '0%',
+                flavor: '清香淡雅，回甘甜美',
+                origin: '中国'
+            }
+        }
+    }
+
+    return {
+        name: winePairing.name || '绿茶',
+        type: winePairing.type || 'tea',
+        reason: winePairing.reason || '经典搭配，有助消化',
+        servingTemperature: winePairing.servingTemperature || '常温',
+        glassType: winePairing.glassType,
+        alcoholContent: winePairing.alcoholContent,
+        flavor: winePairing.flavor || '清香怡人',
+        origin: winePairing.origin
     }
 }
 

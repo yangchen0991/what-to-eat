@@ -83,6 +83,11 @@
                 <NutritionAnalysis :nutritionAnalysis="recipe.nutritionAnalysis" />
             </div>
 
+            <!-- 酒水搭配 -->
+            <div v-if="isExpanded" class="mb-4">
+                <WinePairing :winePairing="recipe.winePairing" />
+            </div>
+
             <!-- 效果图区域 -->
             <div class="mt-4 pt-4 border-t border-gray-200">
                 <div class="flex items-center justify-between mb-3">
@@ -134,6 +139,7 @@ import { computed, ref, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
 import { generateRecipeImage, type GeneratedImage } from '@/services/imageService'
 import NutritionAnalysis from './NutritionAnalysis.vue'
+import WinePairing from './WinePairing.vue'
 
 interface Props {
     recipe: Recipe
