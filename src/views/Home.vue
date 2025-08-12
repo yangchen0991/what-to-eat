@@ -182,7 +182,9 @@
 
         <!-- 底部 -->
         <footer class="bg-white border-2 border-black mx-4 mb-4 rounded-lg p-4 text-center">
-            <p class="text-sm text-gray-600">© 2025 一饭封神 | Made with ❤️ and 🤖</p>
+            <p class="text-sm text-gray-600">
+                © 2025 一饭封神 | <a href="https://github.com/liu-ziting/" target="_blank" class="text-retro-blue hover:underline">Powered by Liuziting</a>
+            </p>
         </footer>
     </div>
 </template>
