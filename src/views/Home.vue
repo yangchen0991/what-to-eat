@@ -6,8 +6,8 @@
                 <button class="bg-white/20 hover:bg-white/30 rounded-full px-3 py-1 text-sm text-white transition-colors">中文</button>
             </div> -->
             <div class="text-center py-8">
-                <h1 class="text-5xl font-black text-yellow-300 mb-2 tracking-wider">一饭封神</h1>
-                <p class="text-white text-lg font-medium">UPLOAD YOUR INGREDIENTS | SPIT OUT RECIPES!</p>
+                <h1 class="text-5xl font-black text-yellow-300 mb-2 tracking-wider md:text-[5rem] font-['PingFangLiuAngLeTianTi']">一饭封神</h1>
+                <p class="text-white text-lg font-medium text-[12px] md:text-[1.5rem]">LEGENDARY STATUS FROM A SINGLE MEAL!</p>
             </div>
         </header>
 

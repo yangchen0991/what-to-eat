@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
 
+@font-face {
+    font-family: 'PingFangLiuAngLeTianTi';
+    src: url('/fonts/PingFangLiuAngLeTianTi-2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,26 +20,32 @@ body {
 
 /* 自定义动画 */
 @keyframes cooking {
+
     0%,
     100% {
         transform: translateY(0px) rotate(0deg);
     }
+
     25% {
         transform: translateY(-5px) rotate(2deg);
     }
+
     50% {
         transform: translateY(-3px) rotate(-1deg);
     }
+
     75% {
         transform: translateY(-7px) rotate(1deg);
     }
 }
 
 @keyframes fire {
+
     0%,
     100% {
         transform: scaleY(1) scaleX(1);
     }
+
     50% {
         transform: scaleY(1.1) scaleX(0.95);
     }
@@ -42,6 +56,7 @@ body {
         opacity: 0.7;
         transform: translateY(0px) scale(1);
     }
+
     100% {
         opacity: 0;
         transform: translateY(-20px) scale(1.2);
@@ -49,10 +64,12 @@ body {
 }
 
 @keyframes pulse-glow {
+
     0%,
     100% {
         box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
     }
+
     50% {
         box-shadow: 0 0 30px rgba(249, 115, 22, 0.6);
     }
