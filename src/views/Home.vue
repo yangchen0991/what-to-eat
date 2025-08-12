@@ -2,9 +2,9 @@
     <div class="min-h-screen bg-yellow-400">
         <!-- 头部 - 粉色区域 -->
         <header class="bg-pink-400 border-4 border-black mx-4 mt-4 rounded-lg relative">
-            <div class="absolute top-2 right-2">
+            <!-- <div class="absolute top-2 right-2">
                 <button class="bg-white/20 hover:bg-white/30 rounded-full px-3 py-1 text-sm text-white transition-colors">中文</button>
-            </div>
+            </div> -->
             <div class="text-center py-8">
                 <h1 class="text-5xl font-black text-yellow-300 mb-2 tracking-wider">一饭封神</h1>
                 <p class="text-white text-lg font-medium">UPLOAD YOUR INGREDIENTS | SPIT OUT RECIPES!</p>
@@ -27,7 +27,7 @@
             </div>
         </div> -->
 
-        <div class="max-w-4xl mx-auto px-4 py-6">
+        <div class="max-w-5xl mx-auto px-4 py-6">
             <!-- 步骤1: 输入食材 -->
             <div class="mb-6">
                 <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
@@ -99,14 +99,14 @@
                     <div class="bg-green-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                         <span class="font-bold">2. 选择菜系</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6 h-full">
                         <div v-if="customPrompt.trim()" class="text-center py-8 text-gray-500">
                             <p class="text-sm">已设置自定义要求，将忽略菜系选择</p>
                             <button @click="customPrompt = ''" class="text-blue-600 hover:text-blue-700 underline text-sm mt-2">清除自定义要求以选择菜系</button>
                         </div>
                         <div v-else class="grid grid-cols-2 gap-3">
                             <button
-                                v-for="cuisine in cuisines.slice(0, 6)"
+                                v-for="cuisine in cuisines.slice(0, 10)"
                                 :key="cuisine.id"
                                 @click="selectCuisine(cuisine)"
                                 :class="[
@@ -125,21 +125,20 @@
                     <div class="bg-blue-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                         <span class="font-bold">3. 或自定义要求</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
-                        <div class="mb-3">
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6 h-full flex flex-col">
+                        <div class="flex-1">
                             <label class="block text-sm font-bold text-dark-800 mb-2">描述你的需求：</label>
                             <textarea
                                 v-model="customPrompt"
                                 placeholder="例如：做一道清淡的汤，适合老人食用..."
-                                class="w-full p-3 border-2 border-gray-300 rounded-lg text-sm resize-none focus:outline-none focus:border-blue-400"
-                                rows="4"
+                                class="w-full p-4 border-2 border-gray-300 rounded-lg text-base resize-none focus:outline-none focus:border-blue-400 h-40"
                             ></textarea>
                             <div v-if="customPrompt.trim()" class="mt-2 flex justify-between items-center">
                                 <span class="text-xs text-green-600">✓ 已设置自定义要求</span>
                                 <button @click="customPrompt = ''" class="text-xs text-red-600 hover:text-red-700 underline">清除</button>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500">越具体越好！</p>
+                        <p class="text-xs text-gray-500 mt-auto">越具体越好！</p>
                     </div>
                 </div>
             </div>
@@ -150,7 +149,7 @@
             </div>
 
             <!-- 步骤4: 结果 -->
-            <div>
+            <div ref="resultsSection">
                 <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                     <span class="font-bold">4. 菜谱结果</span>
                 </div>
@@ -203,6 +202,7 @@ const customPrompt = ref('')
 const recipes = ref<Recipe[]>([])
 const isLoading = ref(false)
 const loadingText = ref('大师正在挑选食材...')
+const resultsSection = ref<HTMLElement | null>(null)
 
 // 加载文字轮播
 const loadingTexts = [
@@ -252,6 +252,14 @@ const generateRecipes = async () => {
 
     isLoading.value = true
     recipes.value = []
+
+    // 滚动到结果区域
+    if (resultsSection.value) {
+        resultsSection.value.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        })
+    }
 
     // 开始加载文字轮播
     let textIndex = 0

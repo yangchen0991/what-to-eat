@@ -77,13 +77,57 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- 效果图区域 -->
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-sm font-bold text-dark-800 flex items-center gap-1">🖼️ 菜品效果图</h4>
+                    <button
+                        @click="generateImage"
+                        :disabled="isGeneratingImage"
+                        class="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white px-3 py-1 rounded text-xs font-medium border border-black transition-all duration-200 disabled:cursor-not-allowed"
+                    >
+                        <span class="flex items-center gap-1">
+                            <template v-if="isGeneratingImage">
+                                <div class="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full"></div>
+                                生成中...
+                            </template>
+                            <template v-else> ✨ 生成效果图 </template>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- 加载状态 -->
+                <div v-if="isGeneratingImage" class="bg-gray-50 border-2 border-gray-300 rounded-lg p-6 text-center">
+                    <div class="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-3"></div>
+                    <h5 class="text-sm font-bold text-dark-800 mb-1">AI画师正在创作中...</h5>
+                    <p class="text-gray-600 text-xs">{{ imageLoadingText }}</p>
+                </div>
+
+                <!-- 生成的图片 -->
+                <div v-else-if="generatedImage" class="mb-3">
+                    <img :src="generatedImage.url" :alt="`${recipe.name}效果图`" class="w-full h-48 object-cover rounded-lg border-2 border-black" @error="handleImageError" />
+                </div>
+
+                <!-- 错误提示 -->
+                <div v-else-if="imageError" class="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded text-xs">
+                    {{ imageError }}
+                </div>
+
+                <!-- 空状态 -->
+                <div v-else class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <div class="text-gray-400 text-2xl mb-2">📷</div>
+                    <p class="text-gray-500 text-xs">点击上方按钮生成菜品效果图</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
+import { generateRecipeImage, type GeneratedImage } from '@/services/imageService'
 
 interface Props {
     recipe: Recipe
@@ -91,6 +135,23 @@ interface Props {
 
 const props = defineProps<Props>()
 const isExpanded = ref(false)
+const isGeneratingImage = ref(false)
+const generatedImage = ref<GeneratedImage | null>(null)
+const imageError = ref<string>('')
+const imageLoadingText = ref('正在构思画面布局...')
+
+// 图片生成加载文字轮播
+const imageLoadingTexts = [
+    '正在构思画面布局...',
+    '正在调配色彩搭配...',
+    '正在绘制食材细节...',
+    '正在优化光影效果...',
+    '正在精修画面质感...',
+    '正在添加最后润色...',
+    '精美效果图即将完成...'
+]
+
+let imageLoadingInterval: NodeJS.Timeout | null = null
 
 const difficultyText = computed(() => {
     const difficultyMap = {
@@ -104,6 +165,45 @@ const difficultyText = computed(() => {
 const toggleExpanded = () => {
     isExpanded.value = !isExpanded.value
 }
+
+const generateImage = async () => {
+    if (isGeneratingImage.value) return
+
+    isGeneratingImage.value = true
+    imageError.value = ''
+
+    // 开始图片生成加载文字轮播
+    let textIndex = 0
+    imageLoadingInterval = setInterval(() => {
+        imageLoadingText.value = imageLoadingTexts[textIndex]
+        textIndex = (textIndex + 1) % imageLoadingTexts.length
+    }, 2000)
+
+    try {
+        const image = await generateRecipeImage(props.recipe)
+        generatedImage.value = image
+    } catch (error) {
+        console.error('生成图片失败:', error)
+        imageError.value = '生成图片失败，请稍后重试'
+    } finally {
+        isGeneratingImage.value = false
+        if (imageLoadingInterval) {
+            clearInterval(imageLoadingInterval)
+            imageLoadingInterval = null
+        }
+    }
+}
+
+const handleImageError = () => {
+    imageError.value = '图片加载失败'
+    generatedImage.value = null
+}
+
+onUnmounted(() => {
+    if (imageLoadingInterval) {
+        clearInterval(imageLoadingInterval)
+    }
+})
 </script>
 
 <style scoped>

@@ -3,9 +3,14 @@ import type { Recipe, CuisineType } from '@/types'
 
 // AI服务配置 - 智谱AI
 const AI_CONFIG = {
-    baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    apiKey: 'a835b9f6866d48ec956d341418df8a50.NuhlKYn58EkCb5iP',
-    model: 'glm-4-flash-250414',
+    // baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
+    // apiKey: 'a835b9f6866d48ec956d341418df8a50.NuhlKYn58EkCb5iP',
+    // model: 'glm-4-flash-250414',
+    // temperature: 0.7,
+    // timeout: 30000
+    baseURL: 'https://api.deepseek.com/v1/',
+    apiKey: 'sk-78d4fed678fa4a5ebc5f7beac54b1a78',
+    model: 'deepseek-chat',
     temperature: 0.7,
     timeout: 30000
 }
