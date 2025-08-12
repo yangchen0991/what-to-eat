@@ -69,6 +69,51 @@
                             />
                         </div>
 
+                        <!-- 快速选择食材 -->
+                        <div class="mt-4">
+                            <button @click="toggleIngredientPicker" class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
+                                <span class="transform transition-transform duration-200" :class="{ 'rotate-90': showIngredientPicker }">▶</span>
+                                快速选择食材
+                            </button>
+
+                            <div v-if="showIngredientPicker" class="mt-3 p-4 bg-gray-50 border-2 border-gray-200 rounded-lg">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div v-for="category in ingredientCategories" :key="category.id" class="border border-gray-300 rounded-lg overflow-hidden">
+                                        <!-- 分类标题 -->
+                                        <button
+                                            @click="toggleCategory(category.id)"
+                                            :class="category.color"
+                                            class="w-full px-3 py-2 text-sm font-medium flex items-center justify-between hover:opacity-80 transition-opacity"
+                                        >
+                                            <span class="flex items-center gap-1">
+                                                <span>{{ category.icon }}</span>
+                                                <span>{{ category.name }}</span>
+                                            </span>
+                                            <span class="transform transition-transform duration-200 text-xs" :class="{ 'rotate-90': expandedCategories.has(category.id) }">▶</span>
+                                        </button>
+
+                                        <!-- 食材列表 -->
+                                        <div v-if="expandedCategories.has(category.id)" class="p-2 bg-white">
+                                            <div class="flex flex-wrap gap-1">
+                                                <button
+                                                    v-for="item in category.items"
+                                                    :key="item"
+                                                    @click="quickAddIngredient(item)"
+                                                    :disabled="ingredients.includes(item) || ingredients.length >= 10"
+                                                    class="px-2 py-1 text-xs rounded border border-gray-300 hover:bg-gray-100 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                                                    :class="{ 'bg-yellow-200 border-yellow-400': ingredients.includes(item) }"
+                                                >
+                                                    {{ item }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 text-xs text-gray-500 text-center">点击食材快速添加 • 已选择 {{ ingredients.length }}/10</div>
+                            </div>
+                        </div>
+
                         <!-- 生成按钮 -->
                         <div class="text-center pt-4">
                             <button
@@ -161,6 +206,22 @@
                         <p class="text-gray-600">{{ loadingText }}</p>
                     </div>
 
+                    <!-- 错误状态 -->
+                    <div v-else-if="errorMessage" class="text-center py-12">
+                        <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                            <span class="text-red-500 text-2xl">⚠️</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-red-600 mb-2">生成失败</h3>
+                        <p class="text-red-500 mb-4">{{ errorMessage }}</p>
+                        <button
+                            @click="generateRecipes"
+                            :disabled="ingredients.length === 0"
+                            class="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium border-2 border-black transition-all duration-200 disabled:cursor-not-allowed"
+                        >
+                            🔄 重新生成
+                        </button>
+                    </div>
+
                     <!-- 空状态 -->
                     <div v-else-if="recipes.length === 0" class="text-center py-12">
                         <div class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -192,6 +253,7 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue'
 import { cuisines } from '@/config/cuisines'
+import { ingredientCategories } from '@/config/ingredients'
 import RecipeCard from '@/components/RecipeCard.vue'
 import { generateMultipleRecipes, generateCustomRecipe } from '@/services/aiService'
 import type { Recipe, CuisineType, NutritionAnalysis } from '@/types'
@@ -205,6 +267,9 @@ const recipes = ref<Recipe[]>([])
 const isLoading = ref(false)
 const loadingText = ref('大师正在挑选食材...')
 const resultsSection = ref<HTMLElement | null>(null)
+const errorMessage = ref('')
+const showIngredientPicker = ref(false)
+const expandedCategories = ref<Set<string>>(new Set())
 
 // 加载文字轮播
 const loadingTexts = [
@@ -236,6 +301,27 @@ const removeIngredient = (ingredient: string) => {
     }
 }
 
+// 快速添加食材
+const quickAddIngredient = (ingredient: string) => {
+    if (!ingredients.value.includes(ingredient) && ingredients.value.length < 10) {
+        ingredients.value.push(ingredient)
+    }
+}
+
+// 切换食材选择器显示
+const toggleIngredientPicker = () => {
+    showIngredientPicker.value = !showIngredientPicker.value
+}
+
+// 切换分类展开状态
+const toggleCategory = (categoryId: string) => {
+    if (expandedCategories.value.has(categoryId)) {
+        expandedCategories.value.delete(categoryId)
+    } else {
+        expandedCategories.value.add(categoryId)
+    }
+}
+
 // 选择菜系
 const selectCuisine = (cuisine: CuisineType) => {
     const index = selectedCuisines.value.indexOf(cuisine.id)
@@ -254,6 +340,7 @@ const generateRecipes = async () => {
 
     isLoading.value = true
     recipes.value = []
+    errorMessage.value = ''
 
     // 滚动到结果区域
     if (resultsSection.value) {
@@ -293,8 +380,8 @@ const generateRecipes = async () => {
         }
     } catch (error) {
         console.error('生成菜谱失败:', error)
-        // 如果AI调用失败，使用模拟数据作为后备
-        await simulateAICall()
+        // 显示错误信息
+        errorMessage.value = error instanceof Error ? error.message : 'AI生成菜谱失败，请稍后重试'
     } finally {
         isLoading.value = false
         if (loadingInterval) {
