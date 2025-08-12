@@ -25,6 +25,7 @@ export interface Recipe {
     cookingTime: number
     difficulty: 'easy' | 'medium' | 'hard'
     tips: string[]
+    nutritionAnalysis?: NutritionAnalysis // 营养分析
 }
 
 // 制作步骤
@@ -34,6 +35,29 @@ export interface RecipeStep {
     time?: number
     temperature?: string
     image?: string
+}
+
+// 营养信息
+export interface NutritionInfo {
+    calories: number // 卡路里
+    protein: number // 蛋白质 (g)
+    carbs: number // 碳水化合物 (g)
+    fat: number // 脂肪 (g)
+    fiber: number // 膳食纤维 (g)
+    sodium: number // 钠 (mg)
+    sugar: number // 糖 (g)
+    vitaminC?: number // 维生素C (mg)
+    calcium?: number // 钙 (mg)
+    iron?: number // 铁 (mg)
+}
+
+// 营养分析
+export interface NutritionAnalysis {
+    nutrition: NutritionInfo
+    healthScore: number // 健康评分 (1-10)
+    balanceAdvice: string[] // 营养均衡建议
+    dietaryTags: string[] // 饮食标签，如"低脂"、"高蛋白"等
+    servingSize: string // 建议份量
 }
 
 // AI响应类型

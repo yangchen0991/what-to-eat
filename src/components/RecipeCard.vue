@@ -66,7 +66,7 @@
             </div>
 
             <!-- 烹饪技巧 -->
-            <div v-if="recipe.tips && recipe.tips.length > 0 && isExpanded">
+            <div v-if="recipe.tips && recipe.tips.length > 0 && isExpanded" class="mb-4">
                 <h4 class="text-sm font-bold text-dark-800 mb-2 flex items-center gap-1">💡 烹饪技巧</h4>
                 <div class="bg-yellow-100 border-l-4 border-yellow-400 p-3 rounded-r">
                     <ul class="space-y-1">
@@ -76,6 +76,11 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+
+            <!-- 营养分析 -->
+            <div v-if="isExpanded" class="mb-4">
+                <NutritionAnalysis :nutritionAnalysis="recipe.nutritionAnalysis" />
             </div>
 
             <!-- 效果图区域 -->
@@ -128,6 +133,7 @@
 import { computed, ref, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
 import { generateRecipeImage, type GeneratedImage } from '@/services/imageService'
+import NutritionAnalysis from './NutritionAnalysis.vue'
 
 interface Props {
     recipe: Recipe

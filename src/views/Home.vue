@@ -192,7 +192,7 @@ import { ref, onUnmounted } from 'vue'
 import { cuisines } from '@/config/cuisines'
 import RecipeCard from '@/components/RecipeCard.vue'
 import { generateMultipleRecipes, generateCustomRecipe } from '@/services/aiService'
-import type { Recipe, CuisineType } from '@/types'
+import type { Recipe, CuisineType, NutritionAnalysis } from '@/types'
 
 // 响应式数据
 const ingredients = ref<string[]>([])
@@ -279,9 +279,9 @@ const generateRecipes = async () => {
             let selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id))
 
             if (selectedCuisineObjects.length === 0) {
-                // 随机选择2-3个菜系
+                // 随机选择2个菜系
                 const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
-                selectedCuisineObjects = shuffled.slice(0, Math.floor(Math.random() * 2) + 2)
+                selectedCuisineObjects = shuffled.slice(0, 2)
             }
 
             // 调用AI服务生成菜谱
@@ -309,9 +309,9 @@ const simulateAICall = async () => {
             // 获取要使用的菜系
             let cuisinesToUse = cuisines.filter(c => selectedCuisines.value.includes(c.id))
             if (cuisinesToUse.length === 0) {
-                // 随机选择2-3个菜系
+                // 随机选择2个菜系
                 const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
-                cuisinesToUse = shuffled.slice(0, Math.floor(Math.random() * 2) + 2)
+                cuisinesToUse = shuffled.slice(0, 2)
             }
 
             // 检查是否有自定义提示词
@@ -333,7 +333,8 @@ const simulateAICall = async () => {
                         ],
                         cookingTime: 25,
                         difficulty: 'medium',
-                        tips: ['根据个人喜好调整口味', '注意食材的新鲜度', '掌握好火候']
+                        tips: ['根据个人喜好调整口味', '注意食材的新鲜度', '掌握好火候'],
+                        nutritionAnalysis: generateMockNutrition(ingredients.value)
                     }
                 ]
             } else {
@@ -353,7 +354,8 @@ const simulateAICall = async () => {
                         ],
                         cookingTime: 22,
                         difficulty: 'medium',
-                        tips: ['火候要掌握好，避免炒糊', '调料要适量，突出食材本味', '炒制过程中要勤翻动']
+                        tips: ['火候要掌握好，避免炒糊', '调料要适量，突出食材本味', '炒制过程中要勤翻动'],
+                        nutritionAnalysis: generateMockNutrition(ingredients.value)
                     }
                 })
             }
@@ -362,6 +364,51 @@ const simulateAICall = async () => {
             resolve(mockRecipes)
         }, 3000)
     })
+}
+
+// 生成模拟营养分析数据
+const generateMockNutrition = (ingredients: string[]): NutritionAnalysis => {
+    // 基于食材数量和类型估算营养成分
+    const baseCalories = ingredients.length * 50 + Math.floor(Math.random() * 100) + 200
+    const hasVegetables = ingredients.some(ing => ['菜', '瓜', '豆', '萝卜', '白菜', '菠菜', '西红柿', '黄瓜', '茄子', '土豆'].some(veg => ing.includes(veg)))
+    const hasMeat = ingredients.some(ing => ['肉', '鸡', '鱼', '虾', '蛋', '牛', '猪', '羊'].some(meat => ing.includes(meat)))
+    const hasGrains = ingredients.some(ing => ['米', '面', '粉', '饭', '面条', '馒头'].some(grain => ing.includes(grain)))
+
+    // 生成饮食标签
+    const dietaryTags: string[] = []
+    if (hasVegetables && !hasMeat) dietaryTags.push('素食')
+    if (hasMeat) dietaryTags.push('高蛋白')
+    if (hasVegetables) dietaryTags.push('富含维生素')
+    if (!hasGrains) dietaryTags.push('低碳水')
+    if (baseCalories < 300) dietaryTags.push('低卡路里')
+
+    // 生成营养建议
+    const balanceAdvice: string[] = []
+    if (!hasVegetables) balanceAdvice.push('建议搭配新鲜蔬菜增加维生素和膳食纤维')
+    if (!hasMeat && !ingredients.some(ing => ['豆', '蛋', '奶'].some(protein => ing.includes(protein)))) {
+        balanceAdvice.push('建议增加蛋白质来源，如豆类或蛋类')
+    }
+    if (hasGrains && hasMeat) balanceAdvice.push('营养搭配均衡，适合日常食用')
+    if (ingredients.length > 5) balanceAdvice.push('食材丰富，营养全面')
+
+    return {
+        nutrition: {
+            calories: baseCalories,
+            protein: hasMeat ? 20 + Math.floor(Math.random() * 15) : 8 + Math.floor(Math.random() * 8),
+            carbs: hasGrains ? 35 + Math.floor(Math.random() * 20) : 15 + Math.floor(Math.random() * 10),
+            fat: hasMeat ? 12 + Math.floor(Math.random() * 8) : 5 + Math.floor(Math.random() * 5),
+            fiber: hasVegetables ? 6 + Math.floor(Math.random() * 4) : 2 + Math.floor(Math.random() * 2),
+            sodium: 600 + Math.floor(Math.random() * 400),
+            sugar: 3 + Math.floor(Math.random() * 5),
+            vitaminC: hasVegetables ? 20 + Math.floor(Math.random() * 30) : undefined,
+            calcium: hasMeat || ingredients.some(ing => ['奶', '豆'].some(ca => ing.includes(ca))) ? 100 + Math.floor(Math.random() * 100) : undefined,
+            iron: hasMeat ? 2 + Math.floor(Math.random() * 3) : undefined
+        },
+        healthScore: Math.floor(Math.random() * 3) + (hasVegetables ? 6 : 4) + (hasMeat ? 1 : 0),
+        balanceAdvice: balanceAdvice.length > 0 ? balanceAdvice : ['营养搭配合理，可以放心享用'],
+        dietaryTags: dietaryTags.length > 0 ? dietaryTags : ['家常菜'],
+        servingSize: '1人份'
+    }
 }
 
 onUnmounted(() => {
