@@ -7,7 +7,7 @@
                     <h3 class="text-lg font-bold mb-1 line-clamp-2">{{ recipe.name }}</h3>
                     <div class="flex items-center gap-3 text-sm">
                         <span class="bg-white/20 px-2 py-1 rounded text-xs"> 👨‍🍳 {{ recipe.cuisine }} </span>
-                        <span>⏱️ {{ recipe.cookingTime }}分钟</span>
+                        <span>⏱️ {{ formatTime(recipe.cookingTime) }}</span>
                         <span>📊 {{ difficultyText }}</span>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
                         <div class="flex-1">
                             <p class="text-dark-800 mb-1 text-sm">{{ step.description }}</p>
                             <div v-if="step.time || step.temperature" class="flex gap-2 text-xs text-gray-600">
-                                <span v-if="step.time" class="bg-white px-2 py-1 rounded border"> ⏱️ {{ step.time }}分钟 </span>
+                                <span v-if="step.time" class="bg-white px-2 py-1 rounded border"> ⏱️ {{ formatTime(step.time) }} </span>
                                 <span v-if="step.temperature" class="bg-white px-2 py-1 rounded border"> 🌡️ {{ step.temperature }} </span>
                             </div>
                         </div>
@@ -180,7 +180,7 @@
 
                 <!-- 生成的图片 -->
                 <div v-else-if="generatedImage" class="mb-3">
-                    <img :src="generatedImage.url" :alt="`${recipe.name}效果图`" class="w-full h-48 object-cover rounded-lg border-2 border-black" @error="handleImageError" />
+                    <img :src="generatedImage.url" :alt="`${recipe.name}效果图`" class="w-full h-[20rem] object-cover rounded-lg border-2 border-black" @error="handleImageError" />
                 </div>
 
                 <!-- 错误提示 -->
@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- 空状态 -->
-                <div v-else class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <div v-else class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-10 text-center">
                     <div class="text-gray-400 text-2xl mb-2">📷</div>
                     <p class="text-gray-500 text-xs">点击上方按钮生成菜品效果图</p>
                 </div>
@@ -266,6 +266,33 @@ const difficultyText = computed(() => {
     }
     return difficultyMap[props.recipe.difficulty] || '中等'
 })
+
+// 格式化时间显示
+const formatTime = (minutes: number): string => {
+    if (minutes < 60) {
+        return `${minutes}分钟`
+    }
+
+    const days = Math.floor(minutes / (24 * 60))
+    const hours = Math.floor((minutes % (24 * 60)) / 60)
+    const remainingMinutes = minutes % 60
+
+    let result = ''
+
+    if (days > 0) {
+        result += `${days}天`
+    }
+
+    if (hours > 0) {
+        result += `${hours}小时`
+    }
+
+    if (remainingMinutes > 0) {
+        result += `${remainingMinutes}分钟`
+    }
+
+    return result || '0分钟'
+}
 
 const toggleExpanded = () => {
     isExpanded.value = !isExpanded.value

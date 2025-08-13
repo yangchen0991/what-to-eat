@@ -33,7 +33,7 @@
                 <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                     <span class="font-bold">1. 输入食材</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 md:pb-10">
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span class="text-white text-2xl">🥬</span>
@@ -125,46 +125,27 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- 生成按钮 -->
-                        <div class="text-center pt-4">
-                            <button
-                                @click="generateRecipes"
-                                :disabled="ingredients.length === 0 || isLoading"
-                                class="sm:w-auto w-full bg-dark-800 hover:bg-dark-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-lg font-bold text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
-                            >
-                                <span class="flex items-center gap-2 justify-center">
-                                    <template v-if="isLoading">
-                                        <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                                        <span v-if="recipes.length === 0">生成中...</span>
-                                        <span v-else>{{ loadingText }}</span>
-                                    </template>
-                                    <template v-else> ✨ {{ customPrompt.trim() ? '按要求生成' : '交给大师' }} </template>
-                                </span>
-                            </button>
-                            <p v-if="customPrompt.trim()" class="text-xs text-gray-600 mt-2">将根据您的自定义要求生成菜谱</p>
-                            <p v-else-if="selectedCuisines.length > 0" class="text-xs text-gray-600 mt-2">将生成 {{ selectedCuisines.length }} 个菜系的菜谱</p>
-                            <p v-else class="text-xs text-gray-600 mt-2">将随机选择菜系生成菜谱</p>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 步骤2和3: 选择风格 OR 自定义提示 -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                <!-- 选择菜系 -->
+            <!-- 步骤2和3: 左右布局 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- 步骤2: 选择菜系 -->
                 <div>
                     <div class="bg-green-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                         <span class="font-bold">2. 选择菜系</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8 h-full">
-                        <div v-if="customPrompt.trim()" class="text-center py-8 text-gray-500">
-                            <p class="text-sm">已设置自定义要求，将忽略菜系选择</p>
-                            <button @click="customPrompt = ''" class="text-blue-600 hover:text-blue-700 underline text-sm mt-2">清除自定义要求以选择菜系</button>
-                        </div>
-                        <div v-else>
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
+                        <div>
+                            <!-- 自定义要求提示 -->
+                            <div v-if="customPrompt.trim()" class="mb-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg text-center">
+                                <p class="text-sm text-blue-700 mb-2">✓ 已设置自定义要求，将优先使用自定义要求生成菜谱</p>
+                                <button @click="clearCustomPrompt" class="text-blue-600 hover:text-blue-700 underline text-sm">清除自定义要求以选择菜系</button>
+                            </div>
+
                             <!-- 中华八大菜系 -->
-                            <div class="mb-4">
+                            <div class="mb-4" :class="{ 'opacity-50': customPrompt.trim() }">
                                 <h5 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">🇨🇳 中华八大菜系</h5>
                                 <div class="grid grid-cols-3 gap-2">
                                     <button
@@ -184,7 +165,7 @@
                             </div>
 
                             <!-- 国际菜系 -->
-                            <div>
+                            <div class="mb-6" :class="{ 'opacity-50': customPrompt.trim() }">
                                 <h5 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">🌍 国际菜系</h5>
                                 <div class="grid grid-cols-3 gap-2">
                                     <button
@@ -203,145 +184,212 @@
                                     </button>
                                 </div>
                             </div>
+
+                            <!-- 或自定义要求 -->
+                            <div class="border-t border-gray-200 pt-4">
+                                <!-- 折叠按钮 -->
+                                <button
+                                    @click="showCustomPrompt = !showCustomPrompt"
+                                    class="flex items-center justify-between w-full p-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-blue-50 rounded-lg border-2 border-blue-200 hover:border-blue-300 transition-all duration-200 mb-3"
+                                    :class="{ 'bg-blue-50 border-blue-300': showCustomPrompt || customPrompt.trim() }"
+                                >
+                                    <span class="flex items-center gap-2">
+                                        <span class="text-base">💭</span>
+                                        <span class="font-medium">或自定义要求</span>
+                                        <span v-if="customPrompt.trim()" class="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">已设置</span>
+                                    </span>
+                                    <span class="transform transition-transform duration-200 text-gray-400" :class="{ 'rotate-180': showCustomPrompt }">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+
+                                <!-- 自定义要求内容区域 -->
+                                <div v-if="showCustomPrompt" class="bg-blue-100 border-2 border-blue-300 rounded-lg p-3">
+                                    <!-- 快速预设选项 -->
+                                    <div class="mb-3">
+                                        <button
+                                            @click="togglePresetPicker"
+                                            class="flex items-center justify-between w-full p-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 mb-2"
+                                        >
+                                            <span class="flex items-center gap-2">
+                                                <span class="text-base">⚡</span>
+                                                <span class="font-medium">快速预设</span>
+                                            </span>
+                                            <span class="transform transition-transform duration-200 text-gray-400" :class="{ 'rotate-180': showPresetPicker }">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </span>
+                                        </button>
+
+                                        <div v-if="showPresetPicker" class="space-y-2 mb-3 p-2 bg-white/70 rounded-lg border border-blue-200 shadow-sm max-h-40 overflow-y-auto">
+                                            <!-- 场景预设 -->
+                                            <div>
+                                                <h6 class="text-xs font-medium text-gray-700 mb-1 flex items-center gap-1">🎯 场景需求</h6>
+                                                <div class="flex flex-wrap gap-1">
+                                                    <button
+                                                        v-for="preset in scenePresets"
+                                                        :key="preset.id"
+                                                        @click="applyPreset(preset.prompt)"
+                                                        class="px-2 py-1 text-xs font-medium rounded-full border border-blue-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200"
+                                                    >
+                                                        {{ preset.name }}
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- 口味偏好 -->
+                                            <div>
+                                                <h6 class="text-xs font-medium text-gray-700 mb-1 flex items-center gap-1">👅 口味偏好</h6>
+                                                <div class="flex flex-wrap gap-1">
+                                                    <button
+                                                        v-for="preset in tastePresets"
+                                                        :key="preset.id"
+                                                        @click="applyPreset(preset.prompt)"
+                                                        class="px-2 py-1 text-xs font-medium rounded-full border border-green-300 hover:border-green-400 hover:bg-green-50 hover:text-green-700 transition-all duration-200"
+                                                    >
+                                                        {{ preset.name }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 自定义输入区域 -->
+                                    <div>
+                                        <label class="block text-sm font-bold text-blue-800 mb-2">自由描述：</label>
+                                        <textarea
+                                            v-model="customPrompt"
+                                            @input="limitCustomPrompt"
+                                            placeholder="例如：做一道清淡的汤，适合老人食用，不要太咸..."
+                                            class="w-full p-2 border-2 border-blue-300 rounded-lg text-sm resize-none focus:outline-none focus:border-blue-500 h-20"
+                                            maxlength="200"
+                                        ></textarea>
+                                        <div v-if="customPrompt.trim()" class="mt-1 flex justify-between items-center">
+                                            <span class="text-xs text-green-600">✓ 已设置自定义要求</span>
+                                            <button @click="customPrompt = ''" class="text-xs text-red-600 hover:text-red-700 underline">清除</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- 随机灵感 -->
+                                    <div class="mt-2">
+                                        <button
+                                            @click="getRandomInspiration"
+                                            class="w-full py-1.5 px-2 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform hover:scale-105"
+                                        >
+                                            ✨ 随机灵感
+                                        </button>
+                                    </div>
+
+                                    <!-- 底部提示 -->
+                                    <div class="mt-2 pt-2 border-t border-blue-200">
+                                        <div class="flex items-center justify-between text-xs text-blue-600">
+                                            <span>💡 提示：越具体越好！</span>
+                                            <span :class="{ 'text-red-500': customPrompt.length > 180 }">{{ customPrompt.length }}/200</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 自定义提示 -->
-                <div>
-                    <div class="bg-blue-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
-                        <span class="font-bold">3. 或自定义要求</span>
+                <!-- 步骤3: 交给大师 -->
+                <div class="max-sm:mt-10">
+                    <div class="bg-orange-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                        <span class="font-bold">3. 交给大师</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-8 h-full flex flex-col">
-                        <!-- 快速预设选项 -->
-                        <div class="mb-4">
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
+                        <div class="text-center h-full flex flex-col">
+                            <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                                <span class="text-white text-2xl">👨‍🍳</span>
+                            </div>
+                            <h2 class="text-xl font-bold text-dark-800 mb-2">准备开始烹饪</h2>
+                            <p class="text-gray-600 mb-4 text-sm">大师已准备就绪，点击按钮开始创作美味佳肴</p>
+
+                            <!-- 当前配置预览 -->
+                            <div class="bg-gray-50 rounded-lg p-3 mb-4 text-left flex-1">
+                                <h3 class="font-bold text-sm text-gray-700 mb-2 flex items-center gap-2">
+                                    <span>📋</span>
+                                    <span>当前配置</span>
+                                </h3>
+
+                                <!-- 食材列表 -->
+                                <div class="mb-2">
+                                    <span class="text-xs font-medium text-gray-600">食材 ({{ ingredients.length }})：</span>
+                                    <div v-if="ingredients.length > 0" class="flex flex-wrap gap-1 mt-1">
+                                        <span v-for="ingredient in ingredients" :key="ingredient" class="inline-block bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-xs">
+                                            {{ ingredient }}
+                                        </span>
+                                    </div>
+                                    <span v-else class="text-xs text-gray-400">未添加食材</span>
+                                </div>
+
+                                <!-- 菜系和大师选择 -->
+                                <div class="mb-2">
+                                    <span class="text-xs font-medium text-gray-600">菜系大师 ({{ selectedCuisines.length }})：</span>
+                                    <div v-if="selectedCuisines.length > 0 && !customPrompt.trim()" class="mt-1">
+                                        <div
+                                            v-for="cuisineId in selectedCuisines"
+                                            :key="cuisineId"
+                                            class="inline-flex items-center gap-1 bg-green-200 text-green-800 px-2 py-1 rounded text-xs mr-1 mb-1"
+                                        >
+                                            <span>{{ cuisines.find(c => c.id === cuisineId)?.avatar || '👨‍🍳' }}</span>
+                                            <span>{{ cuisines.find(c => c.id === cuisineId)?.name }}</span>
+                                        </div>
+                                    </div>
+                                    <span v-else-if="!customPrompt.trim()" class="text-xs text-gray-400">未选择大师</span>
+                                    <span v-else class="text-xs text-blue-600">使用自定义要求</span>
+                                </div>
+
+                                <!-- 自定义要求 -->
+                                <div v-if="customPrompt.trim()">
+                                    <span class="text-xs font-medium text-gray-600">自定义要求：</span>
+                                    <p class="text-xs text-blue-700 mt-1 bg-blue-50 p-2 rounded">
+                                        {{ customPrompt.length > 50 ? customPrompt.substring(0, 50) + '...' : customPrompt }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- 生成按钮 -->
                             <button
-                                @click="togglePresetPicker"
-                                class="flex items-center justify-between w-full p-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200 mb-3"
+                                @click="generateRecipes"
+                                :disabled="ingredients.length === 0 || isLoading"
+                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
                             >
-                                <span class="flex items-center gap-2">
-                                    <span class="text-base">⚡</span>
-                                    <span class="font-medium">快速预设</span>
-                                </span>
-                                <span class="transform transition-transform duration-200 text-gray-400" :class="{ 'rotate-180': showPresetPicker }">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
+                                <span class="flex items-center gap-2 justify-center">
+                                    <template v-if="isLoading">
+                                        <div class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                                        <span v-if="recipes.length === 0">生成中...</span>
+                                        <span v-else>{{ loadingText }}</span>
+                                    </template>
+                                    <template v-else>
+                                        <span class="text-xl">✨</span>
+                                        <span>{{ customPrompt.trim() ? '按要求生成' : '交给大师' }}</span>
+                                    </template>
                                 </span>
                             </button>
 
-                            <div v-if="showPresetPicker" class="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
-                                <!-- 场景预设 -->
-                                <div>
-                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">🎯 场景需求</h6>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        <button
-                                            v-for="preset in scenePresets"
-                                            :key="preset.id"
-                                            @click="applyPreset(preset.prompt)"
-                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-blue-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
-                                        >
-                                            {{ preset.name }}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- 口味偏好 -->
-                                <div>
-                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">👅 口味偏好</h6>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        <button
-                                            v-for="preset in tastePresets"
-                                            :key="preset.id"
-                                            @click="applyPreset(preset.prompt)"
-                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-green-300 hover:border-green-400 hover:bg-green-50 hover:text-green-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
-                                        >
-                                            {{ preset.name }}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- 健康需求 -->
-                                <div>
-                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">💚 健康需求</h6>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        <button
-                                            v-for="preset in healthPresets"
-                                            :key="preset.id"
-                                            @click="applyPreset(preset.prompt)"
-                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-purple-300 hover:border-purple-400 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
-                                        >
-                                            {{ preset.name }}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- 烹饪方式 -->
-                                <div>
-                                    <h6 class="text-xs font-medium text-gray-700 mb-2 flex items-center gap-1">🔥 烹饪方式</h6>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        <button
-                                            v-for="preset in cookingPresets"
-                                            :key="preset.id"
-                                            @click="applyPreset(preset.prompt)"
-                                            class="px-3 py-1.5 text-xs font-medium rounded-full border border-orange-300 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-700 transition-all duration-200 hover:scale-105 hover:shadow-sm"
-                                        >
-                                            {{ preset.name }}
-                                        </button>
-                                    </div>
-                                </div>
+                            <!-- 提示信息 -->
+                            <div class="text-sm">
+                                <p v-if="customPrompt.trim()" class="text-blue-600">🎯 将根据您的自定义要求生成菜谱</p>
+                                <p v-else-if="selectedCuisines.length > 0" class="text-green-600">🍽️ 将生成 {{ selectedCuisines.length }} 个菜系的菜谱</p>
+                                <p v-else class="text-orange-600">🎲 将随机选择菜系生成菜谱</p>
+                                <p class="text-xs text-gray-500 mt-1">大师将为您精心制作 2-4 道美味佳肴</p>
                             </div>
-                        </div>
-
-                        <!-- 自定义输入区域 -->
-                        <div class="flex-1">
-                            <label class="block text-sm font-bold text-dark-800 mb-2">或自由描述：</label>
-                            <textarea
-                                v-model="customPrompt"
-                                @input="limitCustomPrompt"
-                                placeholder="例如：做一道清淡的汤，适合老人食用，不要太咸..."
-                                class="w-full p-4 border-2 border-gray-300 rounded-lg text-base resize-none focus:outline-none focus:border-blue-400 h-32"
-                                maxlength="200"
-                            ></textarea>
-                            <div v-if="customPrompt.trim()" class="mt-2 flex justify-between items-center">
-                                <span class="text-xs text-green-600">✓ 已设置自定义要求</span>
-                                <button @click="customPrompt = ''" class="text-xs text-red-600 hover:text-red-700 underline">清除</button>
-                            </div>
-                        </div>
-
-                        <!-- 随机灵感 -->
-                        <div class="mt-3 mb-3">
-                            <button
-                                @click="getRandomInspiration"
-                                class="w-full py-2 px-3 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform hover:scale-105"
-                            >
-                                ✨ 随机灵感
-                            </button>
-                        </div>
-
-                        <!-- 底部提示 -->
-                        <div class="mt-4 pt-3 border-t border-gray-200 mb-4">
-                            <div class="flex items-center justify-between text-xs text-gray-500">
-                                <span>💡 提示：越具体越好！</span>
-                                <span :class="{ 'text-red-500': customPrompt.length > 180 }">{{ customPrompt.length }}/200</span>
-                            </div>
-                            <p class="text-xs text-gray-400 mt-1">可以组合多个预设，或完全自定义描述</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 中间的OR -->
-            <div class="text-center mb-6">
-                <span class="bg-yellow-400 text-dark-800 px-4 py-2 rounded-full font-bold text-xl border-2 border-black"> OR </span>
-            </div>
-
-            <!-- 步骤4: 结果 -->
-            <div ref="resultsSection">
+            <!-- 步骤4: 菜谱结果 -->
+            <div ref="resultsSection" class="mt-16">
                 <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
                     <span class="font-bold">4. 菜谱结果</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-2 md:p-8">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-2 md:p-6">
                     <!-- 加载状态 -->
                     <div v-if="isLoading && recipes.length === 0" class="text-center py-12">
                         <div class="w-16 h-16 border-4 border-gray-300 border-t-dark-800 rounded-full animate-spin mx-auto mb-4"></div>
@@ -481,6 +529,7 @@ const resultsSection = ref<HTMLElement | null>(null)
 const errorMessage = ref('')
 const showIngredientPicker = ref(false)
 const showPresetPicker = ref(false)
+const showCustomPrompt = ref(false)
 const hoveredCuisine = ref<string | null>(null)
 const tooltipPosition = ref({ x: 0, y: 0 })
 
@@ -568,8 +617,15 @@ const togglePresetPicker = () => {
     showPresetPicker.value = !showPresetPicker.value
 }
 
+// 清除自定义要求
+const clearCustomPrompt = () => {
+    customPrompt.value = ''
+    showCustomPrompt.value = false
+}
+
 // 应用预设
 const applyPreset = (presetPrompt: string) => {
+    showCustomPrompt.value = true
     if (customPrompt.value.trim()) {
         // 如果已有内容，询问是否替换或追加
         const newContent = customPrompt.value.trim() + '，' + presetPrompt
@@ -610,6 +666,7 @@ const randomInspirations = [
 
 // 获取随机灵感
 const getRandomInspiration = () => {
+    showCustomPrompt.value = true
     const randomIndex = Math.floor(Math.random() * randomInspirations.length)
     const inspiration = randomInspirations[randomIndex]
 
