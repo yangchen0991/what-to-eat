@@ -83,7 +83,7 @@
                                 v-model="currentIngredient"
                                 @keyup.enter="addIngredient"
                                 placeholder="输入食材名称，按回车添加..."
-                                class="w-full p-4 border-2 border-black rounded-lg text-lg font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                class="w-full p-3 md:p-4 border-2 border-black rounded-lg text-sm md:text-lg font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
                             />
                         </div>
 
@@ -372,7 +372,7 @@
                             <button
                                 @click="generateRecipes"
                                 :disabled="ingredients.length === 0 || isLoading"
-                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
+                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
                             >
                                 <span class="flex items-center gap-2 justify-center">
                                     <template v-if="isLoading">
