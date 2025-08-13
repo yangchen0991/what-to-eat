@@ -3,13 +3,13 @@
         <!-- 头部 -->
         <div class="max-w-4xl mx-auto mb-8">
             <div class="text-center mb-6">
-                <h1 class="text-4xl font-bold text-orange-800 mb-2">{{ randomDice }} 今天吃什么</h1>
-                <p class="text-orange-600">让AI为你推荐今日美食！</p>
+                <h1 class="text-4xl font-bold text-orange-800 mb-2">{{ randomDice }} 今天吃什么？</h1>
+                <p class="text-orange-600">"拯救选择困难症！</p>
             </div>
             <div class="text-center">
                 <router-link to="/" class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-gray-700">
                     <span>←</span>
-                    <span>返回首页</span>
+                    <span>回到一饭封神</span>
                 </router-link>
             </div>
         </div>
@@ -20,7 +20,7 @@
                 <div class="bg-white rounded-2xl shadow-lg p-8">
                     <div class="text-6xl mb-4">🎲</div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">准备好了吗？</h2>
-                    <p class="text-gray-600 mb-6">点击按钮，让AI为你随机选择今日美食</p>
+                    <p class="text-gray-600 mb-6">盲盒美食：'绝了！' or '寄了！'</p>
                     <button
                         @click="startRandomSelection"
                         class="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 shadow-lg mb-4"
