@@ -48,32 +48,32 @@
                         </div>
 
                         <div v-if="showPreference" class="bg-white rounded-xl p-4 mt-2 border border-gray-200">
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-2 gap-2 md:flex md:flex-row md:gap-4">
                                 <button
                                     @click="preference = 'meat-heavy'"
                                     :class="preference === 'meat-heavy' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-800'"
-                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors md:flex-1"
                                 >
                                     🥩 荤菜多
                                 </button>
                                 <button
                                     @click="preference = 'veg-heavy'"
                                     :class="preference === 'veg-heavy' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-800'"
-                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors md:flex-1"
                                 >
                                     🥬 素菜多
                                 </button>
                                 <button
                                     @click="preference = 'veg-only'"
                                     :class="preference === 'veg-only' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-800'"
-                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors md:flex-1"
                                 >
                                     🌱 纯素
                                 </button>
                                 <button
                                     @click="preference = 'meat-only'"
                                     :class="preference === 'meat-only' ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-800'"
-                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors md:flex-1"
                                 >
                                     🍖 纯荤
                                 </button>
