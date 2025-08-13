@@ -8,7 +8,7 @@
                     to="/"
                     class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105"
                 >
-                    ← Back
+                    ← 返回
                 </router-link>
                 <div class="text-center">
                     <h1 class="text-3xl md:text-4xl font-black text-yellow-300 tracking-wider">关于一饭封神</h1>
@@ -24,7 +24,7 @@
                 </div>
                 <div class="flex justify-center">
                     <router-link to="/" class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm">
-                        ← Back
+                        ← 返回
                     </router-link>
                 </div>
             </div>

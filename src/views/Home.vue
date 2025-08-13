@@ -4,12 +4,20 @@
         <header class="bg-pink-400 border-4 border-black max-w-7xl mx-auto px-2 rounded-lg relative">
             <!-- 桌面端导航 -->
             <div class="hidden md:block absolute top-4 right-4">
-                <router-link
-                    to="/about"
-                    class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                >
-                    📖 About Us
-                </router-link>
+                <div class="flex gap-3">
+                    <router-link
+                        to="/today-eat"
+                        class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                    >
+                        🍽️ 今天吃什么
+                    </router-link>
+                    <router-link
+                        to="/about"
+                        class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                    >
+                        📖 简介
+                    </router-link>
+                </div>
             </div>
             <div class="text-center py-8">
                 <h1 class="text-5xl font-black text-yellow-300 mb-2 tracking-wider md:text-[5rem] font-['PingFangLiuAngLeTianTi']">一饭封神</h1>
@@ -19,12 +27,18 @@
 
         <!-- 移动端导航 -->
         <div class="md:hidden max-w-7xl mx-auto mt-4">
-            <div class="flex justify-center">
+            <div class="flex justify-center gap-3">
+                <router-link
+                    to="/today-eat"
+                    class="bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
+                >
+                    🍽️ 今天吃什么
+                </router-link>
                 <router-link
                     to="/about"
                     class="bg-white hover:bg-gray-100 text-dark-800 px-6 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
                 >
-                    📖 About Us
+                    📖 简介
                 </router-link>
             </div>
         </div>
@@ -292,7 +306,7 @@
                                     <div class="mt-2">
                                         <button
                                             @click="getRandomInspiration"
-                                            class="w-full py-1.5 px-2 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform hover:scale-105"
+                                            class="w-full py-1.5 px-2 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform "
                                         >
                                             ✨ 随机灵感
                                         </button>
@@ -372,7 +386,7 @@
                             <button
                                 @click="generateRecipes"
                                 :disabled="ingredients.length === 0 || isLoading"
-                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
+                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform  disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
                             >
                                 <span class="flex items-center gap-2 justify-center">
                                     <template v-if="isLoading">
