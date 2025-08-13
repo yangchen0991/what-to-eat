@@ -2,14 +2,32 @@
     <div class="min-h-screen bg-yellow-400 px-2 md:px-4 py-6">
         <!-- 头部 - 粉色区域 -->
         <header class="bg-pink-400 border-4 border-black max-w-7xl mx-auto px-2 rounded-lg relative">
-            <!-- <div class="absolute top-2 right-2">
-                <button class="bg-white/20 hover:bg-white/30 rounded-full px-3 py-1 text-sm text-white transition-colors">中文</button>
-            </div> -->
+            <!-- 桌面端导航 -->
+            <div class="hidden md:block absolute top-4 right-4">
+                <router-link
+                    to="/about"
+                    class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                >
+                    📖 About Us
+                </router-link>
+            </div>
             <div class="text-center py-8">
                 <h1 class="text-5xl font-black text-yellow-300 mb-2 tracking-wider md:text-[5rem] font-['PingFangLiuAngLeTianTi']">一饭封神</h1>
                 <p class="text-white text-lg font-medium text-[12px] md:text-[1.5rem]">LEGENDARY STATUS FROM A SINGLE MEAL!</p>
             </div>
         </header>
+
+        <!-- 移动端导航 -->
+        <div class="md:hidden max-w-7xl mx-auto mt-4">
+            <div class="flex justify-center">
+                <router-link
+                    to="/about"
+                    class="bg-white hover:bg-gray-100 text-dark-800 px-6 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
+                >
+                    📖 About Us
+                </router-link>
+            </div>
+        </div>
 
         <!-- 使用量显示 -->
         <!-- <div class="mx-4 mt-4">
