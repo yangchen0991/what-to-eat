@@ -4,7 +4,7 @@
         <div class="max-w-4xl mx-auto mb-8">
             <div class="text-center mb-6">
                 <h1 class="text-4xl font-bold text-orange-800 mb-2">{{ randomDice }} 今天吃什么？</h1>
-                <p class="text-orange-600">"拯救选择困难症！</p>
+                <p class="text-orange-600">盲盒美食：'绝了！' or '寄了！'</p>
             </div>
             <div class="text-center">
                 <router-link to="/" class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-gray-700">
@@ -20,7 +20,7 @@
                 <div class="bg-white rounded-2xl shadow-lg p-8">
                     <div class="text-6xl mb-4">🎲</div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">准备好了吗？</h2>
-                    <p class="text-gray-600 mb-6">盲盒美食：'绝了！' or '寄了！'</p>
+
                     <button
                         @click="startRandomSelection"
                         class="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 shadow-lg mb-4"
@@ -29,7 +29,7 @@
                     </button>
 
                     <!-- 折叠配置选项 -->
-                    <div class="mt-4">
+                    <div class="mt-4 mb-6">
                         <div
                             @click="showPreference = !showPreference"
                             class="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1 mx-auto cursor-pointer"
@@ -80,6 +80,8 @@
                             </div>
                         </div>
                     </div>
+                    <hr class="mb-4" />
+                    <p class="text-gray-500 text-sm italic transition">{{ randomFoodComment }}</p>
                 </div>
             </div>
 
@@ -176,7 +178,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { cuisines } from '@/config/cuisines'
 import { ingredientCategories } from '@/config/ingredients'
 import type { Recipe, CuisineType } from '@/types'
@@ -203,6 +205,31 @@ const generatingTexts = ['正在生成菜谱...', '大师正在创作...', '调�
 // 随机筛子表情
 const diceEmojis = ['🎯']
 const randomDice = ref('🎯')
+
+// 美食评论
+const foodComments = [
+    "💬 鲁菜大师看到我的五花肉，直接拍案而起：'今天必须教你什么叫真正的把子肉！' 🐷🔥",
+    "💬 川菜大师盯着我的鸡胸肉冷笑：'莫得问题，马上让你体验什么叫麻辣鸡丝怀疑人生' 🌶️😭",
+    '💬 给粤菜大师一根白萝卜，他能还你一桌国宴级开水白菜...而我只会凉拌 🦢🤷',
+    '💬 日料大师处理我的三文鱼时，刀光闪过，鱼生薄得能当手机贴膜 🍣📱',
+    "💬 湘菜大师的炒锅起火三米高：'辣椒放少了！你这是对湖南人的侮辱！' 🔥🌶️",
+    "💬 当法餐大师看到我用速冻牛排：'亲爱的，这需要先做个SPA再按摩48小时' 🥩💆",
+    '💬 闽菜大师的海鲜汤里，虾兵蟹将都在跳佛跳墙 🦐🙏',
+    '💬 意大利面在真正意厨手里旋转的样子，比我前任还会绕 🍝💔',
+    '💬 徽菜大师的火腿吊汤术，香得邻居以为我家在炼丹 🐷☁️',
+    '💬 泰式大师的冬阴功里，柠檬草、香茅、南姜正在开演唱会 🎤🌿'
+]
+
+const currentFoodComment = ref(foodComments[0])
+const randomFoodComment = computed(() => currentFoodComment.value)
+
+onMounted(() => {
+    const commentInterval = setInterval(() => {
+        currentFoodComment.value = foodComments[Math.floor(Math.random() * foodComments.length)]
+    }, 3000)
+
+    onUnmounted(() => clearInterval(commentInterval))
+})
 
 // 所有菜品数据
 const allDishes = ref<string[]>([])
