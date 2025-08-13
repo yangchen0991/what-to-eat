@@ -373,8 +373,7 @@
                             <div class="text-sm">
                                 <p v-if="customPrompt.trim()" class="text-blue-600">🎯 将根据您的自定义要求生成菜谱</p>
                                 <p v-else-if="selectedCuisines.length > 0" class="text-green-600">🍽️ 将生成 {{ selectedCuisines.length }} 个菜系的菜谱</p>
-                                <p v-else class="text-orange-600">🎲 将随机选择菜系生成菜谱</p>
-                                <p class="text-xs text-gray-500 mt-1">大师将为您精心制作 2-4 道美味佳肴</p>
+                                <p class="text-xs text-gray-500 mt-1">大师将为您精心设计菜谱流程</p>
                             </div>
                         </div>
                     </div>
