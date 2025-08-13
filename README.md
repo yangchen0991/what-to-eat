@@ -1,8 +1,9 @@
 # 🍳 一饭封神
 
-> **让 AI 厨艺大师为你的食材注入灵魂，创造属于你的美味传奇！**
+> 🚀 **Vibe Coding**  
+> 通过 Kiro 编辑器，实现了从需求分析、架构设计到代码实现的全流程开发。
 
-一个基于 AI 的智能菜谱生成平台，支持中华八大菜系 + 国际料理，提供营养分析、效果图生成等全方位烹饪指导。
+一个基于 AI 的智能菜谱生成平台，支持中华八大菜系 + 国际料理，提供营养分析、酒水推荐、菜谱效果图生成等全方位烹饪指导。
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-一饭封神-yellow?style=for-the-badge)](https://eat.lz-t.top/)
 [![GitHub](https://img.shields.io/badge/GitHub-liu--ziting/what--to--eat-black?style=for-the-badge&logo=github)](https://github.com/liu-ziting/what-to-eat)
@@ -187,8 +188,8 @@ src/
 
 -   [Vue.js](https://vuejs.org/) - 渐进式 JavaScript 框架
 -   [Tailwind CSS](https://tailwindcss.com/) - 实用优先的 CSS 框架
--   [DeepSeek](https://www.deepseek.com/) - 强大的 AI 对话能力
--   [智谱 AI](https://open.bigmodel.cn/) - 备用 AI 服务支持
+-   [DeepSeek](https://www.deepseek.com/) - 菜谱生成 API 服务支持
+-   [智谱 AI](https://open.bigmodel.cn/) - 菜品图片生成 API 服务支持
 
 ---
 
