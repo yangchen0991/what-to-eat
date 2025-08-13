@@ -260,27 +260,31 @@ export const generateMultipleRecipesStream = async (
     const total = cuisines.length
     let completedCount = 0
 
-    const promises = cuisines.map(async (cuisine, index) => {
+    // 为了更好的用户体验，我们不并行生成，而是依次生成
+    // 这样用户可以看到一个个菜谱依次完成的效果
+    for (let index = 0; index < cuisines.length; index++) {
+        const cuisine = cuisines[index]
         try {
+            // 添加一些随机延迟，让生成过程更自然
+            const delay = 1000 + Math.random() * 2000 // 1-3秒的随机延迟
+            await new Promise(resolve => setTimeout(resolve, delay))
+            
             const recipe = await generateRecipe(ingredients, cuisine, customPrompt)
             completedCount++
             onRecipeGenerated(recipe, index, total)
-            return { success: true, recipe, index }
         } catch (error) {
             console.error(`生成${cuisine.name}菜谱失败:`, error)
-            return { success: false, error, index, cuisine: cuisine.name }
+            // 即使某个菜系失败，也继续生成其他菜系
+            continue
         }
-    })
+    }
 
-    const results = await Promise.allSettled(promises)
-    const failedResults = results.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && !result.value.success))
-
-    if (completedCount === 0 && failedResults.length > 0) {
+    if (completedCount === 0) {
         throw new Error('所有菜系生成都失败了，请稍后重试')
     }
 
-    if (failedResults.length > 0) {
-        console.warn(`${failedResults.length}个菜系生成失败，但已成功生成${completedCount}个菜谱`)
+    if (completedCount < total) {
+        console.warn(`${total - completedCount}个菜系生成失败，但已成功生成${completedCount}个菜谱`)
     }
 }
 

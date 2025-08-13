@@ -404,32 +404,96 @@
                     <span class="font-bold">4. 菜谱结果</span>
                 </div>
                 <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-2 md:p-6">
-                    <!-- 加载状态 -->
-                    <div v-if="isLoading && recipes.length === 0" class="text-center py-12">
-                        <div class="w-16 h-16 border-4 border-gray-300 border-t-dark-800 rounded-full animate-spin mx-auto mb-4"></div>
-                        <h3 class="text-xl font-bold text-dark-800 mb-2">大师正在创作中...</h3>
-                        <p class="text-gray-600">{{ loadingText }}</p>
-                    </div>
+                    <!-- 移除这个整体加载状态，因为我们现在使用菜系模块加载 -->
 
-                    <!-- 流式加载状态 - 当已有菜谱但还在加载更多时 -->
-                    <div v-else-if="isLoading && recipes.length > 0">
-                        <!-- 已生成的菜谱 -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- 流式加载状态 - 显示菜系模块和加载状态 -->
+                    <div v-if="isLoading || cuisineSlots.length > 0">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- 遍历所有要生成的菜系，显示对应的卡片 -->
                             <div
-                                v-for="(recipe, index) in recipes"
-                                :key="recipe.id"
-                                class="border-2 border-black rounded-lg overflow-hidden animate-fade-in-up"
-                                :style="{ animationDelay: `${index * 0.2}s` }"
+                                v-for="(cuisineInfo, index) in cuisineSlots"
+                                :key="cuisineInfo.id"
+                                class="border-2 border-black rounded-lg overflow-hidden"
+                                :class="cuisineInfo.recipe ? 'animate-fade-in-up' : ''"
+                                :style="cuisineInfo.recipe ? { animationDelay: `${index * 0.2}s` } : {}"
                             >
-                                <RecipeCard :recipe="recipe" />
-                            </div>
-                        </div>
+                                <!-- 如果菜谱已生成，显示菜谱卡片 -->
+                                <RecipeCard v-if="cuisineInfo.recipe" :recipe="cuisineInfo.recipe" />
+                                
+                                <!-- 如果菜谱还在生成中，显示加载状态 -->
+                                <div v-else class="bg-white loading-card">
+                                    <!-- 菜系头部 -->
+                                    <div class="bg-gradient-to-r from-gray-400 to-gray-500 text-white p-4 md:p-6 border-b-2 border-black">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
+                                                    <span class="animate-pulse">👨‍🍳</span>
+                                                    {{ cuisineInfo.name }}创作中...
+                                                </h3>
+                                                <div class="flex items-center gap-3 text-sm">
+                                                    <span class="bg-white/20 px-2 py-1 rounded text-xs animate-pulse">{{ cuisineInfo.name }}</span>
+                                                    <span class="flex items-center gap-1">
+                                                        <span class="animate-spin">⏱️</span>
+                                                        预计2-3分钟
+                                                    </span>
+                                                    <span>📊 精心制作</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-2xl ml-2 animate-bounce">⏳</div>
+                                        </div>
+                                    </div>
 
-                        <!-- 继续加载提示 -->
-                        <div class="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
-                            <div class="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto mb-3"></div>
-                            <p class="text-gray-600 font-medium">{{ loadingText }}</p>
-                            <p class="text-sm text-gray-500 mt-1">更多精彩菜谱正在路上...</p>
+                                    <!-- 加载内容区域 -->
+                                    <div class="p-4 md:p-6">
+                                        <!-- 食材预览 -->
+                                        <div class="mb-4">
+                                            <h4 class="text-sm font-bold text-dark-800 mb-2 flex items-center gap-1">🥬 使用食材</h4>
+                                            <div class="flex flex-wrap gap-1">
+                                                <span v-for="ingredient in ingredients" :key="ingredient" class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-xs font-medium border border-yellow-400 animate-pulse">
+                                                    {{ ingredient }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- 步骤预览骨架 -->
+                                        <div class="mb-4">
+                                            <h4 class="text-sm font-bold text-dark-800 mb-2 flex items-center gap-1">📝 制作步骤</h4>
+                                            <div class="space-y-2">
+                                                <div v-for="i in 3" :key="i" class="flex gap-2 p-2 bg-gray-50 rounded border border-gray-200">
+                                                    <div class="flex-shrink-0 w-5 h-5 bg-gray-300 rounded shimmer-effect"></div>
+                                                    <div class="flex-1 space-y-1">
+                                                        <div class="h-3 bg-gray-300 rounded shimmer-effect" :style="{ width: (60 + Math.random() * 30) + '%' }"></div>
+                                                        <div class="h-2 bg-gray-200 rounded shimmer-effect" :style="{ width: (40 + Math.random() * 20) + '%' }"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 生成状态 -->
+                                        <div class="text-center py-6 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg border-2 border-dashed border-orange-200">
+                                            <div class="w-16 h-16 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mx-auto mb-4"></div>
+                                            <h3 class="text-lg font-bold text-dark-800 mb-2">{{ cuisineInfo.name }}正在创作中...</h3>
+                                            <p class="text-gray-600 text-sm mb-3">{{ cuisineInfo.loadingText || loadingText }}</p>
+                                            
+                                            <!-- 进度条 -->
+                                            <div class="max-w-xs mx-auto">
+                                                <div class="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                                    <div class="bg-gradient-to-r from-orange-400 to-yellow-500 h-3 rounded-full transition-all duration-1000 relative" :style="{ width: cuisineInfo.progress + '%' }">
+                                                        <div class="absolute inset-0 bg-white/30 animate-pulse"></div>
+                                                    </div>
+                                                </div>
+                                                <p class="text-xs text-gray-500 mt-2">{{ Math.round(cuisineInfo.progress) }}% 完成</p>
+                                            </div>
+                                            
+                                            <div class="mt-4 flex justify-center items-center gap-1 text-xs text-gray-500">
+                                                <span class="animate-bounce" style="animation-delay: 0s">●</span>
+                                                <span class="animate-bounce" style="animation-delay: 0.2s">●</span>
+                                                <span class="animate-bounce" style="animation-delay: 0.4s">●</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -458,8 +522,8 @@
                         <p class="text-gray-500">添加食材并选择菜系开始创作</p>
                     </div>
 
-                    <!-- 菜谱结果 -->
-                    <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- 传统菜谱结果显示 - 只在没有使用槽位系统时显示 -->
+                    <div v-else-if="recipes.length > 0 && cuisineSlots.length === 0" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div
                             v-for="(recipe, index) in recipes"
                             :key="recipe.id"
@@ -494,9 +558,37 @@
     }
 }
 
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(249, 115, 22, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(249, 115, 22, 0.6);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
 .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
     opacity: 0;
+}
+
+.loading-card {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.shimmer-effect {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
 }
 </style>
 
@@ -521,6 +613,16 @@ const errorMessage = ref('')
 const showIngredientPicker = ref(false)
 const showPresetPicker = ref(false)
 const showCustomPrompt = ref(false)
+
+// 菜系槽位数据 - 用于显示加载状态和完成状态
+interface CuisineSlot {
+    id: string
+    name: string
+    recipe?: Recipe
+    loadingText: string
+    progress: number
+}
+const cuisineSlots = ref<CuisineSlot[]>([])
 
 // 加载文字轮播
 const loadingTexts = [
@@ -690,6 +792,7 @@ const generateRecipes = async () => {
     // 重置状态
     isLoading.value = true
     recipes.value = [] // 清空之前的菜谱
+    cuisineSlots.value = [] // 清空菜系槽位
     errorMessage.value = ''
     loadingText.value = '大师正在挑选食材...' // 重置加载文字
 
@@ -707,51 +810,121 @@ const generateRecipes = async () => {
         })
     }
 
-    // 开始加载文字轮播
-    let textIndex = 0
-    loadingInterval = setInterval(() => {
-        loadingText.value = loadingTexts[textIndex]
-        textIndex = (textIndex + 1) % loadingTexts.length
-    }, 2000)
+    // 检查是否有自定义提示词
+    if (customPrompt.value.trim()) {
+        // 使用自定义提示词生成菜谱 - 立即创建单个槽位
+        cuisineSlots.value = [{
+            id: 'custom',
+            name: '自定义大师',
+            loadingText: '正在根据您的要求创作...',
+            progress: 0
+        }]
+    } else {
+        // 使用菜系生成菜谱 - 立即初始化菜系槽位
+        let selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id))
+
+        if (selectedCuisineObjects.length === 0) {
+            // 随机选择2个菜系
+            const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
+            selectedCuisineObjects = shuffled.slice(0, 2)
+        }
+
+        // 立即初始化菜系槽位，这样用户马上就能看到模块
+        cuisineSlots.value = selectedCuisineObjects.map(cuisine => ({
+            id: cuisine.id,
+            name: cuisine.name,
+            loadingText: `${cuisine.name}正在精心创作...`,
+            progress: 0
+        }))
+    }
 
     try {
-        // 检查是否有自定义提示词
         if (customPrompt.value.trim()) {
-            // 使用自定义提示词生成菜谱
-            const customRecipe = await generateCustomRecipe(ingredients.value, customPrompt.value.trim())
-            recipes.value = [customRecipe]
-        } else {
-            // 使用菜系生成菜谱
-            let selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id))
+            // 开始进度动画
+            const progressInterval = setInterval(() => {
+                if (cuisineSlots.value[0] && !cuisineSlots.value[0].recipe) {
+                    cuisineSlots.value[0].progress = Math.min(cuisineSlots.value[0].progress + Math.random() * 15, 90)
+                }
+            }, 500)
 
-            if (selectedCuisineObjects.length === 0) {
-                // 随机选择2个菜系
-                const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
-                selectedCuisineObjects = shuffled.slice(0, 2)
+            const customRecipe = await generateCustomRecipe(ingredients.value, customPrompt.value.trim())
+            
+            // 完成生成，更新槽位
+            if (cuisineSlots.value[0]) {
+                cuisineSlots.value[0].recipe = customRecipe
+                cuisineSlots.value[0].progress = 100
+                cuisineSlots.value[0].loadingText = '创作完成！'
             }
+            recipes.value = [customRecipe]
+            isLoading.value = false
+            clearInterval(progressInterval)
+        } else {
+            // 为每个槽位启动进度动画
+            const progressIntervals: NodeJS.Timeout[] = []
+            cuisineSlots.value.forEach((slot, index) => {
+                const interval = setInterval(() => {
+                    if (!slot.recipe) {
+                        slot.progress = Math.min(slot.progress + Math.random() * 10, 85)
+                        // 随机更新加载文字
+                        const texts = [
+                            `${slot.name}正在挑选食材...`,
+                            `${slot.name}正在调配秘制酱料...`,
+                            `${slot.name}正在掌控火候...`,
+                            `${slot.name}正在精心摆盘...`
+                        ]
+                        slot.loadingText = texts[Math.floor(Math.random() * texts.length)]
+                    }
+                }, 800 + index * 200) // 每个槽位的更新频率略有不同
+                progressIntervals.push(interval)
+            })
+
+            // 获取选中的菜系对象
+            const selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id)).length > 0 
+                ? cuisines.filter(c => selectedCuisines.value.includes(c.id))
+                : (() => {
+                    const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
+                    return shuffled.slice(0, 2)
+                })()
 
             // 使用流式生成菜谱，每完成一个就立即显示
             await generateMultipleRecipesStream(
                 ingredients.value,
                 selectedCuisineObjects,
                 (recipe: Recipe, index: number, total: number) => {
+                    // 找到对应的菜系槽位并更新
+                    const targetSlot = cuisineSlots.value.find(slot => 
+                        selectedCuisineObjects[index] && slot.id === selectedCuisineObjects[index].id
+                    )
+                    
+                    if (targetSlot) {
+                        targetSlot.recipe = recipe
+                        targetSlot.progress = 100
+                        targetSlot.loadingText = '创作完成！'
+                    }
+
                     // 每生成一个菜谱就立即添加到列表中
                     recipes.value.push(recipe)
 
-                    // 更新加载文字，显示进度
+                    // 更新全局加载文字，显示进度
                     loadingText.value = `已完成 ${recipes.value.length}/${total} 道菜谱...`
 
                     // 如果是最后一个菜谱，停止加载状态
                     if (recipes.value.length === total) {
                         isLoading.value = false
-                        if (loadingInterval) {
-                            clearInterval(loadingInterval)
-                            loadingInterval = null
-                        }
+                        // 清理所有进度定时器
+                        progressIntervals.forEach(interval => clearInterval(interval))
+                        
+                        // 延迟一下再清理槽位，让用户看到完成状态
+                        setTimeout(() => {
+                            // 保持槽位显示，不清理，这样用户可以看到完整的生成过程
+                        }, 1000)
                     }
                 },
                 customPrompt.value.trim() || undefined
             )
+
+            // 清理进度定时器
+            progressIntervals.forEach(interval => clearInterval(interval))
         }
     } catch (error) {
         console.error('生成菜谱失败:', error)
