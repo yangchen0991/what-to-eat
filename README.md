@@ -4,7 +4,7 @@
 
 一个基于 AI 的智能菜谱生成平台，支持中华八大菜系 + 国际料理，提供营养分析、效果图生成等全方位烹饪指导。
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-一饭封神-yellow?style=for-the-badge)](https://yifan-fengshen.netlify.app)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-一饭封神-yellow?style=for-the-badge)](https://eat.lz-t.top/)
 [![GitHub](https://img.shields.io/badge/GitHub-liu--ziting/what--to--eat-black?style=for-the-badge&logo=github)](https://github.com/liu-ziting/what-to-eat)
 
 ## ✨ 核心功能
