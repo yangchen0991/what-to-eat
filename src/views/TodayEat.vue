@@ -3,13 +3,13 @@
         <!-- 头部 -->
         <div class="max-w-4xl mx-auto mb-8">
             <div class="text-center mb-6">
-                <h1 class="text-4xl font-bold text-orange-800 mb-2">🍽️ 今天吃什么</h1>
-                <p class="text-orange-600">让AI为你推荐今日美食</p>
+                <h1 class="text-4xl font-bold text-orange-800 mb-2">{{ randomDice }} 今天吃什么</h1>
+                <p class="text-orange-600">让AI为你推荐今日美食！</p>
             </div>
             <div class="text-center">
                 <router-link to="/" class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-gray-700">
                     <span>←</span>
-                    <span>返回</span>
+                    <span>返回首页</span>
                 </router-link>
             </div>
         </div>
@@ -17,16 +17,69 @@
         <div class="max-w-4xl mx-auto space-y-6">
             <!-- 开始按钮 -->
             <div v-if="!isSelecting && selectedDishes.length === 0" class="text-center">
-                <div class="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
                     <div class="text-6xl mb-4">🎲</div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">准备好了吗？</h2>
                     <p class="text-gray-600 mb-6">点击按钮，让AI为你随机选择今日美食</p>
                     <button
                         @click="startRandomSelection"
-                        class="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 shadow-lg"
+                        class="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105 shadow-lg mb-4"
                     >
-                        🎯 开始随机选择
+                        {{ randomDice }} 开始随机选择
                     </button>
+
+                    <!-- 折叠配置选项 -->
+                    <div class="mt-4">
+                        <div
+                            @click="showPreference = !showPreference"
+                            class="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1 mx-auto cursor-pointer"
+                        >
+                            <span>偏好设置</span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4 transition-transform"
+                                :class="{ 'transform rotate-180': showPreference }"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+
+                        <div v-if="showPreference" class="bg-white rounded-xl p-4 mt-2 border border-gray-200">
+                            <div class="grid grid-cols-2 gap-2">
+                                <button
+                                    @click="preference = 'meat-heavy'"
+                                    :class="preference === 'meat-heavy' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-800'"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    🥩 荤菜多
+                                </button>
+                                <button
+                                    @click="preference = 'veg-heavy'"
+                                    :class="preference === 'veg-heavy' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-800'"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    🥬 素菜多
+                                </button>
+                                <button
+                                    @click="preference = 'veg-only'"
+                                    :class="preference === 'veg-only' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-800'"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    🌱 纯素
+                                </button>
+                                <button
+                                    @click="preference = 'meat-only'"
+                                    :class="preference === 'meat-only' ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-800'"
+                                    class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    🍖 纯荤
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -35,8 +88,7 @@
                 <div class="text-center mb-6">
                     <h3 class="text-xl font-bold text-gray-800 mb-2">{{ selectionStatus }}</h3>
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-500" 
-                             :style="{ width: `${selectionProgress}%` }"></div>
+                        <div class="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-500" :style="{ width: `${selectionProgress}%` }"></div>
                     </div>
                 </div>
 
@@ -51,7 +103,7 @@
             <!-- 选择结果 -->
             <div v-if="!isSelecting && selectedDishes.length > 0" class="bg-white rounded-2xl shadow-lg p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">🎉 今日推荐</h3>
-                
+
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
                     <!-- 菜品 -->
                     <div class="bg-green-50 rounded-xl p-4">
@@ -60,8 +112,7 @@
                             <span>推荐菜品 ({{ selectedDishes.length }}道)</span>
                         </h4>
                         <div class="flex flex-wrap gap-2">
-                            <span v-for="dish in selectedDishes" :key="dish" 
-                                  class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm">
+                            <span v-for="dish in selectedDishes" :key="dish" class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm">
                                 {{ dish }}
                             </span>
                         </div>
@@ -99,7 +150,7 @@
                             <span>生成菜谱</span>
                         </span>
                     </button>
-                    
+
                     <button
                         @click="resetSelection"
                         :disabled="isGenerating"
@@ -137,6 +188,8 @@ const isGenerating = ref(false)
 const selectedDishes = ref<string[]>([])
 const selectedMaster = ref<CuisineType | null>(null)
 const recipe = ref<Recipe | null>(null)
+const preference = ref<string | null>(null)
+const showPreference = ref(false)
 
 // 选择过程状态
 const selectionStatus = ref('')
@@ -145,12 +198,11 @@ const currentSelection = ref<any>(null)
 
 // 文字轮播
 const generatingText = ref('正在生成菜谱...')
-const generatingTexts = [
-    '正在生成菜谱...',
-    '大师正在创作...',
-    '调配独特配方...',
-    '完善制作步骤...'
-]
+const generatingTexts = ['正在生成菜谱...', '大师正在创作...', '调配独特配方...', '完善制作步骤...']
+
+// 随机筛子表情
+const diceEmojis = ['🎯']
+const randomDice = ref('🎯')
 
 // 所有菜品数据
 const allDishes = ref<string[]>([])
@@ -158,6 +210,7 @@ const allDishes = ref<string[]>([])
 // 初始化
 onMounted(() => {
     allDishes.value = ingredientCategories.flatMap(category => category.items)
+    randomDice.value = diceEmojis[Math.floor(Math.random() * diceEmojis.length)]
 })
 
 // 开始随机选择
@@ -167,19 +220,19 @@ const startRandomSelection = async () => {
     selectedMaster.value = null
     recipe.value = null
     selectionProgress.value = 0
-    
+
     // 第一阶段：选择菜品
     selectionStatus.value = '正在随机选择菜品...'
     await selectRandomDishes()
-    
+
     // 第二阶段：选择大师
     selectionStatus.value = '正在匹配主厨大师...'
     await selectRandomMaster()
-    
+
     // 完成
     selectionStatus.value = '选择完成！'
     selectionProgress.value = 100
-    
+
     setTimeout(() => {
         isSelecting.value = false
     }, 1000)
@@ -188,20 +241,38 @@ const startRandomSelection = async () => {
 // 随机选择菜品
 const selectRandomDishes = async () => {
     const dishCount = Math.floor(Math.random() * 3) + 4 // 4-6个菜品
-    const shuffledDishes = [...allDishes.value].sort(() => 0.5 - Math.random())
-    
+    let filteredDishes = [...allDishes.value]
+
+    // 根据偏好过滤菜品
+    if (preference.value) {
+        const meatCategories = ['meat', 'seafood']
+        const vegCategories = ['vegetables', 'mushrooms', 'beans']
+
+        if (preference.value === 'meat-heavy') {
+            filteredDishes = filteredDishes.filter(dish => ingredientCategories.some(cat => meatCategories.includes(cat.id) && cat.items.includes(dish)))
+        } else if (preference.value === 'veg-heavy') {
+            filteredDishes = filteredDishes.filter(dish => ingredientCategories.some(cat => vegCategories.includes(cat.id) && cat.items.includes(dish)))
+        } else if (preference.value === 'meat-only') {
+            filteredDishes = filteredDishes.filter(dish => ingredientCategories.some(cat => meatCategories.includes(cat.id) && cat.items.includes(dish)))
+        } else if (preference.value === 'veg-only') {
+            filteredDishes = filteredDishes.filter(dish => ingredientCategories.some(cat => vegCategories.includes(cat.id) && cat.items.includes(dish)))
+        }
+    }
+
+    const shuffledDishes = filteredDishes.sort(() => 0.5 - Math.random())
+
     for (let i = 0; i < dishCount; i++) {
         // 模拟选择过程
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < 5; j++) {
             const randomDish = shuffledDishes[Math.floor(Math.random() * shuffledDishes.length)]
             currentSelection.value = {
                 type: 'dish',
                 name: randomDish
             }
-            selectionProgress.value = ((i * 10 + j) / (dishCount * 10)) * 50
-            await new Promise(resolve => setTimeout(resolve, 100))
+            selectionProgress.value = ((i * 5 + j) / (dishCount * 5)) * 50
+            await new Promise(resolve => setTimeout(resolve, 50))
         }
-        
+
         // 确定选择
         const finalDish = shuffledDishes[i]
         if (!selectedDishes.value.includes(finalDish)) {
@@ -211,15 +282,15 @@ const selectRandomDishes = async () => {
             type: 'dish',
             name: finalDish
         }
-        
-        await new Promise(resolve => setTimeout(resolve, 500))
+
+        await new Promise(resolve => setTimeout(resolve, 300))
     }
 }
 
 // 随机选择大师
 const selectRandomMaster = async () => {
     // 模拟选择过程
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
         const randomMaster = cuisines[Math.floor(Math.random() * cuisines.length)]
         currentSelection.value = {
             type: 'master',
@@ -227,10 +298,10 @@ const selectRandomMaster = async () => {
             avatar: randomMaster.avatar,
             specialty: randomMaster.specialty
         }
-        selectionProgress.value = 50 + (i / 20) * 50
-        await new Promise(resolve => setTimeout(resolve, 150))
+        selectionProgress.value = 50 + (i / 10) * 50
+        await new Promise(resolve => setTimeout(resolve, 80))
     }
-    
+
     // 确定选择
     const finalMaster = cuisines[Math.floor(Math.random() * cuisines.length)]
     selectedMaster.value = finalMaster
@@ -240,41 +311,39 @@ const selectRandomMaster = async () => {
         avatar: finalMaster.avatar,
         specialty: finalMaster.specialty
     }
-    
-    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    await new Promise(resolve => setTimeout(resolve, 500))
 }
 
 // 生成菜谱
 const generateRecipe = async () => {
     if (!selectedMaster.value || selectedDishes.value.length === 0 || isGenerating.value) return
-    
+
     isGenerating.value = true
-    
+
     // 文字轮播
     let textIndex = 0
     const textInterval = setInterval(() => {
         generatingText.value = generatingTexts[textIndex]
         textIndex = (textIndex + 1) % generatingTexts.length
     }, 1000)
-    
+
     try {
         // 模拟生成过程
         await new Promise(resolve => setTimeout(resolve, 4000))
-        
+
         // 创建菜谱
         const dishNames = selectedDishes.value.slice(0, 3).join('、')
-        const recipeName = selectedDishes.value.length > 3 
-            ? `${selectedMaster.value.name}特制${dishNames}等${selectedDishes.value.length}样组合`
-            : `${selectedMaster.value.name}特制${dishNames}组合`
-        
+        const recipeName =
+            selectedDishes.value.length > 3
+                ? `${selectedMaster.value.name}特制${dishNames}等${selectedDishes.value.length}样组合`
+                : `${selectedMaster.value.name}特制${dishNames}组合`
+
         const mockRecipe: Recipe = {
             id: `today-recipe-${Date.now()}`,
             name: recipeName,
             cuisine: selectedMaster.value.name,
-            ingredients: [
-                ...selectedDishes.value,
-                '盐', '生抽', '料酒', '葱', '姜', '蒜', '香油', '胡椒粉'
-            ],
+            ingredients: [...selectedDishes.value, '盐', '生抽', '料酒', '葱', '姜', '蒜', '香油', '胡椒粉'],
             steps: [
                 {
                     step: 1,
@@ -319,9 +388,8 @@ const generateRecipe = async () => {
                 `${selectedMaster.value.specialty}的特色在于食材搭配的层次感`
             ]
         }
-        
+
         recipe.value = mockRecipe
-        
     } catch (error) {
         console.error('生成菜谱失败:', error)
     } finally {
@@ -354,7 +422,8 @@ const resetSelection = () => {
 }
 
 @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
     }
     50% {
@@ -393,10 +462,17 @@ button:hover:not(:disabled) {
 
 button:active:not(:disabled) {
     transform: translateY(0);
+    background-color: transparent;
+}
+
+/* 偏好设置特殊样式 */
+div.text-sm.text-gray-500:hover {
+    background-color: transparent;
 }
 
 /* 标签悬停效果 */
-.bg-green-200, .bg-purple-50 {
+.bg-green-200,
+.bg-purple-50 {
     transition: all 0.3s ease;
 }
 
@@ -420,11 +496,11 @@ button:active:not(:disabled) {
     .text-4xl {
         font-size: 2rem;
     }
-    
+
     .text-6xl {
         font-size: 3rem;
     }
-    
+
     .px-8 {
         padding-left: 1.5rem;
         padding-right: 1.5rem;

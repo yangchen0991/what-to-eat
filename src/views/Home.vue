@@ -9,7 +9,7 @@
                         to="/today-eat"
                         class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
                     >
-                        🍽️ 今天吃什么
+                        🎲 今天吃什么？
                     </router-link>
                     <router-link
                         to="/about"
@@ -32,7 +32,7 @@
                     to="/today-eat"
                     class="bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
                 >
-                    🍽️ 今天吃什么
+                    🎲 今天吃什么？
                 </router-link>
                 <router-link
                     to="/about"
@@ -306,7 +306,7 @@
                                     <div class="mt-2">
                                         <button
                                             @click="getRandomInspiration"
-                                            class="w-full py-1.5 px-2 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform "
+                                            class="w-full py-1.5 px-2 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform"
                                         >
                                             ✨ 随机灵感
                                         </button>
@@ -386,7 +386,7 @@
                             <button
                                 @click="generateRecipes"
                                 :disabled="ingredients.length === 0 || isLoading"
-                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform  disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
+                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
                             >
                                 <span class="flex items-center gap-2 justify-center">
                                     <template v-if="isLoading">
@@ -433,7 +433,7 @@
                             >
                                 <!-- 如果菜谱已生成，显示菜谱卡片 -->
                                 <RecipeCard v-if="cuisineInfo.recipe" :recipe="cuisineInfo.recipe" />
-                                
+
                                 <!-- 如果菜谱还在生成中，显示加载状态 -->
                                 <div v-else class="bg-white loading-card">
                                     <!-- 菜系头部 -->
@@ -463,7 +463,11 @@
                                         <div class="mb-4">
                                             <h4 class="text-sm font-bold text-dark-800 mb-2 flex items-center gap-1">🥬 使用食材</h4>
                                             <div class="flex flex-wrap gap-1">
-                                                <span v-for="ingredient in ingredients" :key="ingredient" class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-xs font-medium border border-yellow-400 animate-pulse">
+                                                <span
+                                                    v-for="ingredient in ingredients"
+                                                    :key="ingredient"
+                                                    class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-xs font-medium border border-yellow-400 animate-pulse"
+                                                >
                                                     {{ ingredient }}
                                                 </span>
                                             </div>
@@ -476,8 +480,8 @@
                                                 <div v-for="i in 3" :key="i" class="flex gap-2 p-2 bg-gray-50 rounded border border-gray-200">
                                                     <div class="flex-shrink-0 w-5 h-5 bg-gray-300 rounded shimmer-effect"></div>
                                                     <div class="flex-1 space-y-1">
-                                                        <div class="h-3 bg-gray-300 rounded shimmer-effect" :style="{ width: (60 + Math.random() * 30) + '%' }"></div>
-                                                        <div class="h-2 bg-gray-200 rounded shimmer-effect" :style="{ width: (40 + Math.random() * 20) + '%' }"></div>
+                                                        <div class="h-3 bg-gray-300 rounded shimmer-effect" :style="{ width: 60 + Math.random() * 30 + '%' }"></div>
+                                                        <div class="h-2 bg-gray-200 rounded shimmer-effect" :style="{ width: 40 + Math.random() * 20 + '%' }"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -488,17 +492,20 @@
                                             <div class="w-16 h-16 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin mx-auto mb-4"></div>
                                             <h3 class="text-lg font-bold text-dark-800 mb-2">{{ cuisineInfo.name }}正在创作中...</h3>
                                             <p class="text-gray-600 text-sm mb-3">{{ cuisineInfo.loadingText || loadingText }}</p>
-                                            
+
                                             <!-- 进度条 -->
                                             <div class="max-w-xs mx-auto">
                                                 <div class="bg-gray-200 rounded-full h-3 overflow-hidden">
-                                                    <div class="bg-gradient-to-r from-orange-400 to-yellow-500 h-3 rounded-full transition-all duration-1000 relative" :style="{ width: cuisineInfo.progress + '%' }">
+                                                    <div
+                                                        class="bg-gradient-to-r from-orange-400 to-yellow-500 h-3 rounded-full transition-all duration-1000 relative"
+                                                        :style="{ width: cuisineInfo.progress + '%' }"
+                                                    >
                                                         <div class="absolute inset-0 bg-white/30 animate-pulse"></div>
                                                     </div>
                                                 </div>
                                                 <p class="text-xs text-gray-500 mt-2">{{ Math.round(cuisineInfo.progress) }}% 完成</p>
                                             </div>
-                                            
+
                                             <div class="mt-4 flex justify-center items-center gap-1 text-xs text-gray-500">
                                                 <span class="animate-bounce" style="animation-delay: 0s">●</span>
                                                 <span class="animate-bounce" style="animation-delay: 0.2s">●</span>
@@ -573,7 +580,8 @@
 }
 
 @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
         box-shadow: 0 0 5px rgba(249, 115, 22, 0.3);
     }
     50% {
@@ -827,12 +835,14 @@ const generateRecipes = async () => {
     // 检查是否有自定义提示词
     if (customPrompt.value.trim()) {
         // 使用自定义提示词生成菜谱 - 立即创建单个槽位
-        cuisineSlots.value = [{
-            id: 'custom',
-            name: '自定义大师',
-            loadingText: '正在根据您的要求创作...',
-            progress: 0
-        }]
+        cuisineSlots.value = [
+            {
+                id: 'custom',
+                name: '自定义大师',
+                loadingText: '正在根据您的要求创作...',
+                progress: 0
+            }
+        ]
     } else {
         // 使用菜系生成菜谱 - 立即初始化菜系槽位
         let selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id))
@@ -862,7 +872,7 @@ const generateRecipes = async () => {
             }, 500)
 
             const customRecipe = await generateCustomRecipe(ingredients.value, customPrompt.value.trim())
-            
+
             // 完成生成，更新槽位
             if (cuisineSlots.value[0]) {
                 cuisineSlots.value[0].recipe = customRecipe
@@ -880,12 +890,7 @@ const generateRecipes = async () => {
                     if (!slot.recipe) {
                         slot.progress = Math.min(slot.progress + Math.random() * 10, 85)
                         // 随机更新加载文字
-                        const texts = [
-                            `${slot.name}正在挑选食材...`,
-                            `${slot.name}正在调配秘制酱料...`,
-                            `${slot.name}正在掌控火候...`,
-                            `${slot.name}正在精心摆盘...`
-                        ]
+                        const texts = [`${slot.name}正在挑选食材...`, `${slot.name}正在调配秘制酱料...`, `${slot.name}正在掌控火候...`, `${slot.name}正在精心摆盘...`]
                         slot.loadingText = texts[Math.floor(Math.random() * texts.length)]
                     }
                 }, 800 + index * 200) // 每个槽位的更新频率略有不同
@@ -893,12 +898,13 @@ const generateRecipes = async () => {
             })
 
             // 获取选中的菜系对象
-            const selectedCuisineObjects = cuisines.filter(c => selectedCuisines.value.includes(c.id)).length > 0 
-                ? cuisines.filter(c => selectedCuisines.value.includes(c.id))
-                : (() => {
-                    const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
-                    return shuffled.slice(0, 2)
-                })()
+            const selectedCuisineObjects =
+                cuisines.filter(c => selectedCuisines.value.includes(c.id)).length > 0
+                    ? cuisines.filter(c => selectedCuisines.value.includes(c.id))
+                    : (() => {
+                          const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
+                          return shuffled.slice(0, 2)
+                      })()
 
             // 使用流式生成菜谱，每完成一个就立即显示
             await generateMultipleRecipesStream(
@@ -906,10 +912,8 @@ const generateRecipes = async () => {
                 selectedCuisineObjects,
                 (recipe: Recipe, index: number, total: number) => {
                     // 找到对应的菜系槽位并更新
-                    const targetSlot = cuisineSlots.value.find(slot => 
-                        selectedCuisineObjects[index] && slot.id === selectedCuisineObjects[index].id
-                    )
-                    
+                    const targetSlot = cuisineSlots.value.find(slot => selectedCuisineObjects[index] && slot.id === selectedCuisineObjects[index].id)
+
                     if (targetSlot) {
                         targetSlot.recipe = recipe
                         targetSlot.progress = 100
@@ -927,7 +931,7 @@ const generateRecipes = async () => {
                         isLoading.value = false
                         // 清理所有进度定时器
                         progressIntervals.forEach(interval => clearInterval(interval))
-                        
+
                         // 延迟一下再清理槽位，让用户看到完成状态
                         setTimeout(() => {
                             // 保持槽位显示，不清理，这样用户可以看到完整的生成过程
