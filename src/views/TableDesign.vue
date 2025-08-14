@@ -571,10 +571,21 @@ const generateTableMenuAction = async () => {
     }
 }
 
+// 阻止背景滚动
+const disableBodyScroll = () => {
+    document.body.style.overflow = 'hidden'
+}
+
+// 恢复背景滚动
+const enableBodyScroll = () => {
+    document.body.style.overflow = ''
+}
+
 // 生成单个菜品的菜谱
 const generateDishRecipeAction = async (dish: DishInfo, index: number) => {
     if (dish.recipe) {
         selectedRecipe.value = dish.recipe
+        disableBodyScroll()
         return
     }
 
@@ -586,6 +597,7 @@ const generateDishRecipeAction = async (dish: DishInfo, index: number) => {
 
         dish.recipe = recipe
         selectedRecipe.value = recipe
+        disableBodyScroll()
     } catch (error) {
         console.error('生成菜谱失败:', error)
         // 显示错误提示
@@ -598,6 +610,7 @@ const generateDishRecipeAction = async (dish: DishInfo, index: number) => {
 // 关闭菜谱弹窗
 const closeRecipeModal = () => {
     selectedRecipe.value = null
+    enableBodyScroll()
 }
 
 // 测试弹窗功能
@@ -638,6 +651,7 @@ onMounted(() => {
 // 组件卸载时移除键盘事件监听
 onUnmounted(() => {
     document.removeEventListener('keydown', handleKeydown)
+    enableBodyScroll() // 确保组件销毁时恢复滚动
 })
 
 // 重置配置
