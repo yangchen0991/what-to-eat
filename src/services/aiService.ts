@@ -3,17 +3,17 @@ import type { Recipe, CuisineType, NutritionAnalysis, WinePairing } from '@/type
 
 // AI服务配置 - 从环境变量读取
 const AI_CONFIG = {
-    // baseURL: 'https://api.deepseek.com/v1/',
-    // apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
-    // model: 'deepseek-chat',
-    // temperature: 0.7,
-    // timeout: 300000
-
-    baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
-    model: 'glm-4-flash-250414',
+    baseURL: 'https://api.deepseek.com/v1/',
+    apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
+    model: 'deepseek-chat',
     temperature: 0.7,
     timeout: 300000
+
+    // baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
+    // apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
+    // model: 'glm-4-flash-250414',
+    // temperature: 0.7,
+    // timeout: 300000
 }
 
 // 创建axios实例
