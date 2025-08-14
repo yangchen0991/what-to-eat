@@ -596,8 +596,9 @@ const generateDishRecipeAction = async (dish: DishInfo, index: number) => {
         const recipe = await generateDishRecipe(dish.name, dish.description, dish.category)
 
         dish.recipe = recipe
-        selectedRecipe.value = recipe
-        disableBodyScroll()
+        // 移除自动弹出，让用户手动点击查看
+        // selectedRecipe.value = recipe
+        // disableBodyScroll()
     } catch (error) {
         console.error('生成菜谱失败:', error)
         // 显示错误提示
