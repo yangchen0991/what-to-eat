@@ -117,6 +117,308 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
 }
 
 /**
+ * 生成一桌菜的菜单
+ * @param config 一桌菜配置
+ * @returns Promise<DishInfo[]>
+ */
+export const generateTableMenu = async (config: {
+    dishCount: number
+    tastes: string[]
+    cuisineStyle: string
+    diningScene: string
+    nutritionFocus: string
+    customRequirement: string
+    customDishes: string[]
+}): Promise<
+    Array<{
+        name: string
+        description: string
+        category: string
+        tags: string[]
+    }>
+> => {
+    try {
+        // 构建提示词
+        const tasteText = config.tastes.length > 0 ? config.tastes.join('、') : '适中'
+        const sceneMap = {
+            family: '家庭聚餐',
+            friends: '朋友聚会',
+            romantic: '浪漫晚餐',
+            business: '商务宴请',
+            festival: '节日庆祝',
+            casual: '日常用餐'
+        }
+        const nutritionMap = {
+            balanced: '营养均衡',
+            protein: '高蛋白',
+            vegetarian: '素食为主',
+            low_fat: '低脂健康',
+            comfort: '滋补养生'
+        }
+        const styleMap = {
+            mixed: '混合菜系',
+            chinese: '中式为主',
+            western: '西式为主',
+            japanese: '日式为主'
+        }
+
+        let prompt = `请为我设计一桌菜，要求如下：
+- 菜品数量：${config.dishCount}道菜
+- 口味偏好：${tasteText}
+- 菜系风格：${styleMap[config.cuisineStyle] || '混合菜系'}
+- 用餐场景：${sceneMap[config.diningScene] || '家庭聚餐'}
+- 营养搭配：${nutritionMap[config.nutritionFocus] || '营养均衡'}`
+
+        if (config.customDishes.length > 0) {
+            prompt += `\n- 必须包含的菜品：${config.customDishes.join('、')}`
+        }
+
+        if (config.customRequirement) {
+            prompt += `\n- 特殊要求：${config.customRequirement}`
+        }
+
+        prompt += `
+
+请按照以下JSON格式返回菜单，确保菜品搭配合理，营养均衡：
+{
+  "dishes": [
+    {
+      "name": "菜品名称",
+      "description": "菜品简介和特色描述",
+      "category": "主菜/素菜/汤品/凉菜/主食/甜品",
+      "tags": ["标签1", "标签2", "标签3"]
+    }
+  ]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content:
+                        '你是一位专业的菜单设计师，擅长根据不同场景和需求搭配合理的菜品组合。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答，包括菜名也要翻译成中文'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.8,
+            stream: false
+        })
+
+        // 解析AI响应
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const menuData = JSON.parse(cleanResponse)
+        return menuData.dishes || []
+    } catch (error) {
+        console.error('生成一桌菜菜单失败:', error)
+        throw new Error('AI生成菜单失败，请稍后重试')
+    }
+}
+
+/**
+ * 为一桌菜中的单个菜品生成详细菜谱
+ * @param dishName 菜品名称
+ * @param dishDescription 菜品描述
+ * @param category 菜品分类
+ * @returns Promise<Recipe>
+ */
+export const generateDishRecipe = async (dishName: string, dishDescription: string, category: string): Promise<Recipe> => {
+    try {
+        const prompt = `请为以下菜品生成详细的菜谱：
+菜品名称：${dishName}
+菜品描述：${dishDescription}
+菜品分类：${category}
+
+请按照以下JSON格式返回菜谱：
+{
+  "name": "菜品名称",
+  "ingredients": ["食材1", "食材2"],
+  "steps": [
+    {
+      "step": 1,
+      "description": "步骤描述",
+      "time": 5,
+      "temperature": "中火"
+    }
+  ],
+  "cookingTime": 30,
+  "difficulty": "easy/medium/hard",
+  "tips": ["技巧1", "技巧2"]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的厨师，请根据菜品信息生成详细的制作菜谱。请严格按照JSON格式返回，不要包含任何其他文字。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            stream: false
+        })
+
+        // 解析AI响应
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const recipeData = JSON.parse(cleanResponse)
+
+        const recipe: Recipe = {
+            id: `dish-recipe-${Date.now()}`,
+            name: recipeData.name || dishName,
+            cuisine: category,
+            ingredients: recipeData.ingredients || ['主要食材', '调料'],
+            steps: recipeData.steps || [
+                { step: 1, description: '准备食材', time: 5 },
+                { step: 2, description: '开始制作', time: 15 }
+            ],
+            cookingTime: recipeData.cookingTime || 20,
+            difficulty: recipeData.difficulty || 'medium',
+            tips: recipeData.tips || ['注意火候', '调味适中']
+        }
+
+        return recipe
+    } catch (error) {
+        console.error('生成菜品菜谱失败:', error)
+        throw new Error('AI生成菜谱失败，请稍后重试')
+    }
+}
+
+// 使用自定义提示词生成菜谱
+export const generateCustomRecipe = async (ingredients: string[], customPrompt: string): Promise<Recipe> => {
+    try {
+        const prompt = `你是一位专业的厨师，请根据用户提供的食材和特殊要求，生成详细的菜谱。请严格按照JSON格式返回，不要包含任何其他文字。
+
+用户提供的食材：${ingredients.join('、')}
+
+用户的特殊要求：${customPrompt}
+
+请按照以下JSON格式返回菜谱，不包含营养分析和酒水搭配：
+{
+  "name": "菜品名称",
+  "ingredients": ["食材1", "食材2"],
+  "steps": [
+    {
+      "step": 1,
+      "description": "步骤描述",
+      "time": 5,
+      "temperature": "中火"
+    }
+  ],
+  "cookingTime": 30,
+  "difficulty": "medium",
+  "tips": ["技巧1", "技巧2"]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的厨师，请根据用户提供的食材和特殊要求，生成详细的菜谱。请严格按照JSON格式返回，不要包含任何其他文字。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: AI_CONFIG.temperature,
+            max_tokens: 2000,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const recipeData = JSON.parse(cleanResponse)
+
+        const recipe: Recipe = {
+            id: `recipe-custom-${Date.now()}`,
+            name: recipeData.name || '自定义菜品',
+            cuisine: '自定义',
+            ingredients: recipeData.ingredients || ingredients,
+            steps: recipeData.steps || [
+                { step: 1, description: '准备所有食材', time: 5 },
+                { step: 2, description: '按照要求烹饪', time: 20 }
+            ],
+            cookingTime: recipeData.cookingTime || 25,
+            difficulty: recipeData.difficulty || 'medium',
+            tips: recipeData.tips || ['根据个人口味调整', '注意火候控制'],
+            nutritionAnalysis: undefined,
+            winePairing: undefined
+        }
+
+        return recipe
+    } catch (error) {
+        console.error('生成自定义菜谱失败:', error)
+        throw new Error('AI生成自定义菜谱失败，请稍后重试')
+    }
+}
+
+// 流式生成多个菜系的菜谱
+export const generateMultipleRecipesStream = async (
+    ingredients: string[],
+    cuisines: CuisineType[],
+    onRecipeGenerated: (recipe: Recipe, index: number, total: number) => void,
+    customPrompt?: string
+): Promise<void> => {
+    const total = cuisines.length
+    let completedCount = 0
+
+    // 为了更好的用户体验，我们不并行生成，而是依次生成
+    // 这样用户可以看到一个个菜谱依次完成的效果
+    for (let index = 0; index < cuisines.length; index++) {
+        const cuisine = cuisines[index]
+        try {
+            // 添加一些随机延迟，让生成过程更自然
+            const delay = 1000 + Math.random() * 2000 // 1-3秒的随机延迟
+            await new Promise(resolve => setTimeout(resolve, delay))
+
+            const recipe = await generateRecipe(ingredients, cuisine, customPrompt)
+            completedCount++
+            onRecipeGenerated(recipe, index, total)
+        } catch (error) {
+            console.error(`生成${cuisine.name}菜谱失败:`, error)
+            // 即使某个菜系失败，也继续生成其他菜系
+            continue
+        }
+    }
+
+    if (completedCount === 0) {
+        throw new Error('所有菜系生成都失败了，请稍后重试')
+    }
+
+    if (completedCount < total) {
+        console.warn(`${total - completedCount}个菜系生成失败，但已成功生成${completedCount}个菜谱`)
+    }
+}
+
+/**
  * 获取菜谱的营养分析
  * @param recipe 菜谱信息
  * @returns Promise<NutritionAnalysis>
@@ -153,7 +455,7 @@ export const getNutritionAnalysis = async (recipe: Recipe): Promise<NutritionAna
             messages: [
                 {
                     role: 'system',
-                    content: '你是一位专业的营养师，请根据菜谱信息生成详细的营养分析。请严格按照JSON格式返回，不要包含任何其他文字。'
+                    content: '你是一位专业的营养师，请根据菜谱信息生成详细的营养分析。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答，包括菜名也要翻译成中文'
                 },
                 {
                     role: 'user',
@@ -238,132 +540,6 @@ export const getWinePairing = async (recipe: Recipe): Promise<WinePairing> => {
     }
 }
 
-// 批量生成多个菜系的菜谱
-export const generateMultipleRecipes = async (ingredients: string[], cuisines: CuisineType[], customPrompt?: string): Promise<Recipe[]> => {
-    try {
-        const promises = cuisines.map(cuisine => generateRecipe(ingredients, cuisine, customPrompt))
-        const recipes = await Promise.all(promises)
-        return recipes
-    } catch (error) {
-        console.error('批量生成菜谱失败:', error)
-        throw new Error('批量生成菜谱失败')
-    }
-}
-
-// 流式生成多个菜系的菜谱
-export const generateMultipleRecipesStream = async (
-    ingredients: string[],
-    cuisines: CuisineType[],
-    onRecipeGenerated: (recipe: Recipe, index: number, total: number) => void,
-    customPrompt?: string
-): Promise<void> => {
-    const total = cuisines.length
-    let completedCount = 0
-
-    // 为了更好的用户体验，我们不并行生成，而是依次生成
-    // 这样用户可以看到一个个菜谱依次完成的效果
-    for (let index = 0; index < cuisines.length; index++) {
-        const cuisine = cuisines[index]
-        try {
-            // 添加一些随机延迟，让生成过程更自然
-            const delay = 1000 + Math.random() * 2000 // 1-3秒的随机延迟
-            await new Promise(resolve => setTimeout(resolve, delay))
-            
-            const recipe = await generateRecipe(ingredients, cuisine, customPrompt)
-            completedCount++
-            onRecipeGenerated(recipe, index, total)
-        } catch (error) {
-            console.error(`生成${cuisine.name}菜谱失败:`, error)
-            // 即使某个菜系失败，也继续生成其他菜系
-            continue
-        }
-    }
-
-    if (completedCount === 0) {
-        throw new Error('所有菜系生成都失败了，请稍后重试')
-    }
-
-    if (completedCount < total) {
-        console.warn(`${total - completedCount}个菜系生成失败，但已成功生成${completedCount}个菜谱`)
-    }
-}
-
-// 使用自定义提示词生成菜谱
-export const generateCustomRecipe = async (ingredients: string[], customPrompt: string): Promise<Recipe> => {
-    try {
-        const prompt = `你是一位专业的厨师，请根据用户提供的食材和特殊要求，生成详细的菜谱。请严格按照JSON格式返回，不要包含任何其他文字。
-
-用户提供的食材：${ingredients.join('、')}
-
-用户的特殊要求：${customPrompt}
-
-请按照以下JSON格式返回菜谱，不包含营养分析和酒水搭配：
-{
-  "name": "菜品名称",
-  "ingredients": ["食材1", "食材2"],
-  "steps": [
-    {
-      "step": 1,
-      "description": "步骤描述",
-      "time": 5,
-      "temperature": "中火"
-    }
-  ],
-  "cookingTime": 30,
-  "difficulty": "medium",
-  "tips": ["技巧1", "技巧2"]
-}`
-
-        const response = await aiClient.post('/chat/completions', {
-            model: AI_CONFIG.model,
-            messages: [
-                {
-                    role: 'system',
-                    content: '你是一位专业的厨师，请根据用户提供的食材和特殊要求，生成详细的菜谱。请严格按照JSON格式返回，不要包含任何其他文字。'
-                },
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            temperature: AI_CONFIG.temperature,
-            max_tokens: 2000,
-            stream: false
-        })
-
-        const aiResponse = response.data.choices[0].message.content
-        let cleanResponse = aiResponse.trim()
-        if (cleanResponse.startsWith('```json')) {
-            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
-        } else if (cleanResponse.startsWith('```')) {
-            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
-        }
-
-        const recipeData = JSON.parse(cleanResponse)
-
-        const recipe: Recipe = {
-            id: `recipe-custom-${Date.now()}`,
-            name: recipeData.name || '自定义菜品',
-            cuisine: '自定义',
-            ingredients: recipeData.ingredients || ingredients,
-            steps: recipeData.steps || [
-                { step: 1, description: '准备所有食材', time: 5 },
-                { step: 2, description: '按照要求烹饪', time: 20 }
-            ],
-            cookingTime: recipeData.cookingTime || 25,
-            difficulty: recipeData.difficulty || 'medium',
-            tips: recipeData.tips || ['根据个人口味调整', '注意火候控制'],
-            nutritionAnalysis: undefined,
-            winePairing: undefined
-        }
-
-        return recipe
-    } catch (error) {
-        console.error('生成自定义菜谱失败:', error)
-        throw new Error('AI生成自定义菜谱失败，请稍后重试')
-    }
-}
-
 // 生成后备营养分析数据
 const generateFallbackNutrition = (ingredients: string[]): NutritionAnalysis => {
     const baseCalories = ingredients.length * 50 + Math.floor(Math.random() * 100) + 200
@@ -443,36 +619,6 @@ const generateFallbackWinePairing = (cuisine: CuisineType, ingredients: string[]
             alcoholContent: '15-16%',
             flavor: '清香甘甜，口感顺滑',
             origin: '日本'
-        },
-        法式料理大师: {
-            name: '勃艮第红酒',
-            type: 'red_wine',
-            reason: '勃艮第红酒的优雅单宁与法式料理的精致风味完美融合',
-            servingTemperature: '16-18°C',
-            glassType: '勃艮第杯',
-            alcoholContent: '13-14%',
-            flavor: '优雅果香，单宁柔顺',
-            origin: '法国勃艮第'
-        },
-        意式料理大师: {
-            name: '基安帝红酒',
-            type: 'red_wine',
-            reason: '基安帝的酸度和果香与意式料理的番茄和香草完美搭配',
-            servingTemperature: '16-18°C',
-            glassType: '波尔多杯',
-            alcoholContent: '12-13%',
-            flavor: '樱桃果香，酸度适中',
-            origin: '意大利托斯卡纳'
-        },
-        印度料理大师: {
-            name: '拉西酸奶饮',
-            type: 'non_alcoholic',
-            reason: '拉西的奶香和清凉感能很好地缓解印度香料的辛辣',
-            servingTemperature: '4-6°C',
-            glassType: '高脚杯',
-            alcoholContent: '0%',
-            flavor: '奶香浓郁，清凉甘甜',
-            origin: '印度'
         }
     }
 
@@ -535,6 +681,29 @@ const generateFallbackWinePairing = (cuisine: CuisineType, ingredients: string[]
         alcoholContent: winePairing.alcoholContent,
         flavor: winePairing.flavor || '清香怡人',
         origin: winePairing.origin
+    }
+}
+
+/**
+ * 测试AI服务连接
+ * @returns Promise<boolean>
+ */
+export const testAIConnection = async (): Promise<boolean> => {
+    try {
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'user',
+                    content: '你好'
+                }
+            ],
+            max_tokens: 10
+        })
+        return response.status === 200
+    } catch (error) {
+        console.error('AI服务连接测试失败:', error)
+        return false
     }
 }
 

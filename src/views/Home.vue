@@ -12,6 +12,12 @@
                         🎲 今天吃什么？
                     </router-link>
                     <router-link
+                        to="/table-design"
+                        class="bg-purple-400 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                    >
+                        🍽️ 一桌菜设计
+                    </router-link>
+                    <router-link
                         to="/about"
                         class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
                     >
@@ -27,16 +33,22 @@
 
         <!-- 移动端导航 -->
         <div class="md:hidden max-w-7xl mx-auto mt-4">
-            <div class="flex justify-center gap-3">
+            <div class="flex justify-center gap-2 flex-wrap">
                 <router-link
                     to="/today-eat"
-                    class="bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
+                    class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
                 >
                     🎲 今天吃什么？
                 </router-link>
                 <router-link
+                    to="/table-design"
+                    class="bg-purple-400 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
+                >
+                    🍽️ 一桌菜设计
+                </router-link>
+                <router-link
                     to="/about"
-                    class="bg-white hover:bg-gray-100 text-dark-800 px-6 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
+                    class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
                 >
                     📖 简介
                 </router-link>
