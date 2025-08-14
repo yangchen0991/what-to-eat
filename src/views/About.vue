@@ -214,15 +214,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-center">
-                                    <div class="bg-gradient-to-br from-indigo-100 to-purple-100 border-2 border-indigo-200 rounded-lg p-6">
-                                        <div class="text-4xl mb-4">🎨</div>
-                                        <h4 class="font-bold text-dark-800 mb-2">Vibe Coding</h4>
-                                        <p class="text-sm text-gray-600 mb-4">用AI重新定义编程体验</p>
-                                        <div class="flex justify-center gap-2">
-                                            <span class="px-2 py-1 bg-indigo-200 text-indigo-800 rounded-full text-xs font-medium">Vue 3</span>
-                                            <span class="px-2 py-1 bg-purple-200 text-purple-800 rounded-full text-xs font-medium">TypeScript</span>
-                                            <span class="px-2 py-1 bg-pink-200 text-pink-800 rounded-full text-xs font-medium">AI</span>
+                                <div>
+                                    <div class="bg-gradient-to-br from-orange-100 to-red-100 border-2 border-orange-200 rounded-lg p-6">
+                                        <div class="flex items-center gap-6">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-3 mb-3">
+                                                    <div class="text-3xl">☕</div>
+                                                    <h4 class="font-bold text-dark-800 text-lg">投喂</h4>
+                                                </div>
+                                                <p class="text-sm text-gray-600 mb-2">AI需要算力，想要使本项目获得更久</p>
+                                                <p class="text-xs text-gray-500">扫码支持开发者 →</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <img src="/wx.jpg" alt="微信收款码" class="w-40 h-40 border-2 border-gray-300 rounded-lg shadow-md" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
