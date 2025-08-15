@@ -380,7 +380,7 @@
                     <!-- 生成结果 -->
                     <div v-if="!isGenerating && generatedDishes.length > 0">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                                 <span>🎉</span>
                                 <span>您的专属一桌菜</span>
                             </h3>
