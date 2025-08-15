@@ -203,9 +203,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onUnmounted, onMounted } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
-import party from 'party-js'
 import { generateRecipeImage, type GeneratedImage } from '@/services/imageService'
 import { getNutritionAnalysis, getWinePairing } from '@/services/aiService'
 import FavoriteButton from './FavoriteButton.vue'
@@ -337,30 +336,6 @@ const generateImage = async () => {
         const { GalleryService } = await import('@/services/galleryService')
         const prompt = `一道精美的${props.recipe.cuisine.replace('大师', '').replace('菜', '')}菜肴：${props.recipe.name}`
         GalleryService.addToGallery(props.recipe, image.url, image.id, prompt)
-
-        // 图片生成成功后触发撒花效果
-        setTimeout(() => {
-            const imgElement = document.querySelector('.recipe-card img') as HTMLElement | null
-            if (imgElement) {
-                try {
-                    console.log('尝试触发撒花效果...')
-                    if (typeof party !== 'undefined') {
-                        party.confetti(imgElement, {
-                            count: party.variation.range(50, 80),
-                            size: party.variation.range(0.8, 1.2),
-                            shapes: ['circle', 'square', 'star'],
-                            spread: 20,
-                            speed: 50
-                        })
-                        console.log('撒花效果已触发')
-                    } else {
-                        console.error('party-js未正确加载')
-                    }
-                } catch (error) {
-                    console.error('撒花效果失败:', error)
-                }
-            }
-        }, 300)
     } catch (error) {
         console.error('生成图片失败:', error)
         imageError.value = '生成图片失败，请稍后重试'
