@@ -571,7 +571,7 @@
         </div>
 
         <!-- 底部 -->
-        <footer class="bg-white border-4 border-black max-w-7xl mx-auto px-2 mb-4 rounded-lg p-4 text-center">
+        <footer class="bg-white border-4 border-black max-w-7xl mx-auto px-2 rounded-lg p-4 text-center">
             <p class="text-sm text-gray-600">
                 © 2025 一饭封神 | <a href="https://github.com/liu-ziting/what-to-eat" target="_blank" class="text-retro-blue hover:underline">Powered by Liuziting</a>
             </p>
