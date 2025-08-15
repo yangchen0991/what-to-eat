@@ -11,7 +11,11 @@
                         <span>📊 {{ difficultyText }}</span>
                     </div>
                 </div>
-                <div class="text-2xl ml-2">🍽️</div>
+                <div class="flex items-center gap-2 ml-2">
+                    <!-- <div class="text-2xl">🍽️</div> -->
+                    <!-- 收藏按钮 -->
+                    <FavoriteButton v-if="showFavoriteButton" :recipe="recipe" @favorite-changed="onFavoriteChanged" />
+                </div>
             </div>
         </div>
 
@@ -203,14 +207,22 @@ import { computed, ref, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
 import { generateRecipeImage, type GeneratedImage } from '@/services/imageService'
 import { getNutritionAnalysis, getWinePairing } from '@/services/aiService'
+import FavoriteButton from './FavoriteButton.vue'
 import NutritionAnalysis from './NutritionAnalysis.vue'
 import WinePairing from './WinePairing.vue'
 
 interface Props {
     recipe: Recipe
+    showFavoriteButton?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+    showFavoriteButton: true
+})
+
+const emit = defineEmits<{
+    favoriteChanged: [isFavorited: boolean]
+}>()
 const isExpanded = ref(false)
 const isGeneratingImage = ref(false)
 const generatedImage = ref<GeneratedImage | null>(null)
@@ -296,6 +308,11 @@ const formatTime = (minutes: number): string => {
 
 const toggleExpanded = () => {
     isExpanded.value = !isExpanded.value
+}
+
+// 处理收藏状态变化
+const onFavoriteChanged = (isFavorited: boolean) => {
+    emit('favoriteChanged', isFavorited)
 }
 
 const generateImage = async () => {

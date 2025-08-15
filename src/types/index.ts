@@ -86,6 +86,14 @@ export interface WinePairing {
     origin?: string // 产地
 }
 
+// 收藏菜谱类型
+export interface FavoriteRecipe {
+    id: string
+    recipe: Recipe
+    favoriteDate: string // 收藏日期
+    notes?: string // 用户备注
+}
+
 // AI响应类型
 export interface AIResponse {
     success: boolean

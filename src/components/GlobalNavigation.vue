@@ -43,6 +43,14 @@
                         <span>一桌菜设计</span>
                     </router-link>
                     <router-link
+                        to="/favorites"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        :class="$route.path === '/favorites' ? 'bg-red-400 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'"
+                    >
+                        <span>❤️</span>
+                        <span>我的收藏</span>
+                    </router-link>
+                    <router-link
                         to="/about"
                         class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/about' ? 'bg-blue-400 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'"
@@ -62,7 +70,7 @@
                             <span class="text-white text-lg font-bold">饭</span>
                         </div>
                         <div>
-                            <div class="text-lg font-black text-dark-800 font-['PingFangLiuAngLeTianTi'] tracking-wider">
+                            <div class="text-lg font-black text-dark-800 tracking-wider">
                                 {{ pageTitle }}
                             </div>
                             <div class="text-xs text-gray-600 font-medium">{{ pageSubtitle }}</div>
@@ -105,6 +113,15 @@
                         <span>一桌菜设计</span>
                     </router-link>
                     <router-link
+                        to="/favorites"
+                        @click="showMobileMenu = false"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        :class="$route.path === '/favorites' ? 'bg-red-400 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'"
+                    >
+                        <span>❤️</span>
+                        <span>我的收藏</span>
+                    </router-link>
+                    <router-link
                         to="/about"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
@@ -135,6 +152,8 @@ const pageTitle = computed(() => {
             return '今天吃什么？'
         case '/table-design':
             return '一桌菜设计师'
+        case '/favorites':
+            return '我的收藏'
         case '/about':
             return '关于一饭封神'
         default:
@@ -150,6 +169,8 @@ const pageSubtitle = computed(() => {
             return "盲盒美食：'绝了！' or '寄了！'"
         case '/table-design':
             return '让每顿饭，都有剧本！'
+        case '/favorites':
+            return '珍藏美味，随时回味！'
         case '/about':
             return '算法烹万物，一键即封神！'
         default:
