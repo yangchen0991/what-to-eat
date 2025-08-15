@@ -129,6 +129,7 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
  */
 export const generateTableMenu = async (config: {
     dishCount: number
+    flexibleCount: boolean
     tastes: string[]
     cuisineStyle: string
     diningScene: string
@@ -169,23 +170,45 @@ export const generateTableMenu = async (config: {
         }
 
         let prompt = `请为我设计一桌菜，要求如下：
-- 菜品数量：${config.dishCount}道菜
+- ${config.flexibleCount ? `参考菜品数量：${config.dishCount}道菜（可以根据实际情况智能调整，重点是搭配合理）` : `菜品数量：${config.dishCount}道菜（请严格按照这个数量生成）`}
 - 口味偏好：${tasteText}
 - 菜系风格：${styleMap[config.cuisineStyle] || '混合菜系'}
 - 用餐场景：${sceneMap[config.diningScene] || '家庭聚餐'}
 - 营养搭配：${nutritionMap[config.nutritionFocus] || '营养均衡'}`
 
         if (config.customDishes.length > 0) {
-            prompt += `\n- 必须包含的菜品：${config.customDishes.join('、')}`
+            prompt += `\n- ${config.flexibleCount ? '优先考虑的菜品' : '必须包含的菜品'}：${config.customDishes.join('、')}${
+                config.flexibleCount ? '（可以作为参考，根据搭配需要决定是否全部包含）' : '（请确保这些菜品都包含在菜单中）'
+            }`
         }
 
         if (config.customRequirement) {
             prompt += `\n- 特殊要求：${config.customRequirement}`
         }
 
+        if (config.flexibleCount) {
+            prompt += `
+
+智能搭配原则：
+1. 菜品数量可以灵活调整（建议在${Math.max(2, config.dishCount - 2)}-${config.dishCount + 2}道之间），重点是搭配合理、营养均衡
+2. 每道菜应该有独特的特色，避免食材和口味重复过多
+3. 如果指定的菜品较少或重复度高，可以适当减少总菜品数量，确保每道菜都有特色
+4. 优先考虑菜品的多样性和营养搭配，而不是强制凑够指定数量
+5. 合理搭配不同类型的菜品：主菜、素菜、汤品、凉菜、主食等
+6. 避免出现重复搭配，每道菜都应该有独特价值`
+        } else {
+            prompt += `
+
+固定数量原则：
+1. 严格按照${config.dishCount}道菜的数量生成菜单
+2. 确保菜品搭配合理，营养均衡
+3. 每道菜都有独特特色，尽量避免食材重复
+4. 合理分配不同类型的菜品：主菜、素菜、汤品、凉菜、主食等`
+        }
+
         prompt += `
 
-请按照以下JSON格式返回菜单，确保菜品搭配合理，营养均衡：
+请按照以下JSON格式返回菜单：
 {
   "dishes": [
     {

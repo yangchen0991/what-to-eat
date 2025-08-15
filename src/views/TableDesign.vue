@@ -31,257 +31,342 @@
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto py-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 mt-2">
-                <!-- 步骤1: 配置菜品数量 -->
-                <div class="mb-6 mt-4">
-                    <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
-                        <span class="font-bold">1. 配置菜品数量</span>
+        <div class="max-w-7xl mx-auto">
+            <!-- 步骤1和2: 左右布局 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- 左侧: 步骤1 菜品配置 -->
+                <div class="mt-6">
+                    <div class="bg-gradient-to-r from-orange-400 to-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                        <span class="font-bold">1. 菜品配置</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
-                        <div class="text-center mb-6">
-                            <div class="w-16 h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-4">
-                                <span class="text-white text-2xl">🍽️</span>
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 h-full">
+                        <!-- 生成模式选择 - 紧凑布局 -->
+                        <div class="mb-4">
+                            <h3 class="text-lg font-bold text-dark-800 mb-3 flex items-center gap-2">
+                                <span class="text-xl">🍽️</span>
+                                <span>选择生成模式</span>
+                            </h3>
+                            <div class="grid grid-cols-1 gap-3">
+                                <button
+                                    @click="config.flexibleCount = false"
+                                    :class="[
+                                        'px-4 py-3 rounded-lg font-bold border-2 border-black transition-all duration-200 text-left flex items-center gap-3',
+                                        !config.flexibleCount ? 'bg-yellow-400 text-dark-800 shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    ]"
+                                >
+                                    <span class="text-xl">🎯</span>
+                                    <div>
+                                        <div class="font-bold text-sm">固定数量模式</div>
+                                        <div class="text-xs opacity-75">指定确切菜品数量</div>
+                                    </div>
+                                </button>
+                                <button
+                                    @click="config.flexibleCount = true"
+                                    :class="[
+                                        'px-4 py-3 rounded-lg font-bold border-2 border-black transition-all duration-200 text-left flex items-center gap-3',
+                                        config.flexibleCount ? 'bg-yellow-400 text-dark-800 shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    ]"
+                                >
+                                    <span class="text-xl">✨</span>
+                                    <div>
+                                        <div class="font-bold text-sm">智能搭配模式</div>
+                                        <div class="text-xs opacity-75">AI智能决定数量和搭配</div>
+                                    </div>
+                                </button>
                             </div>
-                            <h2 class="text-xl font-bold text-dark-800 mb-2">选择菜品数量</h2>
-                            <p class="text-gray-600 text-sm">根据用餐人数和场合选择合适的菜品数量</p>
                         </div>
 
-                        <!-- 预设数量按钮 -->
-                        <div class="flex justify-center gap-2 flex-wrap mb-4">
-                            <button
-                                v-for="count in [2, 4, 6, 8]"
-                                :key="count"
-                                @click="config.dishCount = count"
-                                :class="[
-                                    'px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm',
-                                    config.dishCount === count ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                ]"
-                            >
-                                {{ count }}道菜
-                            </button>
-                        </div>
-
-                        <!-- 自定义数量输入 -->
-                        <div class="max-w-xs mx-auto">
-                            <div class="text-center mb-3">
-                                <span class="text-sm text-gray-600">或自定义数量</span>
-                            </div>
-                            <div class="flex justify-center">
-                                <div class="relative">
-                                    <input
-                                        v-model.number="config.dishCount"
-                                        @input="validateDishCount"
-                                        type="number"
-                                        min="1"
-                                        max="20"
-                                        class="w-20 px-3 py-2 text-center border-2 border-black rounded-lg font-bold text-base focus:outline-none focus:ring-2 focus:ring-pink-400"
-                                    />
-                                    <span class="absolute -right-10 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 whitespace-nowrap">道菜</span>
+                        <!-- 配置内容 - 紧凑布局 -->
+                        <div class="space-y-4">
+                            <!-- 固定数量模式配置 -->
+                            <div v-if="!config.flexibleCount">
+                                <!-- 数量选择 -->
+                                <div class="bg-gray-50 rounded-lg p-3 border-2 border-gray-200">
+                                    <h5 class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-1">🍽️ 菜品数量</h5>
+                                    <div class="flex items-center gap-3 flex-wrap">
+                                        <div class="flex gap-2">
+                                            <button
+                                                v-for="count in [2, 4, 6, 8]"
+                                                :key="count"
+                                                @click="config.dishCount = count"
+                                                :class="[
+                                                    'px-3 py-1 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm',
+                                                    config.dishCount === count ? 'bg-yellow-400 text-dark-800' : 'bg-white text-gray-700 hover:bg-gray-100'
+                                                ]"
+                                            >
+                                                {{ count }}道
+                                            </button>
+                                        </div>
+                                        <div class="h-4 w-px bg-gray-300"></div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-sm text-gray-600">自定义</span>
+                                            <input
+                                                v-model.number="config.dishCount"
+                                                @input="validateDishCount"
+                                                type="number"
+                                                min="1"
+                                                max="20"
+                                                class="w-14 px-2 py-1 text-center border-2 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                            />
+                                            <span class="text-sm text-gray-600">道</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="text-center mt-2">
-                                <span class="text-xs text-gray-500">建议1-20道菜</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 步骤2: 指定菜品 -->
-                <div class="mb-6 mt-4">
-                    <div class="bg-orange-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
-                        <span class="font-bold">2. 指定菜品（可选）</span>
-                    </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
-                        <!-- 右侧：指定菜品 -->
-                        <div>
-                            <div class="text-center mb-6">
-                                <div class="w-16 h-16 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                    <span class="text-white text-2xl">🥘</span>
-                                </div>
-                                <h2 class="text-xl font-bold text-dark-800 mb-2">指定想要的菜品</h2>
-                                <p class="text-gray-600 text-sm">可以指定一些您特别想要的菜品，AI会优先考虑</p>
-                            </div>
-
-                            <!-- 已添加的自定义菜品 -->
-                            <div v-if="config.customDishes.length > 0" class="mb-4">
-                                <div class="flex flex-wrap gap-2 justify-center">
-                                    <div
-                                        v-for="dish in config.customDishes"
-                                        :key="dish"
-                                        class="inline-flex items-center gap-2 bg-yellow-400 text-dark-800 px-3 py-2 rounded-full text-sm font-medium border-2 border-black"
-                                    >
-                                        {{ dish }}
-                                        <button @click="removeCustomDish(dish)" class="hover:bg-yellow-500 rounded-full p-1 transition-colors">
-                                            <span class="text-xs">✕</span>
+                                <!-- 可选菜品 -->
+                                <div class="bg-gray-50 rounded-lg p-3 border-2 border-gray-200">
+                                    <h5 class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-1">🥘 指定菜品（可选）</h5>
+                                    <div v-if="config.customDishes.length > 0" class="mb-3">
+                                        <div class="flex flex-wrap gap-2">
+                                            <div
+                                                v-for="dish in config.customDishes"
+                                                :key="dish"
+                                                class="inline-flex items-center gap-1 bg-yellow-400 text-dark-800 px-2 py-1 rounded-full text-sm font-medium border-2 border-black"
+                                            >
+                                                {{ dish }}
+                                                <button @click="removeCustomDish(dish)" class="hover:bg-yellow-500 rounded-full p-1 transition-colors">
+                                                    <span class="text-xs">✕</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative">
+                                        <input
+                                            v-model="currentCustomDish"
+                                            @keyup.enter="addCustomDish"
+                                            placeholder="输入菜品名称，按回车添加..."
+                                            class="w-full p-2 border-2 border-black rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                        />
+                                        <button
+                                            @click="addCustomDish"
+                                            :disabled="!currentCustomDish.trim() || config.customDishes.length >= 10"
+                                            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-pink-400 hover:bg-pink-500 disabled:bg-gray-300 text-white rounded text-xs font-bold transition-colors disabled:cursor-not-allowed"
+                                        >
+                                            添加
                                         </button>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-1 text-xs text-gray-500">
+                                        <span>💡 例如：红烧肉、清蒸鱼</span>
+                                        <span>{{ config.customDishes.length }}/10</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 菜品输入框 -->
-                            <div class="max-w-md mx-auto">
-                                <div class="relative">
-                                    <input
-                                        v-model="currentCustomDish"
-                                        @keyup.enter="addCustomDish"
-                                        placeholder="输入菜品名称，按回车添加..."
-                                        class="w-full p-3 border-2 border-black rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
-                                    />
-                                    <button
-                                        @click="addCustomDish"
-                                        :disabled="!currentCustomDish.trim() || config.customDishes.length >= 10"
-                                        class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-pink-400 hover:bg-pink-500 disabled:bg-gray-300 text-white rounded text-xs font-bold transition-colors disabled:cursor-not-allowed"
-                                    >
-                                        添加
-                                    </button>
+                            <!-- 智能搭配模式配置 -->
+                            <div v-else>
+                                <div class="bg-gray-50 rounded-lg p-3 border-2 border-gray-200">
+                                    <h5 class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-1">🥘 输入想要的菜品</h5>
+                                    <div v-if="config.customDishes.length === 0" class="mb-3 p-2 bg-orange-50 border-2 border-orange-200 rounded-lg">
+                                        <p class="text-xs text-orange-700">
+                                            <span class="font-medium">⚠️ 智能搭配模式需要您先输入至少一道菜品</span>
+                                        </p>
+                                    </div>
+                                    <div v-if="config.customDishes.length > 0" class="mb-3">
+                                        <div class="flex flex-wrap gap-2">
+                                            <div
+                                                v-for="dish in config.customDishes"
+                                                :key="dish"
+                                                class="inline-flex items-center gap-1 bg-green-400 text-dark-800 px-2 py-1 rounded-full text-sm font-medium border-2 border-black"
+                                            >
+                                                {{ dish }}
+                                                <button @click="removeCustomDish(dish)" class="hover:bg-green-500 rounded-full p-1 transition-colors">
+                                                    <span class="text-xs">✕</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative">
+                                        <input
+                                            v-model="currentCustomDish"
+                                            @keyup.enter="addCustomDish"
+                                            placeholder="输入菜品名称，按回车添加..."
+                                            class="w-full p-2 border-2 border-black rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-400"
+                                        />
+                                        <button
+                                            @click="addCustomDish"
+                                            :disabled="!currentCustomDish.trim() || config.customDishes.length >= 10"
+                                            class="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-green-400 hover:bg-green-500 disabled:bg-gray-300 text-white rounded text-xs font-bold transition-colors disabled:cursor-not-allowed"
+                                        >
+                                            添加
+                                        </button>
+                                    </div>
+                                    <div class="flex justify-between items-center mt-1 text-xs text-gray-500">
+                                        <span>💡 例如：包菜、娃娃菜、土豆</span>
+                                        <span>{{ config.customDishes.length }}/10</span>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between items-center mt-2 text-xs text-gray-500">
-                                    <span>💡 例如：红烧肉、清蒸鱼、麻婆豆腐</span>
-                                    <span>{{ config.customDishes.length }}/10</span>
-                                </div>
-                            </div>
-
-                            <!-- 提示信息 -->
-                            <div class="mt-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                                <p class="text-sm text-blue-700 text-center">
-                                    <span class="font-medium">提示：</span>
-                                    指定的菜品会优先出现在菜单中，剩余菜品由AI根据您的口味和风格偏好自动搭配
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 步骤2和3: 左右布局 -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- 步骤2: 选择口味和风格 -->
-                <div>
-                    <div class="bg-green-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
-                        <span class="font-bold">3. 选择口味和风格</span>
-                    </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
-                        <!-- 口味偏好 -->
-                        <div class="mb-6">
-                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">👅 口味偏好</h5>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button
-                                    v-for="taste in tasteOptions"
-                                    :key="taste.id"
-                                    @click="toggleTaste(taste.id)"
-                                    :class="[
-                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
-                                        config.tastes.includes(taste.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    ]"
-                                >
-                                    <span>{{ taste.icon }}</span>
-                                    <span>{{ taste.name }}</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 菜系风格 -->
-                        <div class="mb-6">
-                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">🌍 菜系风格</h5>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button
-                                    v-for="style in cuisineStyles"
-                                    :key="style.id"
-                                    @click="config.cuisineStyle = style.id"
-                                    :class="[
-                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
-                                        config.cuisineStyle === style.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    ]"
-                                >
-                                    <span>{{ style.icon }}</span>
-                                    <span>{{ style.name }}</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 用餐场景 -->
-                        <div>
-                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">🎭 用餐场景</h5>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button
-                                    v-for="scene in diningScenes"
-                                    :key="scene.id"
-                                    @click="config.diningScene = scene.id"
-                                    :class="[
-                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
-                                        config.diningScene === scene.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    ]"
-                                >
-                                    <span>{{ scene.icon }}</span>
-                                    <span>{{ scene.name }}</span>
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 步骤3: 营养搭配和特殊要求 -->
-                <div class="max-sm:mt-10">
-                    <div class="bg-orange-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
-                        <span class="font-bold">4. 营养搭配和特殊要求</span>
+                <!-- 右侧: 步骤2 偏好设置（可选） -->
+                <div class="md:mt-6 mt-10">
+                    <div class="bg-gradient-to-r from-green-400 to-blue-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                        <span class="font-bold">2. 偏好设置（可选）</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
-                        <!-- 营养搭配 -->
-                        <div class="mb-6">
-                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">⚖️ 营养搭配</h5>
-                            <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 h-full">
+                        <!-- 提示信息 -->
+                        <div class="mb-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                            <p class="text-sm text-blue-700">
+                                <span class="font-medium">💡 可选配置：</span>
+                                以下设置为可选项，不设置也能生成精彩菜单。
+                            </p>
+                        </div>
+
+                        <!-- 可折叠的配置选项 -->
+                        <div class="space-y-4">
+                            <!-- 口味和风格设置 -->
+                            <div class="border-2 border-gray-200 rounded-lg">
                                 <button
-                                    v-for="nutrition in nutritionOptions"
-                                    :key="nutrition.id"
-                                    @click="config.nutritionFocus = nutrition.id"
-                                    :class="[
-                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
-                                        config.nutritionFocus === nutrition.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    ]"
+                                    @click="showTasteSettings = !showTasteSettings"
+                                    class="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg font-medium text-left flex items-center justify-between transition-colors"
                                 >
-                                    <span>{{ nutrition.icon }}</span>
-                                    <span>{{ nutrition.name }}</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-lg">🍽️</span>
+                                        <span class="font-bold text-gray-800">口味和风格设置</span>
+                                    </div>
+                                    <span class="text-gray-500 transform transition-transform" :class="{ 'rotate-180': showTasteSettings }">▼</span>
                                 </button>
+
+                                <Transition name="collapse">
+                                    <div v-show="showTasteSettings" class="p-4 border-t-2 border-gray-200 space-y-6">
+                                        <!-- 口味偏好 -->
+                                        <div>
+                                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">👅 口味偏好</h5>
+                                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                <button
+                                                    v-for="taste in tasteOptions"
+                                                    :key="taste.id"
+                                                    @click="toggleTaste(taste.id)"
+                                                    :class="[
+                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        config.tastes.includes(taste.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                    ]"
+                                                >
+                                                    <span>{{ taste.icon }}</span>
+                                                    <span>{{ taste.name }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 菜系风格 -->
+                                        <div>
+                                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">🌍 菜系风格</h5>
+                                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                                <button
+                                                    v-for="style in cuisineStyles"
+                                                    :key="style.id"
+                                                    @click="config.cuisineStyle = style.id"
+                                                    :class="[
+                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        config.cuisineStyle === style.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                    ]"
+                                                >
+                                                    <span>{{ style.icon }}</span>
+                                                    <span>{{ style.name }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 用餐场景 -->
+                                        <div>
+                                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">🎭 用餐场景</h5>
+                                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                <button
+                                                    v-for="scene in diningScenes"
+                                                    :key="scene.id"
+                                                    @click="config.diningScene = scene.id"
+                                                    :class="[
+                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        config.diningScene === scene.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                    ]"
+                                                >
+                                                    <span>{{ scene.icon }}</span>
+                                                    <span>{{ scene.name }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition>
+                            </div>
+
+                            <!-- 营养和特殊要求设置 -->
+                            <div class="border-2 border-gray-200 rounded-lg">
+                                <button
+                                    @click="showNutritionSettings = !showNutritionSettings"
+                                    class="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-lg font-medium text-left flex items-center justify-between transition-colors"
+                                >
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-lg">⚖️</span>
+                                        <span class="font-bold text-gray-800">营养和特殊要求</span>
+                                    </div>
+                                    <span class="text-gray-500 transform transition-transform" :class="{ 'rotate-180': showNutritionSettings }">▼</span>
+                                </button>
+
+                                <Transition name="collapse">
+                                    <div v-show="showNutritionSettings" class="p-4 border-t-2 border-gray-200 space-y-6">
+                                        <!-- 营养搭配 -->
+                                        <div>
+                                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">⚖️ 营养搭配</h5>
+                                            <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+                                                <button
+                                                    v-for="nutrition in nutritionOptions"
+                                                    :key="nutrition.id"
+                                                    @click="config.nutritionFocus = nutrition.id"
+                                                    :class="[
+                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        config.nutritionFocus === nutrition.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                    ]"
+                                                >
+                                                    <span>{{ nutrition.icon }}</span>
+                                                    <span>{{ nutrition.name }}</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 特殊要求 -->
+                                        <div>
+                                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">💭 特殊要求</h5>
+                                            <textarea
+                                                v-model="config.customRequirement"
+                                                placeholder="例如：不要太油腻，适合老人小孩，有一道汤..."
+                                                class="w-full p-3 border-2 border-black rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                                rows="3"
+                                                maxlength="200"
+                                            ></textarea>
+                                            <div class="text-xs text-gray-500 mt-1 text-right">{{ config.customRequirement.length }}/200</div>
+                                        </div>
+                                    </div>
+                                </Transition>
                             </div>
                         </div>
 
-                        <!-- 特殊要求 -->
-                        <div class="flex-1">
-                            <h5 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-1">💭 特殊要求</h5>
-                            <textarea
-                                v-model="config.customRequirement"
-                                placeholder="例如：不要太油腻，适合老人小孩，有一道汤..."
-                                class="w-full p-3 border-2 border-black rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-pink-400"
-                                rows="4"
-                                maxlength="200"
-                            ></textarea>
-                            <div class="text-xs text-gray-500 mt-1 text-right">{{ config.customRequirement.length }}/200</div>
-                        </div>
-
-                        <!-- 当前配置预览 -->
-                        <div class="bg-gray-50 rounded-lg p-3 mt-4">
+                        <!-- 当前配置预览（简化版） -->
+                        <div class="bg-gray-50 rounded-lg p-3 mt-6">
                             <h6 class="font-bold text-sm text-gray-700 mb-2 flex items-center gap-2">
                                 <span>📋</span>
                                 <span>当前配置</span>
                             </h6>
                             <div class="text-xs text-gray-600 space-y-1">
-                                <div>菜品数量：{{ config.dishCount }}道菜</div>
-                                <div v-if="config.customDishes.length > 0">指定菜品：{{ config.customDishes.join('、') }}</div>
+                                <div>生成模式：{{ config.flexibleCount ? '✨ 智能搭配' : '🎯 固定数量' }}</div>
+                                <div v-if="!config.flexibleCount">菜品数量：{{ config.dishCount }}道菜</div>
+                                <div v-if="config.customDishes.length > 0">{{ config.flexibleCount ? '输入菜品' : '指定菜品' }}：{{ config.customDishes.join('、') }}</div>
                                 <div v-if="config.tastes.length > 0">口味：{{ config.tastes.map(t => tasteOptions.find(opt => opt.id === t)?.name).join('、') }}</div>
-                                <div>风格：{{ cuisineStyles.find(s => s.id === config.cuisineStyle)?.name }}</div>
-                                <div>场景：{{ diningScenes.find(s => s.id === config.diningScene)?.name }}</div>
-                                <div>营养：{{ nutritionOptions.find(n => n.id === config.nutritionFocus)?.name }}</div>
+                                <div v-if="config.cuisineStyle !== 'mixed'">风格：{{ cuisineStyles.find(s => s.id === config.cuisineStyle)?.name }}</div>
+                                <div v-if="config.diningScene !== 'family'">场景：{{ diningScenes.find(s => s.id === config.diningScene)?.name }}</div>
+                                <div v-if="config.nutritionFocus !== 'balanced'">营养：{{ nutritionOptions.find(n => n.id === config.nutritionFocus)?.name }}</div>
+                                <div v-if="config.customRequirement">特殊要求：{{ config.customRequirement }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 步骤4: 生成一桌菜 -->
+            <!-- 步骤2: 生成一桌菜 -->
             <div class="mb-6 mt-16">
                 <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
-                    <span class="font-bold">5. 生成一桌菜</span>
+                    <span class="font-bold">3. 生成一桌菜</span>
                 </div>
                 <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6">
                     <!-- 生成按钮区域 -->
@@ -295,7 +380,7 @@
                         <div class="space-y-3">
                             <button
                                 @click="generateTableMenuAction"
-                                :disabled="isGenerating"
+                                :disabled="isGenerating || (config.flexibleCount && config.customDishes.length === 0)"
                                 class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform disabled:scale-100 disabled:cursor-not-allowed shadow-lg"
                             >
                                 <span class="flex items-center gap-2 justify-center">
@@ -303,6 +388,13 @@
                                     <span>生成一桌菜</span>
                                 </span>
                             </button>
+
+                            <!-- 智能搭配模式提示 -->
+                            <div v-if="config.flexibleCount && config.customDishes.length === 0" class="mt-3 p-3 bg-orange-50 border-2 border-orange-200 rounded-lg">
+                                <p class="text-sm text-orange-700 text-center">
+                                    <span class="font-medium">⚠️ 请先在步骤1中输入至少一道菜品</span>
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -324,7 +416,7 @@
                                 @click="resetConfig"
                                 class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
                             >
-                                🔄 重新配置
+                                🔄 重新生成
                             </button>
                         </div>
 
@@ -345,7 +437,12 @@
                                     <button
                                         @click="generateDishRecipeAction(dish, index)"
                                         :disabled="dish.isGeneratingRecipe"
-                                        class="px-3 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg text-sm font-bold border-2 border-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        :class="[
+                                            'px-3 py-2 text-white rounded-lg text-sm font-bold border-2 border-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
+                                            dish.recipe
+                                                ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
+                                                : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600'
+                                        ]"
                                     >
                                         <span v-if="dish.isGeneratingRecipe" class="flex items-center gap-1">
                                             <div class="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>
@@ -361,6 +458,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- 底部 -->
+        <footer class="bg-white border-4 border-black max-w-7xl mx-auto px-2 mb-4 rounded-lg p-4 text-center">
+            <p class="text-sm text-gray-600">
+                © 2025 一饭封神 | <a href="https://github.com/liu-ziting/what-to-eat" target="_blank" class="text-retro-blue hover:underline">Powered by Liuziting</a>
+            </p>
+        </footer>
     </div>
 
     <!-- 菜谱弹窗 -->
@@ -396,7 +500,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, Teleport, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, Teleport, Transition, onMounted, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
 import RecipeCard from '@/components/RecipeCard.vue'
 import { generateTableMenu, generateDishRecipe, testAIConnection } from '@/services/aiService'
@@ -404,6 +508,7 @@ import { generateTableMenu, generateDishRecipe, testAIConnection } from '@/servi
 // 配置选项
 interface TableConfig {
     dishCount: number
+    flexibleCount: boolean
     tastes: string[]
     cuisineStyle: string
     diningScene: string
@@ -428,9 +533,14 @@ const generatingText = ref('正在生成菜单...')
 const generatedDishes = ref<DishInfo[]>([])
 const selectedRecipe = ref<Recipe | null>(null)
 
+// 折叠状态管理
+const showTasteSettings = ref(false)
+const showNutritionSettings = ref(false)
+
 // 配置
 const config = reactive<TableConfig>({
     dishCount: 6,
+    flexibleCount: true, // 默认开启智能搭配模式
     tastes: [],
     cuisineStyle: 'mixed',
     diningScene: 'family',
@@ -659,16 +769,10 @@ onUnmounted(() => {
 
 // 重置配置
 const resetConfig = () => {
+    // 只清除生成的结果，保留用户的配置选择
     generatedDishes.value = []
     selectedRecipe.value = null
-    config.dishCount = 6
-    config.tastes = []
-    config.cuisineStyle = 'mixed'
-    config.diningScene = 'family'
-    config.nutritionFocus = 'balanced'
-    config.customRequirement = ''
-    config.customDishes = []
-    currentCustomDish.value = ''
+    // 不重置用户的配置选择，让用户可以基于当前配置重新生成
 }
 </script>
 
@@ -755,5 +859,24 @@ const resetConfig = () => {
 
 .scrollbar-hide::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
+}
+
+/* 折叠动画 */
+.collapse-enter-active,
+.collapse-leave-active {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+    max-height: 0;
+    opacity: 0;
+}
+
+.collapse-enter-to,
+.collapse-leave-from {
+    max-height: 500px;
+    opacity: 1;
 }
 </style>
