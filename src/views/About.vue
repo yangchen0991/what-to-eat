@@ -219,7 +219,7 @@
                                                 <div class="text-3xl">☕</div>
                                                 <h4 class="font-bold text-dark-800 text-lg">投喂</h4>
                                             </div>
-                                            <p class="text-sm text-gray-600 mb-2">AI需要算力，想要使本项目获得更久</p>
+                                            <p class="text-sm text-gray-600 mb-2">AI需要成本，想要使本项目获得更久</p>
                                             <p class="text-xs text-gray-500">扫码支持开发者 →</p>
                                         </div>
                                         <div class="flex-shrink-0">
