@@ -385,7 +385,7 @@
                             >
                                 <span class="flex items-center gap-2 justify-center">
                                     <span class="text-xl">✨</span>
-                                    <span>生成一桌菜</span>
+                                    <span>交给大师</span>
                                 </span>
                             </button>
 
