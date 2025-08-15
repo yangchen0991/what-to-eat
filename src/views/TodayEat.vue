@@ -6,7 +6,7 @@
         <div class="max-w-7xl mx-auto space-y-6 rounded-lg">
             <!-- 开始按钮 -->
             <div v-if="!isSelecting && selectedDishes.length === 0" class="text-center">
-                <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-black">
+                <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-[#0A0910]">
                     <div class="text-6xl mb-4">🎲</div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">准备好了吗？</h2>
 
@@ -92,7 +92,7 @@
             </div>
 
             <!-- 选择结果 -->
-            <div v-if="!isSelecting && selectedDishes.length > 0" class="bg-white rounded-2xl shadow-lg p-6 border-2 border-black">
+            <div v-if="!isSelecting && selectedDishes.length > 0" class="bg-white rounded-2xl shadow-lg p-6 border-2 border-[#0A0910]">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">🎉 今日推荐</h3>
 
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
@@ -153,7 +153,7 @@
             </div>
 
             <!-- 菜谱结果 -->
-            <div v-if="recipe" class="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-2 border-black">
+            <div v-if="recipe" class="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-2 border-[#0A0910]">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center gap-2">
                     <span>📖</span>
                     <span>专属菜谱</span>

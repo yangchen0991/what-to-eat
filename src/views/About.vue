@@ -6,10 +6,10 @@
         <div class="max-w-7xl mx-auto space-y-6">
             <!-- 项目简介 -->
             <div class="relative">
-                <div class="bg-blue-500 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block mb-0">
+                <div class="bg-blue-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block mb-0">
                     <span class="font-bold text-lg">🎯 项目简介</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-6">
                     <div class="mt-4">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mb-8">
                             <div>
@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg p-8 border-2 border-black">
+                                <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg p-8 border-2 border-[#0A0910]">
                                     <div class="text-6xl mb-4">👨‍🍳</div>
                                     <h3 class="text-xl font-bold text-white mb-2">LEGENDARY STATUS</h3>
                                     <p class="text-white text-sm">FROM A SINGLE MEAL!</p>
@@ -76,10 +76,10 @@
 
             <!-- 菜系大全 -->
             <div class="relative">
-                <div class="bg-gradient-to-r from-red-500 to-green-500 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block mb-0">
+                <div class="bg-gradient-to-r from-red-500 to-green-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block mb-0">
                     <span class="font-bold text-lg">👨‍🍳 大师介绍</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-6">
                     <div class="mt-4">
                         <!-- 中华八大菜系 -->
                         <div class="mb-8">
@@ -138,15 +138,15 @@
 
             <!-- 关于作者 -->
             <div class="relative mt-6">
-                <div class="bg-indigo-500 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block mb-0">
+                <div class="bg-indigo-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block mb-0">
                     <span class="font-bold text-lg">👨‍💻 关于作者</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <div class="mt-4">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
                             <div>
                                 <div class="flex items-center gap-4 mb-4">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center border-2 border-black">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center border-2 border-[#0A0910]">
                                         <span class="text-white text-2xl font-bold">L</span>
                                     </div>
                                     <div>

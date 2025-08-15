@@ -8,10 +8,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <!-- 左侧: 步骤1 菜品配置 -->
                 <div class="">
-                    <div class="bg-gradient-to-r from-orange-400 to-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                    <div class="bg-gradient-to-r from-orange-400 to-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                         <span class="font-bold">1. 菜品配置</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 h-full">
+                    <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 h-full">
                         <!-- 生成模式选择 - 紧凑布局 -->
                         <div class="mb-4">
                             <h3 class="text-lg font-bold text-dark-800 mb-3 flex items-center gap-2">
@@ -22,7 +22,7 @@
                                 <button
                                     @click="config.flexibleCount = false"
                                     :class="[
-                                        'px-4 py-3 rounded-lg font-bold border-2 border-black transition-all duration-200 text-left flex items-center gap-3',
+                                        'px-4 py-3 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-left flex items-center gap-3',
                                         !config.flexibleCount ? 'bg-yellow-400 text-dark-800 shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     ]"
                                 >
@@ -35,7 +35,7 @@
                                 <button
                                     @click="config.flexibleCount = true"
                                     :class="[
-                                        'px-4 py-3 rounded-lg font-bold border-2 border-black transition-all duration-200 text-left flex items-center gap-3',
+                                        'px-4 py-3 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-left flex items-center gap-3',
                                         config.flexibleCount ? 'bg-yellow-400 text-dark-800 shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     ]"
                                 >
@@ -62,7 +62,7 @@
                                                 :key="count"
                                                 @click="config.dishCount = count"
                                                 :class="[
-                                                    'px-3 py-1 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm',
+                                                    'px-3 py-1 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm',
                                                     config.dishCount === count ? 'bg-yellow-400 text-dark-800' : 'bg-white text-gray-700 hover:bg-gray-100'
                                                 ]"
                                             >
@@ -78,7 +78,7 @@
                                                 type="number"
                                                 min="1"
                                                 max="20"
-                                                class="w-14 px-2 py-1 text-center border-2 border-black rounded-lg font-bold text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                                class="w-14 px-2 py-1 text-center border-2 border-[#0A0910] rounded-lg font-bold text-sm focus:outline-none focus:ring-2 focus:ring-pink-400"
                                             />
                                             <span class="text-sm text-gray-600">道</span>
                                         </div>
@@ -93,7 +93,7 @@
                                             <div
                                                 v-for="dish in config.customDishes"
                                                 :key="dish"
-                                                class="inline-flex items-center gap-1 bg-yellow-400 text-dark-800 px-2 py-1 rounded-full text-sm font-medium border-2 border-black"
+                                                class="inline-flex items-center gap-1 bg-yellow-400 text-dark-800 px-2 py-1 rounded-full text-sm font-medium border-2 border-[#0A0910]"
                                             >
                                                 {{ dish }}
                                                 <button @click="removeCustomDish(dish)" class="hover:bg-yellow-500 rounded-full p-1 transition-colors">
@@ -107,7 +107,7 @@
                                             v-model="currentCustomDish"
                                             @keyup.enter="addCustomDish"
                                             placeholder="输入菜品名称，按回车添加..."
-                                            class="w-full p-2 border-2 border-black rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                            class="w-full p-2 border-2 border-[#0A0910] rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
                                         />
                                         <button
                                             @click="addCustomDish"
@@ -138,7 +138,7 @@
                                             <div
                                                 v-for="dish in config.customDishes"
                                                 :key="dish"
-                                                class="inline-flex items-center gap-1 bg-green-400 text-dark-800 px-2 py-1 rounded-full text-sm font-medium border-2 border-black"
+                                                class="inline-flex items-center gap-1 bg-green-400 text-dark-800 px-2 py-1 rounded-full text-sm font-medium border-2 border-[#0A0910]"
                                             >
                                                 {{ dish }}
                                                 <button @click="removeCustomDish(dish)" class="hover:bg-green-500 rounded-full p-1 transition-colors">
@@ -152,7 +152,7 @@
                                             v-model="currentCustomDish"
                                             @keyup.enter="addCustomDish"
                                             placeholder="输入菜品名称，按回车添加..."
-                                            class="w-full p-2 border-2 border-black rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-400"
+                                            class="w-full p-2 border-2 border-[#0A0910] rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-green-400"
                                         />
                                         <button
                                             @click="addCustomDish"
@@ -174,10 +174,10 @@
 
                 <!-- 右侧: 步骤2 偏好设置（可选） -->
                 <div class="mt-10">
-                    <div class="bg-gradient-to-r from-green-400 to-blue-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                    <div class="bg-gradient-to-r from-green-400 to-blue-400 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                         <span class="font-bold">2. 偏好设置（可选）</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 h-full">
+                    <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 h-full">
                         <!-- 提示信息 -->
                         <div class="mb-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
                             <p class="text-sm text-blue-700">
@@ -212,7 +212,7 @@
                                                     :key="taste.id"
                                                     @click="toggleTaste(taste.id)"
                                                     :class="[
-                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        'p-2 rounded-lg border-2 border-[#0A0910] font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
                                                         config.tastes.includes(taste.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                     ]"
                                                 >
@@ -231,7 +231,7 @@
                                                     :key="style.id"
                                                     @click="config.cuisineStyle = style.id"
                                                     :class="[
-                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        'p-2 rounded-lg border-2 border-[#0A0910] font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
                                                         config.cuisineStyle === style.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                     ]"
                                                 >
@@ -250,7 +250,7 @@
                                                     :key="scene.id"
                                                     @click="config.diningScene = scene.id"
                                                     :class="[
-                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        'p-2 rounded-lg border-2 border-[#0A0910] font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
                                                         config.diningScene === scene.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                     ]"
                                                 >
@@ -287,7 +287,7 @@
                                                     :key="nutrition.id"
                                                     @click="config.nutritionFocus = nutrition.id"
                                                     :class="[
-                                                        'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
+                                                        'p-2 rounded-lg border-2 border-[#0A0910] font-medium text-xs transition-all duration-200 flex items-center justify-center gap-1',
                                                         config.nutritionFocus === nutrition.id ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                                     ]"
                                                 >
@@ -303,7 +303,7 @@
                                             <textarea
                                                 v-model="config.customRequirement"
                                                 placeholder="例如：不要太油腻，适合老人小孩，有一道汤..."
-                                                class="w-full p-3 border-2 border-black rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                                class="w-full p-3 border-2 border-[#0A0910] rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-pink-400"
                                                 rows="3"
                                                 maxlength="200"
                                             ></textarea>
@@ -337,10 +337,10 @@
 
             <!-- 步骤2: 生成一桌菜 -->
             <div class="mb-6 mt-16">
-                <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                     <span class="font-bold">3. 生成一桌菜</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <!-- 生成按钮区域 -->
                     <div v-if="!isGenerating && generatedDishes.length === 0" class="text-center">
                         <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center mx-auto mb-4">
@@ -353,7 +353,7 @@
                             <button
                                 @click="generateTableMenuAction"
                                 :disabled="isGenerating || (config.flexibleCount && config.customDishes.length === 0)"
-                                class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform disabled:scale-100 disabled:cursor-not-allowed shadow-lg"
+                                class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-[#0A0910] transition-all duration-300 transform disabled:scale-100 disabled:cursor-not-allowed shadow-lg"
                             >
                                 <span class="flex items-center gap-2 justify-center">
                                     <span class="text-xl">✨</span>
@@ -386,7 +386,7 @@
                             </h3>
                             <button
                                 @click="resetConfig"
-                                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
                             >
                                 🔄 重新生成
                             </button>
@@ -394,7 +394,11 @@
 
                         <!-- 菜品列表 -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                            <div v-for="(dish, index) in generatedDishes" :key="index" class="border-2 border-black rounded-lg p-4 bg-white hover:bg-yellow-50 transition-colors">
+                            <div
+                                v-for="(dish, index) in generatedDishes"
+                                :key="index"
+                                class="border-2 border-[#0A0910] rounded-lg p-4 bg-white hover:bg-yellow-50 transition-colors"
+                            >
                                 <div class="flex justify-between items-start mb-2">
                                     <h4 class="font-bold text-gray-800 text-lg">{{ dish.name }}</h4>
                                     <span class="text-xs bg-pink-400 text-white px-2 py-1 rounded-full font-medium">{{ dish.category }}</span>
@@ -410,7 +414,7 @@
                                         @click="generateDishRecipeAction(dish, index)"
                                         :disabled="dish.isGeneratingRecipe"
                                         :class="[
-                                            'px-3 py-2 text-white rounded-lg text-sm font-bold border-2 border-black transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
+                                            'px-3 py-2 text-white rounded-lg text-sm font-bold border-2 border-[#0A0910] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
                                             dish.recipe
                                                 ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
                                                 : 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600'
@@ -439,7 +443,7 @@
     <Teleport to="body">
         <div v-if="selectedRecipe" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 modal-overlay" @click="closeRecipeModal">
             <div
-                class="bg-white rounded-2xl border-2 border-black shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden modal-content transform transition-all duration-300"
+                class="bg-white rounded-2xl border-2 border-[#0A0910] shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden modal-content transform transition-all duration-300"
                 @click.stop
             >
                 <!-- 弹窗头部 -->

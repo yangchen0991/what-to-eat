@@ -6,10 +6,10 @@
         <div class="max-w-7xl mx-auto">
             <!-- 步骤1: 输入食材 -->
             <div class="mb-6">
-                <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                     <span class="font-bold">1. 输入食材</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 md:pb-10">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6 md:pb-10">
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-black rounded-lg flex items-center justify-center mx-auto mb-4">
                             <span class="text-white text-2xl">🥬</span>
@@ -26,7 +26,7 @@
                             <div
                                 v-for="ingredient in ingredients"
                                 :key="ingredient"
-                                class="inline-flex items-center gap-2 bg-yellow-400 text-dark-800 px-3 py-2 rounded-full text-sm font-medium border-2 border-black"
+                                class="inline-flex items-center gap-2 bg-yellow-400 text-dark-800 px-3 py-2 rounded-full text-sm font-medium border-2 border-[#0A0910]"
                             >
                                 {{ ingredient }}
                                 <button @click="removeIngredient(ingredient)" class="hover:bg-yellow-500 rounded-full p-1 transition-colors">
@@ -41,7 +41,7 @@
                                 v-model="currentIngredient"
                                 @keyup.enter="addIngredient"
                                 placeholder="输入食材名称，按回车添加..."
-                                class="w-full p-3 md:p-4 border-2 border-black rounded-lg text-sm md:text-lg font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
+                                class="w-full p-3 md:p-4 border-2 border-[#0A0910] rounded-lg text-sm md:text-lg font-medium focus:outline-none focus:ring-2 focus:ring-pink-400"
                             />
                         </div>
 
@@ -109,10 +109,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <!-- 步骤2: 选择菜系 -->
                 <div>
-                    <div class="bg-green-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                    <div class="bg-green-400 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                         <span class="font-bold">2. 选择菜系</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
+                    <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6 h-full">
                         <div>
                             <!-- 自定义要求提示 -->
                             <div v-if="customPrompt.trim()" class="mb-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg text-center">
@@ -129,7 +129,7 @@
                                         :key="cuisine.id"
                                         @click="selectCuisine(cuisine)"
                                         :class="[
-                                            'p-2 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200 relative flex items-center justify-center gap-1',
+                                            'p-2 rounded-lg border-2 border-[#0A0910] font-medium text-sm transition-all duration-200 relative flex items-center justify-center gap-1',
                                             selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >
@@ -148,7 +148,7 @@
                                         :key="cuisine.id"
                                         @click="selectCuisine(cuisine)"
                                         :class="[
-                                            'p-2 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200 relative flex items-center justify-center gap-1',
+                                            'p-2 rounded-lg border-2 border-[#0A0910] font-medium text-sm transition-all duration-200 relative flex items-center justify-center gap-1',
                                             selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >
@@ -250,7 +250,7 @@
                                     <div class="mt-2">
                                         <button
                                             @click="getRandomInspiration"
-                                            class="w-full py-1.5 px-2 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-black transition-all duration-200 transform"
+                                            class="w-full py-1.5 px-2 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-medium rounded-lg border-2 border-[#0A0910] transition-all duration-200 transform"
                                         >
                                             ✨ 随机灵感
                                         </button>
@@ -271,10 +271,10 @@
 
                 <!-- 步骤3: 交给大师 -->
                 <div class="max-sm:mt-10">
-                    <div class="bg-orange-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                    <div class="bg-orange-400 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                         <span class="font-bold">3. 交给大师</span>
                     </div>
-                    <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6 h-full">
+                    <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6 h-full">
                         <div class="text-center h-full flex flex-col">
                             <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center mx-auto mb-4">
                                 <span class="text-white text-2xl">👨‍🍳</span>
@@ -330,7 +330,7 @@
                             <button
                                 @click="generateRecipes"
                                 :disabled="ingredients.length === 0 || isLoading"
-                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-black transition-all duration-300 transform disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
+                                class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 disabled:from-gray-400 disabled:to-gray-400 text-white px-6 py-3 rounded-lg font-bold text-base md:text-lg border-2 border-[#0A0910] transition-all duration-300 transform disabled:scale-100 disabled:cursor-not-allowed shadow-lg mb-3"
                             >
                                 <span class="flex items-center gap-2 justify-center">
                                     <template v-if="isLoading">
@@ -358,10 +358,10 @@
 
             <!-- 步骤4: 菜谱结果 -->
             <div ref="resultsSection" class="mt-16">
-                <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                <div class="bg-dark-800 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                     <span class="font-bold">4. 菜谱结果</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-2 md:p-6">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-2 md:p-6">
                     <!-- 移除这个整体加载状态，因为我们现在使用菜系模块加载 -->
 
                     <!-- 流式加载状态 - 显示菜系模块和加载状态 -->
@@ -371,7 +371,7 @@
                             <div
                                 v-for="(cuisineInfo, index) in cuisineSlots"
                                 :key="cuisineInfo.id"
-                                class="border-2 border-black rounded-lg overflow-hidden"
+                                class="border-2 border-[#0A0910] rounded-lg overflow-hidden"
                                 :class="cuisineInfo.recipe ? 'animate-fade-in-up' : ''"
                                 :style="cuisineInfo.recipe ? { animationDelay: `${index * 0.2}s` } : {}"
                             >
@@ -472,7 +472,7 @@
                         <button
                             @click="generateRecipes"
                             :disabled="ingredients.length === 0"
-                            class="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium border-2 border-black transition-all duration-200 disabled:cursor-not-allowed"
+                            class="bg-red-500 hover:bg-red-600 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium border-2 border-[#0A0910] transition-all duration-200 disabled:cursor-not-allowed"
                         >
                             🔄 重新生成
                         </button>
@@ -492,7 +492,7 @@
                         <div
                             v-for="(recipe, index) in recipes"
                             :key="recipe.id"
-                            class="border-2 border-black rounded-lg overflow-hidden animate-fade-in-up"
+                            class="border-2 border-[#0A0910] rounded-lg overflow-hidden animate-fade-in-up"
                             :style="{ animationDelay: `${index * 0.2}s` }"
                         >
                             <RecipeCard :recipe="recipe" />

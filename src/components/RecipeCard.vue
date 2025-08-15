@@ -184,7 +184,12 @@
 
                 <!-- 生成的图片 -->
                 <div v-else-if="generatedImage" class="mb-3">
-                    <img :src="generatedImage.url" :alt="`${recipe.name}效果图`" class="w-full h-[20rem] object-cover rounded-lg border-2 border-black" @error="handleImageError" />
+                    <img
+                        :src="generatedImage.url"
+                        :alt="`${recipe.name}效果图`"
+                        class="w-full h-[20rem] object-cover rounded-lg border-2 border-[#0A0910]"
+                        @error="handleImageError"
+                    />
                 </div>
 
                 <!-- 错误提示 -->

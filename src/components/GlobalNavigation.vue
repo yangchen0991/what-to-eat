@@ -1,12 +1,12 @@
 <template>
-    <nav class="bg-white border-2 border-black max-w-7xl mx-auto rounded-lg mb-4 shadow-lg">
-        <div class="px-4 py-3">
+    <nav class="bg-white border-2 border-[#0A0910] max-w-7xl mx-auto rounded-lg mb-4 shadow-lg">
+        <div class="px-6 py-6">
             <!-- 桌面端导航 -->
             <div class="hidden md:flex items-center justify-between">
                 <!-- Logo区域 -->
                 <router-link to="/" class="flex items-center gap-3 transition-transform duration-200" @click="rotateLogo">
                     <div
-                        class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-black"
+                        class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-[#0A0910]"
                         :class="{ 'rotate-logo': isLogoRotating }"
                     >
                         <span class="text-white text-xl font-bold">饭</span>
@@ -23,7 +23,7 @@
                 <div class="flex items-center gap-3">
                     <router-link
                         to="/"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🏠</span>
@@ -31,7 +31,7 @@
                     </router-link>
                     <router-link
                         to="/today-eat"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
@@ -39,7 +39,7 @@
                     </router-link>
                     <router-link
                         to="/table-design"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
@@ -47,7 +47,7 @@
                     </router-link>
                     <router-link
                         to="/favorites"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/favorites' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>❤️</span>
@@ -55,7 +55,7 @@
                     </router-link>
                     <router-link
                         to="/gallery"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/gallery' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🖼️</span>
@@ -63,7 +63,7 @@
                     </router-link>
                     <router-link
                         to="/about"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/about' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>📖</span>
@@ -75,10 +75,10 @@
             <!-- 移动端导航 -->
             <div class="md:hidden">
                 <!-- 顶部Logo和菜单按钮 -->
-                <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center justify-between">
                     <router-link to="/" class="flex items-center gap-2" @click="rotateLogo">
                         <div
-                            class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-black"
+                            class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-[#0A0910]"
                             :class="{ 'rotate-logo': isLogoRotating }"
                         >
                             <span class="text-white text-lg font-bold">饭</span>
@@ -90,7 +90,7 @@
                             <div class="text-xs text-gray-600 font-medium">{{ pageSubtitle }}</div>
                         </div>
                     </router-link>
-                    <button @click="showMobileMenu = !showMobileMenu" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg border-2 border-black transition-colors">
+                    <button @click="showMobileMenu = !showMobileMenu" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg border-2 border-[#0A0910] transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -98,11 +98,11 @@
                 </div>
 
                 <!-- 移动端菜单 -->
-                <div v-if="showMobileMenu" class="space-y-2 border-t-2 border-gray-200 pt-3">
+                <div v-if="showMobileMenu" class="space-y-2 border-t-2 border-gray-200 pt-3 mt-3">
                     <router-link
                         to="/"
                         @click="showMobileMenu = false"
-                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
                         :class="$route.path === '/' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🏠</span>
@@ -111,7 +111,7 @@
                     <router-link
                         to="/today-eat"
                         @click="showMobileMenu = false"
-                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
                         :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
@@ -120,7 +120,7 @@
                     <router-link
                         to="/table-design"
                         @click="showMobileMenu = false"
-                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
                         :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
@@ -129,7 +129,7 @@
                     <router-link
                         to="/favorites"
                         @click="showMobileMenu = false"
-                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
                         :class="$route.path === '/favorites' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>❤️</span>
@@ -138,7 +138,7 @@
                     <router-link
                         to="/gallery"
                         @click="showMobileMenu = false"
-                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
                         :class="$route.path === '/gallery' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🖼️</span>
@@ -147,7 +147,7 @@
                     <router-link
                         to="/about"
                         @click="showMobileMenu = false"
-                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
                         :class="$route.path === '/about' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>📖</span>

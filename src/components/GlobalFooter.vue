@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-white border-2 border-black max-w-7xl mx-auto px-2 rounded-lg p-4 text-center mt-8">
+    <footer class="bg-white border-2 border-[#0A0910] max-w-7xl mx-auto px-2 rounded-lg p-4 text-center mt-8">
         <div class="space-y-3">
             <!-- 主要信息 -->
             <div class="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">

@@ -1,6 +1,6 @@
 <template>
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" @click.self="$emit('close')">
-        <div class="bg-white rounded-lg border-2 border-black max-w-md w-full">
+        <div class="bg-white rounded-lg border-2 border-[#0A0910] max-w-md w-full">
             <div class="border-b-2 border-black p-4">
                 <h3 class="text-lg font-bold">编辑备注</h3>
             </div>
@@ -10,7 +10,7 @@
                     <textarea
                         v-model="notes"
                         placeholder="添加你的备注..."
-                        class="w-full p-3 border-2 border-black rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-red-400"
+                        class="w-full p-3 border-2 border-[#0A0910] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-red-400"
                         rows="4"
                         maxlength="200"
                     ></textarea>
@@ -19,13 +19,13 @@
                 <div class="flex gap-2">
                     <button
                         @click="$emit('save', notes)"
-                        class="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium border-2 border-black transition-all duration-200"
+                        class="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium border-2 border-[#0A0910] transition-all duration-200"
                     >
                         保存
                     </button>
                     <button
                         @click="$emit('close')"
-                        class="flex-1 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium border-2 border-black transition-all duration-200"
+                        class="flex-1 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium border-2 border-[#0A0910] transition-all duration-200"
                     >
                         取消
                     </button>

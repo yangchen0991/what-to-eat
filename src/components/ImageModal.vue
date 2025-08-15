@@ -1,6 +1,6 @@
 <template>
     <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" @click="$emit('close')">
-        <div class="bg-white rounded-lg border-2 border-black max-w-4xl max-h-[90vh] overflow-hidden" @click.stop>
+        <div class="bg-white rounded-lg border-2 border-[#0A0910] max-w-4xl max-h-[90vh] overflow-hidden" @click.stop>
             <!-- 头部 -->
             <div class="bg-blue-500 text-white p-4 flex items-center justify-between">
                 <div>
@@ -42,13 +42,13 @@
                 <div class="flex items-center gap-2">
                     <button
                         @click="$emit('download', image)"
-                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium border-2 border-black transition-all duration-200 hover:scale-105"
+                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium border-2 border-[#0A0910] transition-all duration-200 hover:scale-105"
                     >
                         📥 下载
                     </button>
                     <button
                         @click="$emit('delete', image.id)"
-                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium border-2 border-black transition-all duration-200 hover:scale-105"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium border-2 border-[#0A0910] transition-all duration-200 hover:scale-105"
                     >
                         🗑️ 删除
                     </button>

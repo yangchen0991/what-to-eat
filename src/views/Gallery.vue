@@ -6,10 +6,10 @@
         <div class="max-w-7xl mx-auto">
             <!-- 页面标题 -->
             <div class="mb-6">
-                <div class="bg-blue-500 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
+                <div class="bg-blue-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                     <span class="font-bold">封神图鉴</span>
                 </div>
-                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
@@ -26,7 +26,7 @@
                             <button
                                 v-if="images.length > 0"
                                 @click="showClearConfirm = true"
-                                class="px-3 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-medium border-2 border-black transition-all duration-200 hover:scale-105"
+                                class="px-3 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg text-sm font-medium border-2 border-[#0A0910] transition-all duration-200 hover:scale-105"
                             >
                                 🗑️ 清空
                             </button>
@@ -37,20 +37,20 @@
 
             <!-- 搜索和筛选 -->
             <div v-if="false" class="mb-6">
-                <div class="bg-white border-2 border-black rounded-lg p-4">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg p-4">
                     <div class="flex flex-col md:flex-row gap-4">
                         <!-- 搜索框 -->
                         <div class="flex-1">
                             <input
                                 v-model="searchQuery"
                                 placeholder="搜索菜谱名称、菜系或食材..."
-                                class="w-full p-3 border-2 border-black rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                class="w-full p-3 border-2 border-[#0A0910] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
                         </div>
 
                         <!-- 菜系筛选 -->
                         <div class="md:w-48">
-                            <select v-model="selectedCuisine" class="w-full p-3 border-2 border-black rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <select v-model="selectedCuisine" class="w-full p-3 border-2 border-[#0A0910] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
                                 <option value="">全部菜系</option>
                                 <option v-for="cuisine in availableCuisines" :key="cuisine" :value="cuisine">
                                     {{ cuisine }}
@@ -60,7 +60,7 @@
 
                         <!-- 排序 -->
                         <div class="md:w-48">
-                            <select v-model="sortBy" class="w-full p-3 border-2 border-black rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <select v-model="sortBy" class="w-full p-3 border-2 border-[#0A0910] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
                                 <option value="date-desc">最新生成</option>
                                 <option value="date-asc">最早生成</option>
                                 <option value="name-asc">菜名 A-Z</option>
@@ -72,12 +72,12 @@
             </div>
 
             <!-- 图片网格 -->
-            <div v-if="filteredImages.length > 0" class="bg-white border-2 border-black rounded-lg p-3 md:p-6">
+            <div v-if="filteredImages.length > 0" class="bg-white border-2 border-[#0A0910] rounded-lg p-3 md:p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div
                         v-for="image in filteredImages"
                         :key="image.id"
-                        class="bg-white border-2 border-black rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 group"
+                        class="bg-white border-2 border-[#0A0910] rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 group"
                     >
                         <!-- 图片 -->
                         <div class="relative aspect-[4/3] overflow-hidden">
@@ -140,13 +140,13 @@
 
             <!-- 空状态 -->
             <div v-else-if="images.length === 0" class="text-center py-6">
-                <div class="bg-white border-2 border-black rounded-lg p-8">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg p-8">
                     <div class="text-6xl mb-4">🖼️</div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">图库还是空的</h3>
                     <p class="text-gray-600 mb-6">去生成一些菜品效果图，让图库丰富起来吧！</p>
                     <router-link
                         to="/"
-                        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-bold border-2 border-black transition-all duration-200 hover:scale-105"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 hover:scale-105"
                     >
                         <span>✨</span>
                         <span>开始生成菜谱</span>
@@ -156,13 +156,13 @@
 
             <!-- 搜索无结果 -->
             <div v-else class="text-center py-16">
-                <div class="bg-white border-2 border-black rounded-lg p-8">
+                <div class="bg-white border-2 border-[#0A0910] rounded-lg p-8">
                     <div class="text-4xl mb-4">🔍</div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">没有找到匹配的图片</h3>
                     <p class="text-gray-600 mb-4">试试调整搜索条件或筛选选项</p>
                     <button
                         @click="clearFilters"
-                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium border-2 border-black transition-all duration-200"
+                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium border-2 border-[#0A0910] transition-all duration-200"
                     >
                         清除筛选条件
                     </button>
