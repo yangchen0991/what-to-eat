@@ -21,7 +21,7 @@
                     <router-link
                         to="/"
                         class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/' ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="$route.path === '/' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🏠</span>
                         <span>主页</span>
@@ -29,7 +29,7 @@
                     <router-link
                         to="/today-eat"
                         class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/today-eat' ? 'bg-orange-400 text-white' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'"
+                        :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
                         <span>今天吃什么？</span>
@@ -37,7 +37,7 @@
                     <router-link
                         to="/table-design"
                         class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/table-design' ? 'bg-purple-400 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'"
+                        :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
                         <span>一桌菜设计</span>
@@ -45,7 +45,7 @@
                     <router-link
                         to="/favorites"
                         class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/favorites' ? 'bg-red-400 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'"
+                        :class="$route.path === '/favorites' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>❤️</span>
                         <span>我的收藏</span>
@@ -53,7 +53,7 @@
                     <router-link
                         to="/about"
                         class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/about' ? 'bg-blue-400 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'"
+                        :class="$route.path === '/about' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>📖</span>
                         <span>简介</span>
@@ -89,7 +89,7 @@
                         to="/"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
-                        :class="$route.path === '/' ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="$route.path === '/' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🏠</span>
                         <span>主页</span>
@@ -98,7 +98,7 @@
                         to="/today-eat"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
-                        :class="$route.path === '/today-eat' ? 'bg-orange-400 text-white' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'"
+                        :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
                         <span>今天吃什么？</span>
@@ -107,7 +107,7 @@
                         to="/table-design"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
-                        :class="$route.path === '/table-design' ? 'bg-purple-400 text-white' : 'bg-purple-100 text-purple-700 hover:bg-purple-200'"
+                        :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
                         <span>一桌菜设计</span>
@@ -116,7 +116,7 @@
                         to="/favorites"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
-                        :class="$route.path === '/favorites' ? 'bg-red-400 text-white' : 'bg-red-100 text-red-700 hover:bg-red-200'"
+                        :class="$route.path === '/favorites' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>❤️</span>
                         <span>我的收藏</span>
@@ -125,7 +125,7 @@
                         to="/about"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
-                        :class="$route.path === '/about' ? 'bg-blue-400 text-white' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'"
+                        :class="$route.path === '/about' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>📖</span>
                         <span>简介</span>

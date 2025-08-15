@@ -10,7 +10,7 @@
                     <span class="font-bold">我的收藏</span>
                 </div>
                 <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6">
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
                                 <span class="text-white text-2xl">❤️</span>
@@ -126,7 +126,7 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <button @click="editNotes(favorite)" class="text-blue-500 hover:text-blue-600 text-sm" title="编辑备注">📝</button>
-                                <button @click="removeFavorite(favorite.recipe.id)" class="text-red-500 hover:text-red-600 text-sm" title="取消收藏">🗑️</button>
+                                <button @click="confirmRemoveFavorite(favorite.recipe.id)" class="text-red-500 hover:text-red-600 text-sm" title="取消收藏">🗑️</button>
                             </div>
                         </div>
 
@@ -145,7 +145,7 @@
             </div>
 
             <!-- 空状态 -->
-            <div v-else-if="favorites.length === 0" class="text-center py-16">
+            <div v-else-if="favorites.length === 0" class="text-center py-6">
                 <div class="bg-white border-2 border-black rounded-lg p-8">
                     <div class="text-6xl mb-4">🤍</div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">还没有收藏任何菜谱</h3>
@@ -187,6 +187,9 @@
             @confirm="clearAllFavorites"
             @cancel="showClearConfirm = false"
         />
+
+        <!-- 单个删除确认弹窗 -->
+        <ConfirmModal v-if="removingRecipeId" title="确认取消收藏" message="确定要取消收藏这道菜谱吗？" @confirm="removeFavorite" @cancel="removingRecipeId = null" />
 
         <!-- 底部 -->
         <GlobalFooter />
@@ -310,14 +313,23 @@ const saveNotes = (notes: string) => {
 }
 
 // 移除收藏
-const removeFavorite = (recipeId: string) => {
-    const success = FavoriteService.removeFavorite(recipeId)
+const removingRecipeId = ref<string | null>(null)
+
+const confirmRemoveFavorite = (recipeId: string) => {
+    removingRecipeId.value = recipeId
+}
+
+const removeFavorite = () => {
+    if (!removingRecipeId.value) return
+
+    const success = FavoriteService.removeFavorite(removingRecipeId.value)
     if (success) {
         refreshFavorites()
         showToast('已取消收藏', 'info')
     } else {
         showToast('取消收藏失败', 'error')
     }
+    removingRecipeId.value = null
 }
 
 // 清空所有收藏
