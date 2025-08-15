@@ -16,8 +16,8 @@
                                 <span class="text-white text-2xl">❤️</span>
                             </div>
                             <div>
-                                <h1 class="text-xl font-bold text-gray-800">收藏菜谱</h1>
-                                <p class="text-gray-600 text-sm">共收藏了 {{ favorites.length }} 道菜谱</p>
+                                <h1 class="text-md font-bold text-gray-800">收藏菜谱</h1>
+                                <p class="text-gray-600 text-xs">共收藏了 {{ favorites.length }} 道菜谱</p>
                             </div>
                         </div>
 

@@ -158,7 +158,7 @@
                     <span>📖</span>
                     <span>专属菜谱</span>
                 </h3>
-                <div class="border-2 border-[#333333] rounded-lg overflow-hidden">
+                <div class="max-w-2xl mx-auto border-2 border-[#333333] rounded-lg overflow-hidden">
                     <RecipeCard :recipe="recipe" />
                 </div>
             </div>

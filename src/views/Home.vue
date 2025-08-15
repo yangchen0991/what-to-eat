@@ -129,7 +129,7 @@
                                         :key="cuisine.id"
                                         @click="selectCuisine(cuisine)"
                                         :class="[
-                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative flex items-center justify-center gap-1',
+                                            'p-2 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200 relative flex items-center justify-center gap-1',
                                             selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >
@@ -148,7 +148,7 @@
                                         :key="cuisine.id"
                                         @click="selectCuisine(cuisine)"
                                         :class="[
-                                            'p-2 rounded-lg border-2 border-black font-medium text-xs transition-all duration-200 relative flex items-center justify-center gap-1',
+                                            'p-2 rounded-lg border-2 border-black font-medium text-sm transition-all duration-200 relative flex items-center justify-center gap-1',
                                             selectedCuisines.includes(cuisine.id) ? 'bg-yellow-400 text-dark-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >

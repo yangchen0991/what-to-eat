@@ -4,7 +4,7 @@
             <!-- 桌面端导航 -->
             <div class="hidden md:flex items-center justify-between">
                 <!-- Logo区域 -->
-                <router-link to="/" class="flex items-center gap-3 hover:scale-105 transition-transform duration-200">
+                <router-link to="/" class="flex items-center gap-3 transition-transform duration-200">
                     <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-black">
                         <span class="text-white text-xl font-bold">饭</span>
                     </div>
@@ -49,6 +49,14 @@
                     >
                         <span>❤️</span>
                         <span>我的收藏</span>
+                    </router-link>
+                    <router-link
+                        to="/gallery"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
+                        :class="$route.path === '/gallery' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                    >
+                        <span>🖼️</span>
+                        <span>封神图鉴</span>
                     </router-link>
                     <router-link
                         to="/about"
@@ -122,6 +130,15 @@
                         <span>我的收藏</span>
                     </router-link>
                     <router-link
+                        to="/gallery"
+                        @click="showMobileMenu = false"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
+                        :class="$route.path === '/gallery' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                    >
+                        <span>🖼️</span>
+                        <span>封神图鉴</span>
+                    </router-link>
+                    <router-link
                         to="/about"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm"
@@ -154,6 +171,8 @@ const pageTitle = computed(() => {
             return '一桌菜设计师'
         case '/favorites':
             return '我的收藏'
+        case '/gallery':
+            return '封神图鉴'
         case '/about':
             return '关于一饭封神'
         default:
@@ -171,6 +190,8 @@ const pageSubtitle = computed(() => {
             return '让每顿饭，都有剧本！'
         case '/favorites':
             return '珍藏美味，随时回味！'
+        case '/gallery':
+            return '每一帧都是厨艺的封神时刻！'
         case '/about':
             return '算法烹万物，一键即封神！'
         default:

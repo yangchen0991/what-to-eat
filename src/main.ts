@@ -6,6 +6,7 @@ import About from './views/About.vue'
 import TodayEat from './views/TodayEat.vue'
 import TableDesign from './views/TableDesign.vue'
 import Favorites from './views/Favorites.vue'
+import Gallery from './views/Gallery.vue'
 import './style.css'
 
 const routes = [
@@ -13,7 +14,8 @@ const routes = [
     { path: '/about', component: About },
     { path: '/today-eat', component: TodayEat },
     { path: '/table-design', component: TableDesign },
-    { path: '/favorites', component: Favorites }
+    { path: '/favorites', component: Favorites },
+    { path: '/gallery', component: Gallery }
 ]
 
 const router = createRouter({

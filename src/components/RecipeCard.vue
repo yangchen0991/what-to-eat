@@ -331,6 +331,11 @@ const generateImage = async () => {
     try {
         const image = await generateRecipeImage(props.recipe)
         generatedImage.value = image
+
+        // 将生成的图片添加到图库
+        const { GalleryService } = await import('@/services/galleryService')
+        const prompt = `一道精美的${props.recipe.cuisine.replace('大师', '').replace('菜', '')}菜肴：${props.recipe.name}`
+        GalleryService.addToGallery(props.recipe, image.url, image.id, prompt)
     } catch (error) {
         console.error('生成图片失败:', error)
         imageError.value = '生成图片失败，请稍后重试'
