@@ -1,34 +1,7 @@
 <template>
     <div class="min-h-screen bg-yellow-400 px-2 md:px-4 py-6">
-        <!-- 头部导航 -->
-        <header class="bg-pink-400 border-4 border-black max-w-7xl mx-auto px-2 rounded-lg relative mb-6">
-            <!-- 桌面端布局 -->
-            <div class="hidden md:flex items-center justify-between py-4">
-                <router-link
-                    to="/"
-                    class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105"
-                >
-                    ← 返回
-                </router-link>
-                <div class="text-center">
-                    <h1 class="text-3xl md:text-4xl font-black text-yellow-300 tracking-wider">关于一饭封神</h1>
-                </div>
-                <div class="w-24"></div>
-                <!-- 占位符保持居中 -->
-            </div>
-
-            <!-- 移动端布局 -->
-            <div class="md:hidden py-6">
-                <div class="text-center mb-4">
-                    <h1 class="text-2xl font-black text-yellow-300 tracking-wider">关于一饭封神</h1>
-                </div>
-                <div class="flex justify-center">
-                    <router-link to="/" class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm">
-                        ← 返回
-                    </router-link>
-                </div>
-            </div>
-        </header>
+        <!-- 全局导航 -->
+        <GlobalNavigation />
 
         <div class="max-w-7xl mx-auto space-y-6">
             <!-- 项目简介 -->
@@ -36,12 +9,12 @@
                 <div class="bg-blue-500 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block mb-0">
                     <span class="font-bold text-lg">🎯 项目简介</span>
                 </div>
-                <div class="bg-white border-4 border-black rounded-lg rounded-tl-none p-6">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
                     <div class="mt-4">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center mb-8">
                             <div>
-                                <h2 class="text-2xl font-bold text-dark-800 mb-4">一饭封神 - AI厨艺大师指导平台</h2>
-                                <p class="text-gray-700 mb-4 leading-relaxed">
+                                <h2 class="text-xl font-bold text-dark-800 mb-4">一饭封神 - AI厨艺大师指导平台</h2>
+                                <p class="text-gray-700 text-sm mb-4 leading-relaxed">
                                     一饭封神是一个创新的AI厨艺指导平台，汇聚了中华八大菜系和国际料理的精华。 通过先进的人工智能技术，我们为每一位用户提供个性化的烹饪指导，
                                     让每一餐都能达到"封神"级别的美味体验。
                                 </p>
@@ -65,7 +38,7 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg p-8 border-4 border-black">
+                                <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg p-8 border-2 border-black">
                                     <div class="text-6xl mb-4">👨‍🍳</div>
                                     <h3 class="text-xl font-bold text-white mb-2">LEGENDARY STATUS</h3>
                                     <p class="text-white text-sm">FROM A SINGLE MEAL!</p>
@@ -106,7 +79,7 @@
                 <div class="bg-gradient-to-r from-red-500 to-green-500 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block mb-0">
                     <span class="font-bold text-lg">👨‍🍳 大师介绍</span>
                 </div>
-                <div class="bg-white border-4 border-black rounded-lg rounded-tl-none p-6">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-6">
                     <div class="mt-4">
                         <!-- 中华八大菜系 -->
                         <div class="mb-8">
@@ -168,12 +141,12 @@
                 <div class="bg-indigo-500 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block mb-0">
                     <span class="font-bold text-lg">👨‍💻 关于作者</span>
                 </div>
-                <div class="bg-white border-4 border-black rounded-lg rounded-tl-none p-6">
+                <div class="bg-white border-2 border-black rounded-lg rounded-tl-none p-4 md:p-6">
                     <div class="mt-4">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
                             <div>
                                 <div class="flex items-center gap-4 mb-4">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center border-4 border-black">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center border-2 border-black">
                                         <span class="text-white text-2xl font-bold">L</span>
                                     </div>
                                     <div>
@@ -181,7 +154,7 @@
                                         <p class="text-gray-600 text-sm">AI降临派</p>
                                     </div>
                                 </div>
-                                <p class="text-gray-700 mb-4 leading-relaxed">
+                                <p class="text-gray-700 mb-4 text-sm leading-relaxed">
                                     🚀 Vibe Coding 通过 Kiro 编辑器，实现了从需求分析、架构设计到代码实现的全流程开发。 致力于探索AI与传统开发的完美结合，让编程变得更加高效和有趣。
                                 </p>
                                 <div class="space-y-3">
@@ -212,7 +185,7 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="bg-gradient-to-br from-orange-100 to-red-100 border-2 border-orange-200 rounded-lg p-6">
+                                <div class="bg-gradient-to-br from-orange-100 to-red-100 border-2 border-orange-200 rounded-lg p-2 md:p-6">
                                     <div class="flex items-center gap-6">
                                         <div class="flex-1">
                                             <div class="flex items-center gap-3 mb-3">
@@ -233,11 +206,16 @@
                 </div>
             </div>
         </div>
+
+        <!-- 底部 -->
+        <GlobalFooter />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import GlobalNavigation from '@/components/GlobalNavigation.vue'
+import GlobalFooter from '@/components/GlobalFooter.vue'
 
 // 中华八大菜系数据
 const chineseCuisines = ref([

@@ -1,23 +1,12 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-orange-100 to-yellow-100 p-4">
-        <!-- 头部 -->
-        <div class="max-w-4xl mx-auto mb-8">
-            <div class="text-center mb-6">
-                <h1 class="text-4xl font-bold text-orange-800 mb-2">{{ randomDice }} 今天吃什么？</h1>
-                <p class="text-orange-600">盲盒美食：'绝了！' or '寄了！'</p>
-            </div>
-            <div class="text-center">
-                <router-link to="/" class="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:shadow-md transition-shadow text-gray-700">
-                    <span>←</span>
-                    <span>回到一饭封神</span>
-                </router-link>
-            </div>
-        </div>
+    <div class="min-h-screen bg-yellow-400 px-2 md:px-4 py-6">
+        <!-- 全局导航 -->
+        <GlobalNavigation />
 
-        <div class="max-w-4xl mx-auto space-y-6">
+        <div class="max-w-7xl mx-auto space-y-6 border-2 border-black rounded-lg">
             <!-- 开始按钮 -->
             <div v-if="!isSelecting && selectedDishes.length === 0" class="text-center">
-                <div class="bg-white rounded-2xl shadow-lg p-8">
+                <div class="bg-white rounded-lg shadow-lg p-8">
                     <div class="text-6xl mb-4">🎲</div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">准备好了吗？</h2>
 
@@ -174,6 +163,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- 底部 -->
+        <GlobalFooter />
     </div>
 </template>
 
@@ -183,6 +175,8 @@ import { cuisines } from '@/config/cuisines'
 import { ingredientCategories } from '@/config/ingredients'
 import type { Recipe, CuisineType } from '@/types'
 import RecipeCard from '@/components/RecipeCard.vue'
+import GlobalNavigation from '@/components/GlobalNavigation.vue'
+import GlobalFooter from '@/components/GlobalFooter.vue'
 
 // 状态管理
 const isSelecting = ref(false)
@@ -470,11 +464,6 @@ const resetSelection = () => {
 /* 应用动画 */
 .animate-spin {
     animation: spin 1s linear infinite;
-}
-
-/* 卡片入场动画 */
-.bg-white {
-    animation: fadeIn 0.6s ease-out;
 }
 
 /* 按钮悬停效果 */

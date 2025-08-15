@@ -1,77 +1,9 @@
 <template>
     <div class="min-h-screen bg-yellow-400 px-2 md:px-4 py-6">
-        <!-- 头部 - 粉色区域 -->
-        <header class="bg-pink-400 border-4 border-black max-w-7xl mx-auto px-2 rounded-lg relative">
-            <!-- 桌面端导航 -->
-            <div class="hidden md:block absolute top-4 right-4">
-                <div class="flex gap-3">
-                    <router-link
-                        to="/today-eat"
-                        class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                    >
-                        🎲 今天吃什么？
-                    </router-link>
-                    <router-link
-                        to="/table-design"
-                        class="bg-purple-400 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                    >
-                        🍽️ 一桌菜设计
-                    </router-link>
-                    <router-link
-                        to="/about"
-                        class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 transform hover:scale-105 text-sm"
-                    >
-                        📖 简介
-                    </router-link>
-                </div>
-            </div>
-            <div class="text-center py-8">
-                <h1 class="text-5xl font-black text-yellow-300 mb-2 tracking-wider md:text-[5rem] font-['PingFangLiuAngLeTianTi']">一饭封神</h1>
-                <p class="text-white text-lg font-medium text-[12px] md:text-[1.5rem]">LEGENDARY STATUS FROM A SINGLE MEAL!</p>
-            </div>
-        </header>
+        <!-- 全局导航 -->
+        <GlobalNavigation />
 
-        <!-- 移动端导航 -->
-        <div class="md:hidden max-w-7xl mx-auto mt-4">
-            <div class="flex justify-center gap-2 flex-wrap">
-                <router-link
-                    to="/today-eat"
-                    class="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
-                >
-                    🎲 今天吃什么？
-                </router-link>
-                <router-link
-                    to="/table-design"
-                    class="bg-purple-400 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
-                >
-                    🍽️ 一桌菜设计
-                </router-link>
-                <router-link
-                    to="/about"
-                    class="bg-white hover:bg-gray-100 text-dark-800 px-4 py-2 rounded-lg font-bold border-2 border-black transition-all duration-200 text-sm shadow-lg"
-                >
-                    📖 简介
-                </router-link>
-            </div>
-        </div>
-
-        <!-- 使用量显示 -->
-        <!-- <div class="mx-4 mt-4">
-            <div class="bg-white border-2 border-black rounded-lg p-4 max-w-sm mx-auto">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <span class="text-lg">⚡</span>
-                        <span class="font-bold text-dark-800">DAILY USAGE</span>
-                    </div>
-                    <span class="font-bold text-xl">0/5</span>
-                </div>
-                <div class="mt-2 bg-gray-200 rounded-full h-2">
-                    <div class="bg-dark-800 h-2 rounded-full" style="width: 0%"></div>
-                </div>
-            </div>
-        </div> -->
-
-        <div class="max-w-7xl mx-auto py-6">
+        <div class="max-w-7xl mx-auto">
             <!-- 步骤1: 输入食材 -->
             <div class="mb-6">
                 <div class="bg-pink-400 text-white px-4 py-2 rounded-t-lg border-2 border-black border-b-0 inline-block">
@@ -571,11 +503,7 @@
         </div>
 
         <!-- 底部 -->
-        <footer class="bg-white border-4 border-black max-w-7xl mx-auto px-2 rounded-lg p-4 text-center">
-            <p class="text-sm text-gray-600">
-                © 2025 一饭封神 | <a href="https://github.com/liu-ziting/what-to-eat" target="_blank" class="text-retro-blue hover:underline">Powered by Liuziting</a>
-            </p>
-        </footer>
+        <GlobalFooter />
     </div>
 </template>
 
@@ -631,6 +559,8 @@ import { ref, onUnmounted } from 'vue'
 import { cuisines } from '@/config/cuisines'
 import { ingredientCategories } from '@/config/ingredients'
 import RecipeCard from '@/components/RecipeCard.vue'
+import GlobalNavigation from '@/components/GlobalNavigation.vue'
+import GlobalFooter from '@/components/GlobalFooter.vue'
 import { generateMultipleRecipes, generateCustomRecipe, generateMultipleRecipesStream } from '@/services/aiService'
 import type { Recipe, CuisineType, NutritionAnalysis } from '@/types'
 
