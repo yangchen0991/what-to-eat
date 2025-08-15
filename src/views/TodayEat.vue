@@ -3,10 +3,10 @@
         <!-- 全局导航 -->
         <GlobalNavigation />
 
-        <div class="max-w-7xl mx-auto space-y-6 border-2 border-black rounded-lg">
+        <div class="max-w-7xl mx-auto space-y-6 rounded-lg">
             <!-- 开始按钮 -->
             <div v-if="!isSelecting && selectedDishes.length === 0" class="text-center">
-                <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="bg-white rounded-lg shadow-lg p-8 border-2 border-black">
                     <div class="text-6xl mb-4">🎲</div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">准备好了吗？</h2>
 
@@ -36,7 +36,7 @@
                             </svg>
                         </div>
 
-                        <div v-if="showPreference" class="bg-white rounded-xl p-4 mt-2 border border-gray-200">
+                        <div v-if="showPreference" class="bg-white rounded-xl max-w-md mx-auto p-4 mt-2 border border-gray-200">
                             <div class="grid grid-cols-2 gap-2 md:flex md:flex-row md:gap-4">
                                 <button
                                     @click="preference = 'meat-heavy'"
@@ -76,7 +76,7 @@
 
             <!-- 选择过程 -->
             <div v-if="isSelecting" class="bg-white rounded-2xl shadow-lg p-6">
-                <div class="text-center mb-6">
+                <div class="text-center mb-6 max-w-2xl mx-auto">
                     <h3 class="text-xl font-bold text-gray-800 mb-2">{{ selectionStatus }}</h3>
                     <div class="w-full bg-gray-200 rounded-full h-2">
                         <div class="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-500" :style="{ width: `${selectionProgress}%` }"></div>
@@ -92,7 +92,7 @@
             </div>
 
             <!-- 选择结果 -->
-            <div v-if="!isSelecting && selectedDishes.length > 0" class="bg-white rounded-2xl shadow-lg p-6">
+            <div v-if="!isSelecting && selectedDishes.length > 0" class="bg-white rounded-2xl shadow-lg p-6 border-2 border-black">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">🎉 今日推荐</h3>
 
                 <div class="grid md:grid-cols-2 gap-6 mb-6">
@@ -102,10 +102,10 @@
                             <span>🥗</span>
                             <span>推荐菜品 ({{ selectedDishes.length }}道)</span>
                         </h4>
-                        <div class="flex flex-wrap gap-2">
-                            <span v-for="dish in selectedDishes" :key="dish" class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm">
-                                {{ dish }}
-                            </span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div v-for="dish in selectedDishes" :key="dish" class="bg-white border-2 border-green-200 rounded-lg p-2 hover:bg-green-100 transition-colors">
+                                <div class="text-sm font-medium text-green-800 text-center">{{ dish }}</div>
+                            </div>
                         </div>
                     </div>
 
@@ -128,7 +128,7 @@
                 <!-- 操作按钮 -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <button
-                        @click="generateRecipe"
+                        @click="generateRecipeFromSelection"
                         :disabled="isGenerating"
                         class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
@@ -153,7 +153,7 @@
             </div>
 
             <!-- 菜谱结果 -->
-            <div v-if="recipe" class="bg-white rounded-2xl shadow-lg p-4 md:p-6">
+            <div v-if="recipe" class="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-2 border-black">
                 <h3 class="text-xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center gap-2">
                     <span>📖</span>
                     <span>专属菜谱</span>
@@ -174,6 +174,7 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { cuisines } from '@/config/cuisines'
 import { ingredientCategories } from '@/config/ingredients'
 import type { Recipe, CuisineType } from '@/types'
+import { generateRecipe } from '@/services/aiService'
 import RecipeCard from '@/components/RecipeCard.vue'
 import GlobalNavigation from '@/components/GlobalNavigation.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
@@ -261,7 +262,7 @@ const startRandomSelection = async () => {
 
 // 随机选择菜品
 const selectRandomDishes = async () => {
-    const dishCount = Math.floor(Math.random() * 3) + 4 // 4-6个菜品
+    const dishCount = 4 // 固定生成4个菜品
     let filteredDishes = [...allDishes.value]
 
     // 根据偏好过滤菜品
@@ -280,32 +281,34 @@ const selectRandomDishes = async () => {
         }
     }
 
-    const shuffledDishes = filteredDishes.sort(() => 0.5 - Math.random())
+    const shuffledDishes = [...filteredDishes].sort(() => 0.5 - Math.random())
+    const uniqueDishes = new Set<string>()
 
-    for (let i = 0; i < dishCount; i++) {
-        // 模拟选择过程
-        for (let j = 0; j < 5; j++) {
-            const randomDish = shuffledDishes[Math.floor(Math.random() * shuffledDishes.length)]
-            currentSelection.value = {
-                type: 'dish',
-                name: randomDish
-            }
-            selectionProgress.value = ((i * 5 + j) / (dishCount * 5)) * 50
-            await new Promise(resolve => setTimeout(resolve, 50))
-        }
+    // 确保获取4个不同的菜品
+    while (uniqueDishes.size < dishCount && shuffledDishes.length > 0) {
+        const dish = shuffledDishes.pop()
+        if (dish) uniqueDishes.add(dish)
+    }
 
-        // 确定选择
-        const finalDish = shuffledDishes[i]
-        if (!selectedDishes.value.includes(finalDish)) {
-            selectedDishes.value.push(finalDish)
-        }
+    // 模拟选择过程
+    for (let i = 0; i < 5; i++) {
+        const randomDish = [...uniqueDishes][Math.floor(Math.random() * uniqueDishes.size)]
         currentSelection.value = {
             type: 'dish',
-            name: finalDish
+            name: randomDish
         }
-
-        await new Promise(resolve => setTimeout(resolve, 300))
+        selectionProgress.value = (i / 5) * 50
+        await new Promise(resolve => setTimeout(resolve, 100))
     }
+
+    // 确定选择
+    selectedDishes.value = [...uniqueDishes]
+    currentSelection.value = {
+        type: 'dish',
+        name: selectedDishes.value[0]
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 300))
 }
 
 // 随机选择大师
@@ -337,7 +340,7 @@ const selectRandomMaster = async () => {
 }
 
 // 生成菜谱
-const generateRecipe = async () => {
+const generateRecipeFromSelection = async () => {
     if (!selectedMaster.value || selectedDishes.value.length === 0 || isGenerating.value) return
 
     isGenerating.value = true
@@ -350,73 +353,56 @@ const generateRecipe = async () => {
     }, 1000)
 
     try {
-        // 模拟生成过程
-        await new Promise(resolve => setTimeout(resolve, 4000))
-
-        // 创建菜谱
-        const dishNames = selectedDishes.value.slice(0, 3).join('、')
-        const recipeName =
-            selectedDishes.value.length > 3
-                ? `${selectedMaster.value.name}特制${dishNames}等${selectedDishes.value.length}样组合`
-                : `${selectedMaster.value.name}特制${dishNames}组合`
-
-        const mockRecipe: Recipe = {
-            id: `today-recipe-${Date.now()}`,
-            name: recipeName,
-            cuisine: selectedMaster.value.name,
-            ingredients: [...selectedDishes.value, '盐', '生抽', '料酒', '葱', '姜', '蒜', '香油', '胡椒粉'],
-            steps: [
-                {
-                    step: 1,
-                    description: `将所有食材清洗干净：${selectedDishes.value.join('、')}分别处理，切成适当大小`,
-                    time: 8
-                },
-                {
-                    step: 2,
-                    description: '热锅下油，先爆香葱姜蒜，制作底味',
-                    time: 2,
-                    temperature: '中火'
-                },
-                {
-                    step: 3,
-                    description: `按照食材特性分批下锅：先下${selectedDishes.value[0]}等较难熟的食材`,
-                    time: 4,
-                    temperature: '大火'
-                },
-                {
-                    step: 4,
-                    description: `再加入${selectedDishes.value.slice(1).join('、')}等食材，快速翻炒`,
-                    time: 3,
-                    temperature: '大火'
-                },
-                {
-                    step: 5,
-                    description: '调入生抽、料酒、盐等调料，炒匀入味',
-                    time: 2
-                },
-                {
-                    step: 6,
-                    description: '最后淋香油，撒胡椒粉，装盘即可',
-                    time: 1
-                }
-            ],
-            cookingTime: 20,
-            difficulty: selectedDishes.value.length > 5 ? 'medium' : 'easy',
-            tips: [
-                '多种食材搭配，营养更加均衡丰富',
-                '不同食材的下锅时间要掌握好，避免有的过熟有的不熟',
-                '调料用量要根据食材总量和个人口味调整',
-                `${selectedMaster.value.specialty}的特色在于食材搭配的层次感`
-            ]
+        // 调用AI服务生成真实菜谱
+        const cuisineInfo = {
+            id: selectedMaster.value.id,
+            name: selectedMaster.value.name,
+            description: selectedMaster.value.description || '',
+            avatar: selectedMaster.value.avatar,
+            specialty: selectedMaster.value.specialty,
+            prompt: selectedMaster.value.specialty
         }
 
-        recipe.value = mockRecipe
+        recipe.value = await generateRecipe(selectedDishes.value, cuisineInfo)
+
+        // 显示成功提示
+        showToast('菜谱生成成功', 'success')
     } catch (error) {
         console.error('生成菜谱失败:', error)
+        showToast('生成菜谱失败，请重试', 'error')
     } finally {
         clearInterval(textInterval)
         isGenerating.value = false
     }
+}
+
+// 简单的提示功能
+const showToast = (message: string, type: 'success' | 'error' | 'warning' | 'info') => {
+    const toast = document.createElement('div')
+    toast.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-white text-sm font-medium z-50 transition-all duration-300 transform translate-x-full`
+
+    const styles = {
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        warning: 'bg-yellow-500',
+        info: 'bg-blue-500'
+    }
+
+    toast.className += ` ${styles[type]}`
+    toast.textContent = message
+
+    document.body.appendChild(toast)
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)'
+    }, 10)
+
+    setTimeout(() => {
+        toast.style.transform = 'translateX(full)'
+        setTimeout(() => {
+            document.body.removeChild(toast)
+        }, 300)
+    }, 2000)
 }
 
 // 重置选择
