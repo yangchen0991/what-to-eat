@@ -72,34 +72,43 @@
             </div>
 
             <!-- 图片网格 -->
-            <div v-if="filteredImages.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div
-                    v-for="image in filteredImages"
-                    :key="image.id"
-                    class="bg-white border-2 border-black rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 group"
-                >
-                    <!-- 图片 -->
-                    <div class="relative aspect-[4/3] overflow-hidden">
-                        <img
-                            :src="image.url"
-                            :alt="image.recipeName"
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            @error="handleImageError(image.id)"
-                        />
+            <div v-if="filteredImages.length > 0" class="bg-white border-2 border-black rounded-lg p-3 md:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div
+                        v-for="image in filteredImages"
+                        :key="image.id"
+                        class="bg-white border-2 border-black rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 group"
+                    >
+                        <!-- 图片 -->
+                        <div class="relative aspect-[4/3] overflow-hidden">
+                            <img
+                                :src="image.url"
+                                :alt="image.recipeName"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                @error="handleImageError(image.id)"
+                            />
 
-                        <!-- 悬浮信息层 -->
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        >
-                            <!-- 顶部操作按钮 -->
-                            <div class="absolute top-3 right-3">
-                                <button
-                                    @click.stop="confirmDeleteImage(image.id)"
-                                    class="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-full text-sm transition-colors backdrop-blur-sm"
-                                    title="删除图片"
-                                >
-                                    🗑️
-                                </button>
+                            <!-- 悬浮信息层 -->
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            >
+                                <!-- 顶部操作按钮 -->
+                                <div class="absolute top-3 right-3 flex gap-2">
+                                    <button
+                                        @click.stop="downloadImage(image)"
+                                        class="p-2 bg-blue-500/80 hover:bg-blue-500 text-white rounded-full text-sm transition-colors backdrop-blur-sm"
+                                        title="下载图片"
+                                    >
+                                        ⬇️
+                                    </button>
+                                    <button
+                                        @click.stop="confirmDeleteImage(image.id)"
+                                        class="p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-full text-sm transition-colors backdrop-blur-sm"
+                                        title="删除图片"
+                                    >
+                                        🗑️
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- 底部信息 -->
@@ -301,24 +310,13 @@ const clearAllImages = () => {
 }
 
 // 下载图片
-const downloadImage = async (image: GalleryImage) => {
+const downloadImage = (image: GalleryImage) => {
     try {
-        const response = await fetch(image.url)
-        const blob = await response.blob()
-        const url = window.URL.createObjectURL(blob)
-
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${image.recipeName}-${formatDate(image.generatedAt)}.jpg`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        window.URL.revokeObjectURL(url)
-        showToast('图片下载成功', 'success')
+        window.open(image.url, '_blank')
+        showToast('正在打开图片', 'info')
     } catch (error) {
-        console.error('下载图片失败:', error)
-        showToast('下载失败', 'error')
+        console.error('打开图片失败:', error)
+        showToast('打开失败', 'error')
     }
 }
 

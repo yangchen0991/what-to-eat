@@ -4,8 +4,11 @@
             <!-- 桌面端导航 -->
             <div class="hidden md:flex items-center justify-between">
                 <!-- Logo区域 -->
-                <router-link to="/" class="flex items-center gap-3 transition-transform duration-200">
-                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-black">
+                <router-link to="/" class="flex items-center gap-3 transition-transform duration-200" @click="rotateLogo">
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-black"
+                        :class="{ 'rotate-logo': isLogoRotating }"
+                    >
                         <span class="text-white text-xl font-bold">饭</span>
                     </div>
                     <div>
@@ -73,8 +76,11 @@
             <div class="md:hidden">
                 <!-- 顶部Logo和菜单按钮 -->
                 <div class="flex items-center justify-between mb-3">
-                    <router-link to="/" class="flex items-center gap-2">
-                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-black">
+                    <router-link to="/" class="flex items-center gap-2" @click="rotateLogo">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center border-2 border-black"
+                            :class="{ 'rotate-logo': isLogoRotating }"
+                        >
                             <span class="text-white text-lg font-bold">饭</span>
                         </div>
                         <div>
@@ -158,6 +164,14 @@ import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const showMobileMenu = ref(false)
+const isLogoRotating = ref(false)
+
+const rotateLogo = () => {
+    isLogoRotating.value = true
+    setTimeout(() => {
+        isLogoRotating.value = false
+    }, 500)
+}
 const route = useRoute()
 
 // 根据当前路由显示不同的页面标题
@@ -201,6 +215,20 @@ const pageSubtitle = computed(() => {
 </script>
 
 <style scoped>
+/* Logo旋转动画 */
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.rotate-logo {
+    animation: rotate 0.5s ease-out;
+}
+
 /* 确保导航链接的活跃状态样式 */
 .router-link-active {
     /* 由于我们使用了动态class，这里不需要额外样式 */
