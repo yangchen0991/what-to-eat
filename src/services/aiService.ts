@@ -4,15 +4,21 @@ import type { Recipe, CuisineType, NutritionAnalysis, WinePairing, SauceRecipe, 
 // AI服务配置 - 从环境变量读取
 const AI_CONFIG = {
     // baseURL: 'https://api.deepseek.com/v1/',
-    // apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
+    // apiKey: import.meta.env.VITE_TEXT_DEEPSEEK_API_KEY,
     // model: 'deepseek-chat',
     // temperature: 0.7,
     // timeout: 300000
 
-    baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
-    model: 'GLM-4-Flash-250414',
-    temperature: 0.9,
+    // baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
+    // apiKey: import.meta.env.VITE_IMAGE_BIGMODEL_API_KEY,
+    // model: 'GLM-4-Flash-250414',
+    // temperature: 0.9,
+    // timeout: 300000
+
+    baseURL: 'https://api.lingyiwanwu.com/v1/',
+    apiKey: import.meta.env.VITE_TEXT_LINGYIWANGWU_API_KEY,
+    model: 'yi-lightning',
+    temperature: 0.7,
     timeout: 300000
 }
 

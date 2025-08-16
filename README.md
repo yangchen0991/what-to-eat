@@ -119,10 +119,10 @@ npm run dev
 
 ```env
 # DeepSeek API 菜谱生成配置
-VITE_TEXT_GENERATION_API_KEY=your_deepseek_api_key_here
+VITE_TEXT_DEEPSEEK_API_KEY=your_deepseek_api_key_here
 
 # Bigmodel API 图像生成配置
-VITE_IMAGE_GENERATION_API_KEY=your_image_api_key_here
+VITE_IMAGE_BIGMODEL_API_KEY=your_image_api_key_here
 ```
 
 ## � 使用指南始

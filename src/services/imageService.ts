@@ -1,6 +1,6 @@
 import type { Recipe } from '@/types'
 
-const API_KEY = import.meta.env.VITE_IMAGE_GENERATION_API_KEY
+const API_KEY = import.meta.env.VITE_IMAGE_BIGMODEL_API_KEY
 const API_URL = 'https://open.bigmodel.cn/api/paas/v4/images/generations'
 
 export interface GeneratedImage {
