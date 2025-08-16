@@ -736,5 +736,88 @@ export const testAIConnection = async (): Promise<boolean> => {
     }
 }
 
+/**
+ * 根据菜名生成详细菜谱
+ * @param dishName 菜品名称
+ * @returns Promise<Recipe>
+ */
+export const generateDishRecipeByName = async (dishName: string): Promise<Recipe> => {
+    try {
+        const prompt = `请为"${dishName}"这道菜生成详细的制作教程。
+
+要求：
+1. 提供完整的食材清单（包括主料和调料）
+2. 详细的制作步骤，每个步骤要包含具体的时间和火候
+3. 实用的烹饪技巧和注意事项
+4. 如果是地方菜，请说明其特色和来源
+
+请按照以下JSON格式返回菜谱：
+{
+  "name": "菜品名称",
+  "ingredients": ["主料1 200g", "调料1 适量", "调料2 1勺"],
+  "steps": [
+    {
+      "step": 1,
+      "description": "详细的步骤描述，包含具体操作方法",
+      "time": 5,
+      "temperature": "中火/大火/小火"
+    }
+  ],
+  "cookingTime": 30,
+  "difficulty": "easy/medium/hard",
+  "tips": ["实用技巧1", "注意事项2", "口感调节3"]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位经验丰富的中华料理大师，精通各种菜系的制作方法。请根据用户提供的菜名，生成详细、实用的制作教程。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            stream: false
+        })
+
+        // 解析AI响应
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const recipeData = JSON.parse(cleanResponse)
+
+        // 构建完整的Recipe对象
+        const recipe: Recipe = {
+            id: `dish-search-${Date.now()}`,
+            name: recipeData.name || dishName,
+            cuisine: '传统菜谱',
+            ingredients: recipeData.ingredients || ['主要食材', '调料'],
+            steps: recipeData.steps || [
+                { step: 1, description: '准备所有食材', time: 5 },
+                { step: 2, description: '按照传统方法制作', time: 20 }
+            ],
+            cookingTime: recipeData.cookingTime || 25,
+            difficulty: recipeData.difficulty || 'medium',
+            tips: recipeData.tips || ['注意火候控制', '调味要适中'],
+            nutritionAnalysis: undefined,
+            winePairing: undefined
+        }
+
+        return recipe
+    } catch (error) {
+        console.error(`生成"${dishName}"菜谱失败:`, error)
+        throw new Error(`AI生成"${dishName}"菜谱失败，请稍后重试`)
+    }
+}
+
 // 导出配置更新函数，供外部使用
 export { AI_CONFIG }

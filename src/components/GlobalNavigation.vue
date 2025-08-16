@@ -1,6 +1,6 @@
 <template>
     <nav class="bg-white border-2 border-[#0A0910] max-w-7xl mx-auto rounded-lg mb-4 shadow-lg">
-        <div class="px-6 py-6">
+        <div class="px-4 py-6  md:px-6">
             <!-- 桌面端导航 -->
             <div class="hidden md:flex items-center justify-between">
                 <!-- Logo区域 -->
@@ -35,7 +35,7 @@
                         :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
-                        <span>今天吃什么？</span>
+                        <span>今日吃啥</span>
                     </router-link>
                     <router-link
                         to="/table-design"
@@ -43,7 +43,15 @@
                         :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
-                        <span>一桌菜设计</span>
+                        <span>一桌好菜</span>
+                    </router-link>
+                    <router-link
+                        to="/how-to-cook"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
+                        :class="$route.path === '/how-to-cook' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                    >
+                        <span>🍳</span>
+                        <span>菜谱指南</span>
                     </router-link>
                     <router-link
                         to="/favorites"
@@ -67,7 +75,7 @@
                         :class="$route.path === '/about' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>📖</span>
-                        <span>简介</span>
+                        <span>关于我们</span>
                     </router-link>
                 </div>
             </div>
@@ -115,7 +123,7 @@
                         :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
-                        <span>今天吃什么？</span>
+                        <span>今日吃啥</span>
                     </router-link>
                     <router-link
                         to="/table-design"
@@ -124,7 +132,16 @@
                         :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
-                        <span>一桌菜设计</span>
+                        <span>一桌好菜</span>
+                    </router-link>
+                    <router-link
+                        to="/how-to-cook"
+                        @click="showMobileMenu = false"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
+                        :class="$route.path === '/how-to-cook' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                    >
+                        <span>🍳</span>
+                        <span>菜谱指南</span>
                     </router-link>
                     <router-link
                         to="/favorites"
@@ -151,7 +168,7 @@
                         :class="$route.path === '/about' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>📖</span>
-                        <span>简介</span>
+                        <span>关于我们</span>
                     </router-link>
                 </div>
             </div>
@@ -180,9 +197,11 @@ const pageTitle = computed(() => {
         case '/':
             return '一饭封神'
         case '/today-eat':
-            return '今天吃什么？'
+            return '今日吃啥'
         case '/table-design':
-            return '一桌菜设计师'
+            return '一桌好菜师'
+        case '/how-to-cook':
+            return '菜谱指南'
         case '/favorites':
             return '我的收藏'
         case '/gallery':
@@ -202,6 +221,8 @@ const pageSubtitle = computed(() => {
             return "盲盒美食：'绝了！' or '寄了！'"
         case '/table-design':
             return '让每顿饭，都有剧本！'
+        case '/how-to-cook':
+            return 'AI大师手把手教学！'
         case '/favorites':
             return '珍藏美味，随时回味！'
         case '/gallery':
