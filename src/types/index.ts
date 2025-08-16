@@ -100,3 +100,80 @@ export interface AIResponse {
     data: Recipe
     message?: string
 }
+
+// 酱料分类类型
+export type SauceCategory = 'spicy' | 'garlic' | 'sweet' | 'complex' | 'regional' | 'fusion'
+
+// 酱料制作步骤
+export interface SauceStep {
+    step: number
+    description: string
+    time?: number
+    temperature?: string
+    technique?: string
+}
+
+// 酱料保存信息
+export interface StorageInfo {
+    method: string
+    duration: string
+    temperature: string
+}
+
+// 酱料配方类型
+export interface SauceRecipe {
+    id: string
+    name: string
+    category: SauceCategory
+    ingredients: string[]
+    steps: SauceStep[]
+    makingTime: number
+    difficulty: 'easy' | 'medium' | 'hard'
+    tips: string[]
+    storage: StorageInfo
+    pairings: string[]
+    tags: string[]
+    spiceLevel?: number
+    sweetLevel?: number
+    saltLevel?: number
+    sourLevel?: number
+    description?: string
+}
+
+// 酱料偏好配置
+export interface SaucePreference {
+    spiceLevel: number // 1-5
+    sweetLevel: number // 1-5
+    saltLevel: number // 1-5
+    sourLevel: number // 1-5
+    useCase: string[] // ['noodles', 'dipping', 'cooking', 'bbq', 'hotpot']
+    availableIngredients: string[]
+}
+
+// 自定义酱料创作请求
+export interface CustomSauceRequest {
+    baseType: 'oil' | 'water' | 'paste' | 'granular'
+    flavorDirection: 'spicy' | 'sweet' | 'sour' | 'umami' | 'aromatic'
+    specialIngredients: string[]
+    expectedTexture: string
+    intendedUse: string
+    customRequirements?: string
+}
+
+// 酱料分类配置
+export interface SauceCategoryConfig {
+    id: SauceCategory
+    name: string
+    description: string
+    icon: string
+    color: string
+    examples: string[]
+}
+
+// 收藏酱料类型
+export interface FavoriteSauce {
+    id: string
+    sauce: SauceRecipe
+    favoriteDate: string
+    notes?: string
+}

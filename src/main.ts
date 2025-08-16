@@ -8,6 +8,7 @@ import TableDesign from './views/TableDesign.vue'
 import Favorites from './views/Favorites.vue'
 import Gallery from './views/Gallery.vue'
 import HowToCook from './views/HowToCook.vue'
+import SauceDesign from './views/SauceDesign.vue'
 import './style.css'
 
 const routes = [
@@ -17,7 +18,8 @@ const routes = [
     { path: '/table-design', component: TableDesign },
     { path: '/favorites', component: Favorites },
     { path: '/gallery', component: Gallery },
-    { path: '/how-to-cook', component: HowToCook }
+    { path: '/how-to-cook', component: HowToCook },
+    { path: '/sauce-design', component: SauceDesign }
 ]
 
 const router = createRouter({

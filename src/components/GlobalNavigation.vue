@@ -20,10 +20,11 @@
                 </router-link>
 
                 <!-- 导航菜单 -->
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <!-- 主要功能 -->
                     <router-link
                         to="/"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🏠</span>
@@ -31,7 +32,7 @@
                     </router-link>
                     <router-link
                         to="/today-eat"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
@@ -39,7 +40,7 @@
                     </router-link>
                     <router-link
                         to="/table-design"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
@@ -47,36 +48,70 @@
                     </router-link>
                     <router-link
                         to="/how-to-cook"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
+                        class="flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/how-to-cook' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍳</span>
                         <span>菜谱指南</span>
                     </router-link>
                     <router-link
-                        to="/favorites"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/favorites' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        to="/sauce-design"
+                        class="flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
+                        :class="$route.path === '/sauce-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
-                        <span>❤️</span>
-                        <span>我的收藏</span>
+                        <span>🥄</span>
+                        <span>酱料设计</span>
                     </router-link>
-                    <router-link
-                        to="/gallery"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/gallery' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                    >
-                        <span>🖼️</span>
-                        <span>封神图鉴</span>
-                    </router-link>
-                    <router-link
-                        to="/about"
-                        class="flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
-                        :class="$route.path === '/about' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                    >
-                        <span>📖</span>
-                        <span>关于我们</span>
-                    </router-link>
+                    
+                    <!-- 更多菜单下拉 -->
+                    <div class="relative" @mouseleave="handleMouseLeave">
+                        <button
+                            @mouseenter="handleMouseEnter"
+                            @click="showMoreMenu = !showMoreMenu"
+                            :class="[
+                                'flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm',
+                                isMoreMenuActive ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ]"
+                        >
+                            <span>⋯</span>
+                            <span>更多</span>
+                        </button>
+                        
+                        <!-- 下拉菜单 -->
+                        <div
+                            v-if="showMoreMenu"
+                            @mouseenter="handleMouseEnter"
+                            class="absolute right-0 top-full mt-0.5 w-40 bg-white border-2 border-[#0A0910] rounded-lg shadow-lg z-50 overflow-hidden"
+                        >
+                            <router-link
+                                to="/favorites"
+                                @click="showMoreMenu = false"
+                                class="flex items-center gap-2 px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-gray-100"
+                                :class="$route.path === '/favorites' ? 'bg-yellow-100 text-gray-800' : 'text-gray-700'"
+                            >
+                                <span>❤️</span>
+                                <span>我的收藏</span>
+                            </router-link>
+                            <router-link
+                                to="/gallery"
+                                @click="showMoreMenu = false"
+                                class="flex items-center gap-2 px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-gray-100"
+                                :class="$route.path === '/gallery' ? 'bg-yellow-100 text-gray-800' : 'text-gray-700'"
+                            >
+                                <span>🖼️</span>
+                                <span>封神图鉴</span>
+                            </router-link>
+                            <router-link
+                                to="/about"
+                                @click="showMoreMenu = false"
+                                class="flex items-center gap-2 px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-gray-100"
+                                :class="$route.path === '/about' ? 'bg-yellow-100 text-gray-800' : 'text-gray-700'"
+                            >
+                                <span>📖</span>
+                                <span>关于我们</span>
+                            </router-link>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -144,6 +179,15 @@
                         <span>菜谱指南</span>
                     </router-link>
                     <router-link
+                        to="/sauce-design"
+                        @click="showMobileMenu = false"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
+                        :class="$route.path === '/sauce-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                    >
+                        <span>🥄</span>
+                        <span>酱料设计</span>
+                    </router-link>
+                    <router-link
                         to="/favorites"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
@@ -181,7 +225,9 @@ import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const showMobileMenu = ref(false)
+const showMoreMenu = ref(false)
 const isLogoRotating = ref(false)
+let hideMenuTimer: NodeJS.Timeout | null = null
 
 const rotateLogo = () => {
     isLogoRotating.value = true
@@ -202,6 +248,8 @@ const pageTitle = computed(() => {
             return '一桌好菜师'
         case '/how-to-cook':
             return '菜谱指南'
+        case '/sauce-design':
+            return '酱料设计大师'
         case '/favorites':
             return '我的收藏'
         case '/gallery':
@@ -223,6 +271,8 @@ const pageSubtitle = computed(() => {
             return '让每顿饭，都有剧本！'
         case '/how-to-cook':
             return 'AI大师手把手教学！'
+        case '/sauce-design':
+            return '专业酱料制作，调味灵魂升华！'
         case '/favorites':
             return '珍藏美味，随时回味！'
         case '/gallery':
@@ -233,6 +283,27 @@ const pageSubtitle = computed(() => {
             return 'LEGENDARY STATUS FROM A SINGLE MEAL!'
     }
 })
+
+// 检查更多菜单中的页面是否处于活跃状态
+const isMoreMenuActive = computed(() => {
+    return ['/favorites', '/gallery', '/about'].includes(route.path)
+})
+
+// 处理鼠标进入事件
+const handleMouseEnter = () => {
+    if (hideMenuTimer) {
+        clearTimeout(hideMenuTimer)
+        hideMenuTimer = null
+    }
+    showMoreMenu.value = true
+}
+
+// 处理鼠标离开事件
+const handleMouseLeave = () => {
+    hideMenuTimer = setTimeout(() => {
+        showMoreMenu.value = false
+    }, 150) // 150ms延迟，给用户足够时间移动鼠标
+}
 </script>
 
 <style scoped>
@@ -269,5 +340,21 @@ const pageSubtitle = computed(() => {
 
 .space-y-2 {
     animation: slideDown 0.3s ease-out;
+}
+
+/* 下拉菜单动画 */
+@keyframes dropDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.absolute {
+    animation: dropDown 0.2s ease-out;
 }
 </style>

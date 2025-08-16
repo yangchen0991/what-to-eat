@@ -1,19 +1,19 @@
 import axios from 'axios'
-import type { Recipe, CuisineType, NutritionAnalysis, WinePairing } from '@/types'
+import type { Recipe, CuisineType, NutritionAnalysis, WinePairing, SauceRecipe, SaucePreference, CustomSauceRequest } from '@/types'
 
 // AI服务配置 - 从环境变量读取
 const AI_CONFIG = {
-    // baseURL: 'https://api.deepseek.com/v1/',
-    // apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
-    // model: 'deepseek-chat',
-    // temperature: 0.7,
-    // timeout: 300000
-
-    baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
-    model: 'glm-4-flash-250414',
+    baseURL: 'https://api.deepseek.com/v1/',
+    apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
+    model: 'deepseek-chat',
     temperature: 0.7,
     timeout: 300000
+
+    // baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
+    // apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
+    // model: 'glm-4-flash-250414',
+    // temperature: 0.7,
+    // timeout: 300000
 }
 
 // 创建axios实例
@@ -177,9 +177,8 @@ export const generateTableMenu = async (config: {
 - 营养搭配：${nutritionMap[config.nutritionFocus] || '营养均衡'}`
 
         if (config.customDishes.length > 0) {
-            prompt += `\n- ${config.flexibleCount ? '优先考虑的菜品' : '必须包含的菜品'}：${config.customDishes.join('、')}${
-                config.flexibleCount ? '（可以作为参考，根据搭配需要决定是否全部包含）' : '（请确保这些菜品都包含在菜单中）'
-            }`
+            prompt += `\n- ${config.flexibleCount ? '优先考虑的菜品' : '必须包含的菜品'}：${config.customDishes.join('、')}${config.flexibleCount ? '（可以作为参考，根据搭配需要决定是否全部包含）' : '（请确保这些菜品都包含在菜单中）'
+                }`
         }
 
         if (config.customRequirement) {
@@ -816,6 +815,365 @@ export const generateDishRecipeByName = async (dishName: string): Promise<Recipe
     } catch (error) {
         console.error(`生成"${dishName}"菜谱失败:`, error)
         throw new Error(`AI生成"${dishName}"菜谱失败，请稍后重试`)
+    }
+}
+
+/**
+ * 根据酱料名称生成详细制作方法
+ * @param sauceName 酱料名称
+ * @returns Promise<SauceRecipe>
+ */
+export const generateSauceRecipe = async (sauceName: string): Promise<SauceRecipe> => {
+    try {
+        const prompt = `请为"${sauceName}"这种酱料生成详细的制作教程。
+
+要求：
+1. 提供完整的食材清单（主料、辅料、调料）
+2. 详细的制作步骤，包含具体操作方法、时间、温度控制
+3. 实用的制作技巧和注意事项
+4. 保存方法和保质期信息
+5. 推荐的搭配菜品
+6. 口味特点描述
+
+请按照以下JSON格式返回酱料配方：
+{
+  "name": "酱料名称",
+  "category": "spicy/garlic/sweet/complex/regional/fusion",
+  "ingredients": ["主料1 200g", "调料1 适量", "调料2 1勺"],
+  "steps": [
+    {
+      "step": 1,
+      "description": "详细的步骤描述",
+      "time": 5,
+      "temperature": "中火",
+      "technique": "炒制"
+    }
+  ],
+  "makingTime": 30,
+  "difficulty": "easy/medium/hard",
+  "tips": ["制作技巧1", "注意事项2"],
+  "storage": {
+    "method": "密封冷藏",
+    "duration": "1个月",
+    "temperature": "4°C"
+  },
+  "pairings": ["搭配菜品1", "搭配菜品2"],
+  "tags": ["标签1", "标签2"],
+  "spiceLevel": 3,
+  "sweetLevel": 1,
+  "saltLevel": 4,
+  "sourLevel": 2,
+  "description": "酱料特色描述"
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的酱料制作大师，精通各种传统和创新酱料的制作方法。请根据用户提供的酱料名称，生成详细、实用的制作教程。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const sauceData = JSON.parse(cleanResponse)
+
+        const sauceRecipe: SauceRecipe = {
+            id: `sauce-${Date.now()}`,
+            name: sauceData.name || sauceName,
+            category: sauceData.category || 'complex',
+            ingredients: sauceData.ingredients || ['主要食材', '调料'],
+            steps: sauceData.steps || [
+                { step: 1, description: '准备所有食材', time: 5 },
+                { step: 2, description: '按照传统方法制作', time: 20 }
+            ],
+            makingTime: sauceData.makingTime || 25,
+            difficulty: sauceData.difficulty || 'medium',
+            tips: sauceData.tips || ['注意火候控制', '调味要适中'],
+            storage: sauceData.storage || {
+                method: '密封保存',
+                duration: '1周',
+                temperature: '常温'
+            },
+            pairings: sauceData.pairings || ['面条', '蔬菜'],
+            tags: sauceData.tags || ['家常', '经典'],
+            spiceLevel: sauceData.spiceLevel || 2,
+            sweetLevel: sauceData.sweetLevel || 2,
+            saltLevel: sauceData.saltLevel || 3,
+            sourLevel: sauceData.sourLevel || 2,
+            description: sauceData.description || '经典酱料配方'
+        }
+
+        return sauceRecipe
+    } catch (error) {
+        console.error(`生成"${sauceName}"酱料配方失败:`, error)
+        throw new Error(`AI生成"${sauceName}"酱料配方失败，请稍后重试`)
+    }
+}
+
+/**
+ * 根据用户偏好推荐酱料
+ * @param preferences 用户偏好配置
+ * @returns Promise<string[]>
+ */
+export const recommendSauces = async (preferences: SaucePreference): Promise<string[]> => {
+    try {
+        const useCaseMap = {
+            noodles: '拌面',
+            dipping: '蘸菜',
+            cooking: '炒菜',
+            bbq: '烧烤',
+            hotpot: '火锅'
+        }
+
+        const useCaseText = preferences.useCase.map(uc => useCaseMap[uc] || uc).join('、')
+        const ingredientsText = preferences.availableIngredients.length > 0
+            ? preferences.availableIngredients.join('、')
+            : '无特殊要求'
+
+        const prompt = `请根据以下用户偏好推荐合适的酱料：
+
+用户偏好：
+- 辣度偏好：${preferences.spiceLevel}/5
+- 甜度偏好：${preferences.sweetLevel}/5  
+- 咸度偏好：${preferences.saltLevel}/5
+- 酸度偏好：${preferences.sourLevel}/5
+- 使用场景：${useCaseText}
+- 现有食材：${ingredientsText}
+
+请推荐5-8种最适合的酱料，按匹配度排序。
+
+请按照以下JSON格式返回推荐结果：
+{
+  "recommendations": [
+    "酱料名称1",
+    "酱料名称2",
+    "酱料名称3"
+  ]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的酱料推荐专家，能够根据用户的口味偏好和使用场景推荐最合适的酱料。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.8,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const recommendationData = JSON.parse(cleanResponse)
+        return recommendationData.recommendations || []
+    } catch (error) {
+        console.error('获取酱料推荐失败:', error)
+        throw new Error('AI推荐酱料失败，请稍后重试')
+    }
+}
+
+/**
+ * 创建自定义酱料配方
+ * @param request 自定义酱料创作请求
+ * @returns Promise<SauceRecipe>
+ */
+export const createCustomSauce = async (request: CustomSauceRequest): Promise<SauceRecipe> => {
+    try {
+        const baseTypeMap = {
+            oil: '油性酱料',
+            water: '水性酱料',
+            paste: '膏状酱料',
+            granular: '颗粒状酱料'
+        }
+
+        const flavorMap = {
+            spicy: '辣味',
+            sweet: '甜味',
+            sour: '酸味',
+            umami: '鲜味',
+            aromatic: '香味'
+        }
+
+        const prompt = `请根据以下要求创作一个独特的酱料配方：
+
+创作要求：
+- 基础类型：${baseTypeMap[request.baseType]}
+- 主要风味：${flavorMap[request.flavorDirection]}
+- 特殊食材：${request.specialIngredients.join('、')}
+- 期望口感：${request.expectedTexture}
+- 用途：${request.intendedUse}
+${request.customRequirements ? `- 特殊要求：${request.customRequirements}` : ''}
+
+请创作一个创新的酱料配方，要有独特性和实用性。
+
+请按照以下JSON格式返回酱料配方：
+{
+  "name": "创新酱料名称",
+  "category": "fusion",
+  "ingredients": ["主料1 200g", "调料1 适量"],
+  "steps": [
+    {
+      "step": 1,
+      "description": "详细步骤描述",
+      "time": 5,
+      "temperature": "中火",
+      "technique": "制作技法"
+    }
+  ],
+  "makingTime": 30,
+  "difficulty": "medium",
+  "tips": ["创作技巧1", "注意事项2"],
+  "storage": {
+    "method": "保存方法",
+    "duration": "保质期",
+    "temperature": "保存温度"
+  },
+  "pairings": ["搭配建议1", "搭配建议2"],
+  "tags": ["创新", "自制"],
+  "spiceLevel": 3,
+  "sweetLevel": 2,
+  "saltLevel": 3,
+  "sourLevel": 2,
+  "description": "创新酱料特色描述"
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位富有创意的酱料创作大师，擅长根据用户需求创作独特的酱料配方。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.9,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const sauceData = JSON.parse(cleanResponse)
+
+        const customSauce: SauceRecipe = {
+            id: `custom-sauce-${Date.now()}`,
+            name: sauceData.name || '自创酱料',
+            category: 'fusion',
+            ingredients: sauceData.ingredients || ['创新食材'],
+            steps: sauceData.steps || [
+                { step: 1, description: '准备创新食材', time: 5 },
+                { step: 2, description: '按照创意方法制作', time: 20 }
+            ],
+            makingTime: sauceData.makingTime || 25,
+            difficulty: sauceData.difficulty || 'medium',
+            tips: sauceData.tips || ['发挥创意', '调整口味'],
+            storage: sauceData.storage || {
+                method: '密封保存',
+                duration: '1周',
+                temperature: '冷藏'
+            },
+            pairings: sauceData.pairings || ['创意搭配'],
+            tags: sauceData.tags || ['创新', '自制'],
+            spiceLevel: sauceData.spiceLevel || 2,
+            sweetLevel: sauceData.sweetLevel || 2,
+            saltLevel: sauceData.saltLevel || 3,
+            sourLevel: sauceData.sourLevel || 2,
+            description: sauceData.description || '独特的自创酱料'
+        }
+
+        return customSauce
+    } catch (error) {
+        console.error('创建自定义酱料失败:', error)
+        throw new Error('AI创建自定义酱料失败，请稍后重试')
+    }
+}
+
+/**
+ * 获取酱料搭配建议
+ * @param sauceName 酱料名称
+ * @returns Promise<string[]>
+ */
+export const getSaucePairings = async (sauceName: string): Promise<string[]> => {
+    try {
+        const prompt = `请为"${sauceName}"这种酱料推荐最佳的搭配菜品和使用方法。
+
+要求：
+1. 推荐5-8种最适合的搭配菜品
+2. 说明具体的使用方法
+3. 考虑不同的烹饪场景
+
+请按照以下JSON格式返回搭配建议：
+{
+  "pairings": [
+    "搭配菜品1 - 使用方法",
+    "搭配菜品2 - 使用方法",
+    "搭配菜品3 - 使用方法"
+  ]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位专业的美食搭配专家，精通各种酱料与菜品的最佳搭配方法。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const pairingData = JSON.parse(cleanResponse)
+        return pairingData.pairings || []
+    } catch (error) {
+        console.error('获取酱料搭配建议失败:', error)
+        return ['面条 - 拌面使用', '蔬菜 - 蘸食使用', '肉类 - 调味使用']
     }
 }
 
