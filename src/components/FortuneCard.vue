@@ -30,10 +30,10 @@
                     <div class="text-xs opacity-80 mb-1">幸运指数</div>
                     <div class="flex items-center gap-1">
                         <span v-for="i in 10" :key="i" :class="[
-                            'text-lg',
+                            'text-lg hidden sm:inline',
                             i <= fortune.luckyIndex ? 'text-yellow-300' : 'text-white/30'
                         ]">⭐</span>
-                        <span class="ml-2 text-xl font-bold text-yellow-300">{{ fortune.luckyIndex }}/10</span>
+                        <span class="text-xl font-bold text-yellow-300">{{ fortune.luckyIndex }}/10</span>
                     </div>
                 </div>
             </div>
