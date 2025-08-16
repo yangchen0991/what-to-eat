@@ -36,7 +36,7 @@
                         :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
-                        <span>今日吃啥</span>
+                        <span>美食盲盒</span>
                     </router-link>
                     <router-link
                         to="/table-design"
@@ -44,7 +44,7 @@
                         :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
-                        <span>一桌好菜</span>
+                        <span>满汉全席</span>
                     </router-link>
                     <router-link
                         to="/how-to-cook"
@@ -52,7 +52,7 @@
                         :class="$route.path === '/how-to-cook' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍳</span>
-                        <span>菜谱指南</span>
+                        <span>厨神秘籍</span>
                     </router-link>
                     <router-link
                         to="/sauce-design"
@@ -60,7 +60,7 @@
                         :class="$route.path === '/sauce-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🥄</span>
-                        <span>酱料设计</span>
+                        <span>酱料大师</span>
                     </router-link>
                     
                     <!-- 更多菜单下拉 -->
@@ -100,6 +100,15 @@
                             >
                                 <span>🖼️</span>
                                 <span>封神图鉴</span>
+                            </router-link>
+                            <router-link
+                                to="/fortune-cooking"
+                                @click="showMoreMenu = false"
+                                class="flex items-center gap-2 px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-gray-100"
+                                :class="$route.path === '/fortune-cooking' ? 'bg-yellow-100 text-gray-800' : 'text-gray-700'"
+                            >
+                                <span>🔮</span>
+                                <span>玄学厨房</span>
                             </router-link>
                             <router-link
                                 to="/about"
@@ -158,7 +167,7 @@
                         :class="$route.path === '/today-eat' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🎲</span>
-                        <span>今日吃啥</span>
+                        <span>美食盲盒</span>
                     </router-link>
                     <router-link
                         to="/table-design"
@@ -167,7 +176,7 @@
                         :class="$route.path === '/table-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍽️</span>
-                        <span>一桌好菜</span>
+                        <span>满汉全席</span>
                     </router-link>
                     <router-link
                         to="/how-to-cook"
@@ -176,7 +185,7 @@
                         :class="$route.path === '/how-to-cook' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍳</span>
-                        <span>菜谱指南</span>
+                        <span>厨神秘籍</span>
                     </router-link>
                     <router-link
                         to="/sauce-design"
@@ -185,7 +194,16 @@
                         :class="$route.path === '/sauce-design' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🥄</span>
-                        <span>酱料设计</span>
+                        <span>酱料大师</span>
+                    </router-link>
+                    <router-link
+                        to="/fortune-cooking"
+                        @click="showMobileMenu = false"
+                        class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
+                        :class="$route.path === '/fortune-cooking' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                    >
+                        <span>🔮</span>
+                        <span>玄学厨房</span>
                     </router-link>
                     <router-link
                         to="/favorites"
@@ -250,6 +268,8 @@ const pageTitle = computed(() => {
             return '菜谱指南'
         case '/sauce-design':
             return '酱料设计大师'
+        case '/fortune-cooking':
+            return '玄学厨房'
         case '/favorites':
             return '我的收藏'
         case '/gallery':
@@ -273,6 +293,8 @@ const pageSubtitle = computed(() => {
             return 'AI大师手把手教学！'
         case '/sauce-design':
             return '专业酱料制作，调味灵魂升华！'
+        case '/fortune-cooking':
+            return '星辰指引美食，占卜预见美味！'
         case '/favorites':
             return '珍藏美味，随时回味！'
         case '/gallery':
@@ -286,7 +308,7 @@ const pageSubtitle = computed(() => {
 
 // 检查更多菜单中的页面是否处于活跃状态
 const isMoreMenuActive = computed(() => {
-    return ['/favorites', '/gallery', '/about'].includes(route.path)
+    return ['/favorites', '/gallery', '/fortune-cooking', '/about'].includes(route.path)
 })
 
 // 处理鼠标进入事件

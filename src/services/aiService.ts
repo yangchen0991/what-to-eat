@@ -1,19 +1,19 @@
 import axios from 'axios'
-import type { Recipe, CuisineType, NutritionAnalysis, WinePairing, SauceRecipe, SaucePreference, CustomSauceRequest } from '@/types'
+import type { Recipe, CuisineType, NutritionAnalysis, WinePairing, SauceRecipe, SaucePreference, CustomSauceRequest, FortuneResult, DailyFortuneParams, MoodFortuneParams, CoupleFortuneParams, NumberFortuneParams } from '@/types'
 
 // AI服务配置 - 从环境变量读取
 const AI_CONFIG = {
-    baseURL: 'https://api.deepseek.com/v1/',
-    apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
-    model: 'deepseek-chat',
-    temperature: 0.7,
-    timeout: 300000
-
-    // baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    // apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
-    // model: 'glm-4-flash-250414',
+    // baseURL: 'https://api.deepseek.com/v1/',
+    // apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
+    // model: 'deepseek-chat',
     // temperature: 0.7,
     // timeout: 300000
+
+    baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
+    apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
+    model: 'GLM-4-Flash-250414',
+    temperature: 0.9,
+    timeout: 300000
 }
 
 // 创建axios实例
@@ -1174,6 +1174,327 @@ export const getSaucePairings = async (sauceName: string): Promise<string[]> => 
     } catch (error) {
         console.error('获取酱料搭配建议失败:', error)
         return ['面条 - 拌面使用', '蔬菜 - 蘸食使用', '肉类 - 调味使用']
+    }
+}
+
+/**
+ * 生成今日运势菜
+ * @param params 运势参数
+ * @returns Promise<FortuneResult>
+ */
+export const generateDailyFortune = async (params: DailyFortuneParams): Promise<FortuneResult> => {
+    try {
+        const prompt = `你是一位神秘的料理占卜师，请根据以下信息为用户推荐今日幸运菜：
+
+星座：${params.zodiac}
+生肖：${params.animal}
+日期：${params.date}
+
+请结合星座特性、生肖属性和今日能量，推荐一道能带来好运的菜品。
+
+请按照以下JSON格式返回占卜结果：
+{
+  "dishName": "菜品名称",
+  "reason": "选择这道菜的占卜理由",
+  "luckyIndex": 8,
+  "description": "详细的占卜解析和菜品介绍",
+  "tips": ["烹饪技巧1", "幸运提示2"],
+  "difficulty": "medium",
+  "cookingTime": 30,
+  "mysticalMessage": "神秘的占卜师话语",
+  "ingredients": ["主要食材1", "主要食材2"],
+  "steps": ["制作步骤1", "制作步骤2"]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位神秘而智慧的料理占卜师，精通星座学、生肖学和美食文化。你的话语充满神秘色彩，善于将占卜元素与美食完美结合。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.8,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const fortuneData = JSON.parse(cleanResponse)
+
+        const fortune: FortuneResult = {
+            id: `daily-fortune-${Date.now()}`,
+            type: 'daily',
+            date: params.date,
+            dishName: fortuneData.dishName || '幸运料理',
+            reason: fortuneData.reason || '星座与生肖的神秘指引',
+            luckyIndex: fortuneData.luckyIndex || Math.floor(Math.random() * 3) + 7,
+            description: fortuneData.description || '这道菜将为您带来今日好运',
+            tips: fortuneData.tips || ['用心制作', '保持好心情'],
+            difficulty: fortuneData.difficulty || 'medium',
+            cookingTime: fortuneData.cookingTime || 30,
+            mysticalMessage: fortuneData.mysticalMessage || '命运之轮正在转动，美味即将降临...',
+            ingredients: fortuneData.ingredients || [],
+            steps: fortuneData.steps || []
+        }
+
+        return fortune
+    } catch (error) {
+        console.error('生成今日运势菜失败:', error)
+        throw new Error('占卜师暂时无法感应到星象，请稍后重试')
+    }
+}
+
+/**
+ * 生成心情料理
+ * @param params 心情参数
+ * @returns Promise<FortuneResult>
+ */
+export const generateMoodCooking = async (params: MoodFortuneParams): Promise<FortuneResult> => {
+    try {
+        const moodText = params.moods.join('、')
+        const intensityText = ['很轻微', '轻微', '一般', '强烈', '非常强烈'][params.intensity - 1]
+
+        const prompt = `你是一位擅长情感治愈的料理占卜师，请根据以下心情状态推荐治愈菜品：
+
+当前心情：${moodText}
+情绪强度：${intensityText}
+
+请推荐一道能够治愈这种心情的菜品，并给出温暖的情感分析。
+
+请按照以下JSON格式返回占卜结果：
+{
+  "dishName": "菜品名称",
+  "reason": "这道菜如何治愈当前心情",
+  "luckyIndex": 7,
+  "description": "详细的情感分析和菜品治愈功效",
+  "tips": ["情感治愈建议1", "烹饪心得2"],
+  "difficulty": "easy",
+  "cookingTime": 25,
+  "mysticalMessage": "温暖治愈的话语",
+  "ingredients": ["治愈食材1", "治愈食材2"],
+  "steps": ["治愈步骤1", "治愈步骤2"]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位温暖而智慧的情感治愈师，深谙美食与情感的关系。你善于通过菜品来抚慰人心，话语温暖治愈。请严格按照JSON���式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.7,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const fortuneData = JSON.parse(cleanResponse)
+
+        const fortune: FortuneResult = {
+            id: `mood-fortune-${Date.now()}`,
+            type: 'mood',
+            date: new Date().toISOString().split('T')[0],
+            dishName: fortuneData.dishName || '治愈料理',
+            reason: fortuneData.reason || '这道菜能温暖你的心',
+            luckyIndex: fortuneData.luckyIndex || Math.floor(Math.random() * 3) + 6,
+            description: fortuneData.description || '美食是最好的情感治愈师',
+            tips: fortuneData.tips || ['慢慢品味', '感受温暖'],
+            difficulty: fortuneData.difficulty || 'easy',
+            cookingTime: fortuneData.cookingTime || 25,
+            mysticalMessage: fortuneData.mysticalMessage || '让美食抚慰你的心灵，一切都会好起来的...',
+            ingredients: fortuneData.ingredients || [],
+            steps: fortuneData.steps || []
+        }
+
+        return fortune
+    } catch (error) {
+        console.error('生成心情料理失败:', error)
+        throw new Error('情感占卜师暂时感应不到你的心情，请稍后重试')
+    }
+}
+
+/**
+ * 生成缘分配菜
+ * @param params 双人参数
+ * @returns Promise<FortuneResult>
+ */
+export const generateCoupleCooking = async (params: CoupleFortuneParams): Promise<FortuneResult> => {
+    try {
+        const prompt = `你是一位专门分析人际关系的料理占卜师，请分析两人的配菜缘分：
+
+第一人：
+- 星座：${params.user1.zodiac}
+- 生肖：${params.user1.animal}
+- 性格：${params.user1.personality.join('、')}
+
+第二人：
+- 星座：${params.user2.zodiac}
+- 生肖：${params.user2.animal}
+- 性格：${params.user2.personality.join('、')}
+
+请分析两人的配菜默契度，推荐适合合作制作的菜品。
+
+请按照以下JSON格式返回占卜结果：
+{
+  "dishName": "适合合作的菜品名称",
+  "reason": "为什么这道菜适合你们一起做",
+  "luckyIndex": 8,
+  "description": "详细的缘分分析和配菜建议",
+  "tips": ["合作建议1", "默契提升技巧2"],
+  "difficulty": "medium",
+  "cookingTime": 40,
+  "mysticalMessage": "关于缘分和合作的神秘话语",
+  "ingredients": ["需要合作的食材1", "需要合作的食材2"],
+  "steps": ["合作步骤1", "合作步骤2"]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位精通人际关系和美食文化的占卜师，善于分析人与人之间的默契和缘分。你的话语充满智慧和温暖。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.8,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const fortuneData = JSON.parse(cleanResponse)
+
+        const fortune: FortuneResult = {
+            id: `couple-fortune-${Date.now()}`,
+            type: 'couple',
+            date: new Date().toISOString().split('T')[0],
+            dishName: fortuneData.dishName || '缘分料理',
+            reason: fortuneData.reason || '你们的星座组合很适合这道菜',
+            luckyIndex: fortuneData.luckyIndex || Math.floor(Math.random() * 3) + 7,
+            description: fortuneData.description || '这道菜将增进你们的默契',
+            tips: fortuneData.tips || ['互相配合', '享受过程'],
+            difficulty: fortuneData.difficulty || 'medium',
+            cookingTime: fortuneData.cookingTime || 40,
+            mysticalMessage: fortuneData.mysticalMessage || '缘分天注定，美食见真情...',
+            ingredients: fortuneData.ingredients || [],
+            steps: fortuneData.steps || []
+        }
+
+        return fortune
+    } catch (error) {
+        console.error('生成缘分配菜失败:', error)
+        throw new Error('缘分占卜师暂时无法感应到你们的默契，请稍后重试')
+    }
+}
+
+/**
+ * 生成幸运数字菜
+ * @param params 数字参数
+ * @returns Promise<FortuneResult>
+ */
+export const generateNumberFortune = async (params: NumberFortuneParams): Promise<FortuneResult> => {
+    try {
+        const numberSource = params.isRandom ? '随机生成' : '用户选择'
+        
+        const prompt = `你是一位精通数字占卜的料理大师，请根据幸运数字推荐菜品：
+
+幸运数字：${params.number}
+数字来源：${numberSource}
+
+请解析这个数字的寓意，并推荐对应的幸运菜品。
+
+请按照以下JSON格式返回占卜结果：
+{
+  "dishName": "与数字相关的菜品名称",
+  "reason": "数字寓意和选择理由",
+  "luckyIndex": 9,
+  "description": "数字占卜解析和菜品象征意义",
+  "tips": ["数字相关的幸运建议1", "制作要点2"],
+  "difficulty": "medium",
+  "cookingTime": 35,
+  "mysticalMessage": "关于数字和命运的神秘话语",
+  "ingredients": ["象征性食材1", "象征性食材2"],
+  "steps": ["制作步骤1", "制作步骤2"]
+}`
+
+        const response = await aiClient.post('/chat/completions', {
+            model: AI_CONFIG.model,
+            messages: [
+                {
+                    role: 'system',
+                    content: '你是一位精通数字学和美食文化的神秘占卜师，善于解读数字的深层含义并与菜品联系。你的话语充满神秘和智慧。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            temperature: 0.8,
+            stream: false
+        })
+
+        const aiResponse = response.data.choices[0].message.content
+        let cleanResponse = aiResponse.trim()
+        if (cleanResponse.startsWith('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\s*/, '').replace(/```\s*$/, '')
+        } else if (cleanResponse.startsWith('```')) {
+            cleanResponse = cleanResponse.replace(/```\s*/, '').replace(/```\s*$/, '')
+        }
+
+        const fortuneData = JSON.parse(cleanResponse)
+
+        const fortune: FortuneResult = {
+            id: `number-fortune-${Date.now()}`,
+            type: 'number',
+            date: new Date().toISOString().split('T')[0],
+            dishName: fortuneData.dishName || '数字料理',
+            reason: fortuneData.reason || `数字${params.number}带来的神秘指引`,
+            luckyIndex: fortuneData.luckyIndex || Math.floor(Math.random() * 3) + 7,
+            description: fortuneData.description || '数字中蕴含着美食的秘密',
+            tips: fortuneData.tips || ['相信数字的力量', '用心制作'],
+            difficulty: fortuneData.difficulty || 'medium',
+            cookingTime: fortuneData.cookingTime || 35,
+            mysticalMessage: fortuneData.mysticalMessage || '数字是宇宙的语言，美食是心灵的慰藉...',
+            ingredients: fortuneData.ingredients || [],
+            steps: fortuneData.steps || []
+        }
+
+        return fortune
+    } catch (error) {
+        console.error('生成幸运数字菜失败:', error)
+        throw new Error('数字占卜师暂时无法解读这个数字，请稍后重试')
     }
 }
 

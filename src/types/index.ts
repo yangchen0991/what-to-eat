@@ -177,3 +177,111 @@ export interface FavoriteSauce {
     favoriteDate: string
     notes?: string
 }
+
+// 占卜类型
+export type FortuneType = 'daily' | 'mood' | 'couple' | 'number'
+
+// 占卜请求参数
+export interface DailyFortuneParams {
+    zodiac: string // 星座
+    animal: string // 生肖
+    date: string
+}
+
+export interface MoodFortuneParams {
+    moods: string[] // 心情状态数组
+    intensity: number // 情绪强度 1-5
+}
+
+export interface PersonInfo {
+    zodiac: string
+    animal: string
+    personality: string[]
+}
+
+export interface CoupleFortuneParams {
+    user1: PersonInfo
+    user2: PersonInfo
+}
+
+export interface NumberFortuneParams {
+    number: number // 1-99
+    isRandom: boolean
+}
+
+// 占卜结果
+export interface FortuneResult {
+    id: string
+    type: FortuneType
+    date: string
+    dishName: string
+    reason: string
+    luckyIndex: number // 1-10
+    description: string
+    tips: string[]
+    difficulty: 'easy' | 'medium' | 'hard'
+    cookingTime: number
+    mysticalMessage: string // 神秘话语
+    ingredients?: string[]
+    steps?: string[]
+}
+
+// 占卜师角色
+export interface FortuneTeller {
+    name: string
+    avatar: string
+    greetings: string[]
+    phrases: {
+        [key in FortuneType]: {
+            opening: string[]
+            closing: string[]
+            processing: string[]
+        }
+    }
+    mysticalWords: string[]
+}
+
+// 星座配置
+export interface ZodiacConfig {
+    id: string
+    name: string
+    symbol: string
+    element: string // 火、土、风、水
+    traits: string[]
+    luckyColors: string[]
+    dates: string
+}
+
+// 生肖配置
+export interface AnimalConfig {
+    id: string
+    name: string
+    symbol: string
+    element: string // 金、木、水、火、土
+    traits: string[]
+    luckyNumbers: number[]
+    years: number[]
+}
+
+// 心情配置
+export interface MoodConfig {
+    id: string
+    name: string
+    emoji: string
+    color: string
+    cookingStyle: string[]
+    description: string
+}
+
+// 占卜历史存储
+export interface FortuneStorage {
+    history: FortuneResult[]
+    userPreferences: {
+        defaultZodiac?: string
+        defaultAnimal?: string
+        favoriteFortuneType?: FortuneType
+    }
+    feedback: {
+        [fortuneId: string]: 'accurate' | 'inaccurate'
+    }
+}
