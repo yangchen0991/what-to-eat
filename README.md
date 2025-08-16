@@ -31,7 +31,7 @@
 
 **国际料理：**
 
--   � 日式料理 - 和食美学，季节本味
+-   🍣 日式料理 - 和食美学，季节本味
 -   🥢 韩式料理 - 发酵智慧，营养均衡
 -   🍝 意式料理 - 地中海阳光，简约精致
 -   🥖 法式料理 - 高卢优雅，酱汁丰富
@@ -53,7 +53,7 @@
 -   个性化营养建议和改进方案
 -   科学的建议食用份量
 
-### � ️ AI 效果图生成
+### 📸 AI 效果图生成
 
 -   一键生成精美菜品效果图
 -   基于菜谱内容智能绘制
@@ -78,6 +78,35 @@
 -   包含主菜、配菜、汤品和甜点
 -   营养均衡搭配
 -   支持多人份量调整
+
+### 🌶️ 酱汁设计器
+
+-   **口味定制：** 精确调整辣度、甜度、咸度和酸度
+-   **场景适配：** 为拌面、蘸菜、炒菜、烧烤、火锅等场景推荐最佳酱汁
+-   **食材利用：** 根据现有食材智能生成酱汁配方
+-   **分类浏览：** 探索辣味、蒜香、甜味、复合调味等多种酱料类型
+-   **模板推荐：** 提供经典酱料模板，快速生成美味酱汁
+
+### 🔮 料理占卜师
+
+-   **今日运势：** 根据星座和生肖推荐今日幸运料理
+-   **心情料理：** 基于当前心情状态推荐适合的菜品
+-   **神秘预测：** 提供趣味的饮食运势解读
+-   **个性化体验：** 结合个人偏好生成独特的占卜结果
+
+### ❤️ 收藏功能
+
+-   **一键收藏：** 快速保存喜爱的菜谱
+-   **笔记功能：** 添加个人烹饪笔记和改进建议
+-   **分类管理：** 按菜系筛选和搜索收藏的菜谱
+-   **数据统计：** 查看收藏总数、菜系种类和最近收藏
+
+### 🖼️ 封神图鉴
+
+-   **图片展示：** 浏览AI生成的精美菜品图片
+-   **搜索筛选：** 按菜谱名称、菜系或食材搜索图片
+-   **下载功能：** 一键保存高清菜品图片
+-   **排序功能：** 按生成时间或菜名排序
 
 ## 🚀 技术栈
 
@@ -125,7 +154,7 @@ VITE_TEXT_DEEPSEEK_API_KEY=your_deepseek_api_key_here
 VITE_IMAGE_BIGMODEL_API_KEY=your_image_api_key_here
 ```
 
-## � 使用指南始
+## 📖 使用指南
 
 ### 基础流程
 
@@ -139,7 +168,10 @@ VITE_IMAGE_BIGMODEL_API_KEY=your_image_api_key_here
 -   **营养分析** - 点击获取详细营养信息和健康建议
 -   **酒水搭配** - 获取专业的酒水搭配推荐
 -   **效果图生成** - 一键生成精美的菜品效果图
--   **时间格式化** - 自动将长时间转换为天+小时+分钟格式
+-   **酱汁设计** - 定制专属口味的酱料配方
+-   **料理占卜** - 探索趣味的饮食运势
+-   **收藏管理** - 保存和管理喜爱的菜谱
+-   **图鉴浏览** - 欣赏和下载AI生成的菜品图片
 
 ## 🎨 设计特色
 
@@ -160,21 +192,46 @@ VITE_IMAGE_BIGMODEL_API_KEY=your_image_api_key_here
 
 ```
 src/
-├── components/           # 组件目录
-│   ├── RecipeCard.vue   # 菜谱卡片（含时间格式化）
-│   ├── NutritionAnalysis.vue # 营养分析组件
-│   └── WinePairing.vue  # 酒水搭配组件
-├── config/              # 配置文件
-│   ├── cuisines.ts      # 菜系大师配置
-│   └── ingredients.ts   # 食材分类配置
-├── services/            # 服务层
-│   ├── aiService.ts     # AI菜谱生成服务
-│   └── imageService.ts  # AI图像生成服务
-├── types/               # 类型定义
-│   └── index.ts        # 通用类型定义
-├── views/               # 页面组件
-│   └── Home.vue        # 主页面（左右布局）
-└── App.vue             # 根组件
+├── components/
+│   ├── ConfirmModal.vue
+│   ├── CookingLoader.vue
+│   ├── FavoriteButton.vue
+│   ├── FortuneCard.vue
+│   ├── GlobalFooter.vue
+│   ├── GlobalNavigation.vue
+│   ├── ImageModal.vue
+│   ├── NotesModal.vue
+│   ├── NutritionAnalysis.vue
+│   ├── RecipeCard.vue
+│   ├── RecipeModal.vue
+│   ├── SauceRecipe.vue
+│   └── WinePairing.vue
+├── config/
+│   ├── ai.ts
+│   ├── cuisines.ts
+│   ├── fortune.ts
+│   ├── ingredients.ts
+│   └── sauces.ts
+├── services/
+│   ├── aiService.ts
+│   ├── favoriteService.ts
+│   ├── galleryService.ts
+│   └── imageService.ts
+├── types/
+│   └── index.ts
+├── utils/
+│   └── sauceHelpers.ts
+├── views/
+│   ├── About.vue
+│   ├── Favorites.vue
+│   ├── FortuneCooking.vue
+│   ├── Gallery.vue
+│   ├── Home.vue
+│   ├── HowToCook.vue
+│   ├── SauceDesign.vue
+│   ├── TableDesign.vue
+│   └── TodayEat.vue
+└── App.vue
 ```
 
 ## 🌟 核心亮点
@@ -197,6 +254,8 @@ src/
 -   完整的营养分析系统
 -   专业的酒水搭配推荐
 -   全方位的菜谱展示（食材、步骤、技巧、营养）
+-   创新的酱汁设计和料理占卜功能
+-   实用的收藏和图鉴系统
 
 ## 🙏 致谢
 
