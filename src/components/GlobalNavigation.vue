@@ -1,6 +1,6 @@
 <template>
     <nav class="bg-white border-2 border-[#0A0910] max-w-7xl mx-auto rounded-lg mb-4 shadow-lg">
-        <div class="px-4 py-6  md:px-6">
+        <div class="px-4 py-6 md:px-6">
             <!-- 桌面端导航 -->
             <div class="hidden md:flex items-center justify-between">
                 <!-- Logo区域 -->
@@ -62,7 +62,7 @@
                         <span>🥄</span>
                         <span>酱料大师</span>
                     </router-link>
-                    
+
                     <!-- 更多菜单下拉 -->
                     <div class="relative" @mouseleave="handleMouseLeave">
                         <button
@@ -76,13 +76,22 @@
                             <span>⋯</span>
                             <span>更多</span>
                         </button>
-                        
+
                         <!-- 下拉菜单 -->
                         <div
                             v-if="showMoreMenu"
                             @mouseenter="handleMouseEnter"
                             class="absolute right-0 top-full mt-0.5 w-40 bg-white border-2 border-[#0A0910] rounded-lg shadow-lg z-50 overflow-hidden"
                         >
+                            <router-link
+                                to="/fortune-cooking"
+                                @click="showMoreMenu = false"
+                                class="flex items-center gap-2 px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-gray-100"
+                                :class="$route.path === '/fortune-cooking' ? 'bg-yellow-100 text-gray-800' : 'text-gray-700'"
+                            >
+                                <span>🔮</span>
+                                <span>玄学厨房</span>
+                            </router-link>
                             <router-link
                                 to="/favorites"
                                 @click="showMoreMenu = false"
@@ -100,15 +109,6 @@
                             >
                                 <span>🖼️</span>
                                 <span>封神图鉴</span>
-                            </router-link>
-                            <router-link
-                                to="/fortune-cooking"
-                                @click="showMoreMenu = false"
-                                class="flex items-center gap-2 px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-gray-100"
-                                :class="$route.path === '/fortune-cooking' ? 'bg-yellow-100 text-gray-800' : 'text-gray-700'"
-                            >
-                                <span>🔮</span>
-                                <span>玄学厨房</span>
                             </router-link>
                             <router-link
                                 to="/about"
