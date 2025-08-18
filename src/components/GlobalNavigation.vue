@@ -46,13 +46,21 @@
                         <span>🍽️</span>
                         <span>满汉全席</span>
                     </router-link>
-                    <router-link
+                    <!-- <router-link
                         to="/how-to-cook"
                         class="flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
                         :class="$route.path === '/how-to-cook' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                     >
                         <span>🍳</span>
                         <span>厨神秘籍</span>
+                    </router-link> -->
+                    <router-link
+                        to="/fortune-cooking"
+                        class="flex items-center gap-1 px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105 text-sm"
+                        :class="$route.path === '/fortune-cooking' ? 'bg-yellow-400 text-gray-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                    >
+                        <span>🔮</span>
+                        <span>玄学厨房</span>
                     </router-link>
                     <router-link
                         to="/sauce-design"
@@ -83,7 +91,7 @@
                             @mouseenter="handleMouseEnter"
                             class="absolute right-0 top-full mt-0.5 w-40 bg-white border-2 border-[#0A0910] rounded-lg shadow-lg z-50 overflow-hidden"
                         >
-                            <router-link
+                            <!-- <router-link
                                 to="/fortune-cooking"
                                 @click="showMoreMenu = false"
                                 class="flex items-center gap-2 px-4 py-3 text-sm font-bold transition-colors duration-200 hover:bg-gray-100"
@@ -91,7 +99,7 @@
                             >
                                 <span>🔮</span>
                                 <span>玄学厨房</span>
-                            </router-link>
+                            </router-link> -->
                             <router-link
                                 to="/favorites"
                                 @click="showMoreMenu = false"
@@ -178,7 +186,7 @@
                         <span>🍽️</span>
                         <span>满汉全席</span>
                     </router-link>
-                    <router-link
+                    <!-- <router-link
                         to="/how-to-cook"
                         @click="showMobileMenu = false"
                         class="flex items-center gap-2 w-full px-3 py-2 rounded-lg font-bold border-2 border-[#0A0910] transition-all duration-200 text-sm"
@@ -186,7 +194,7 @@
                     >
                         <span>🍳</span>
                         <span>厨神秘籍</span>
-                    </router-link>
+                    </router-link> -->
                     <router-link
                         to="/sauce-design"
                         @click="showMobileMenu = false"

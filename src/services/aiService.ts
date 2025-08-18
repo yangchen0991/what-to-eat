@@ -175,12 +175,16 @@ export const generateTableMenu = async (config: {
             japanese: '日式为主'
         }
 
+        const styleText = (styleMap as Record<string, string>)[config.cuisineStyle] || '混合菜系'
+        const sceneText = (sceneMap as Record<string, string>)[config.diningScene] || '家庭聚餐'
+        const nutritionText = (nutritionMap as Record<string, string>)[config.nutritionFocus] || '营养均衡'
+
         let prompt = `请为我设计一桌菜，要求如下：
 - ${config.flexibleCount ? `参考菜品数量：${config.dishCount}道菜（可以根据实际情况智能调整，重点是搭配合理）` : `菜品数量：${config.dishCount}道菜（请严格按照这个数量生成）`}
 - 口味偏好：${tasteText}
-- 菜系风格：${styleMap[config.cuisineStyle] || '混合菜系'}
-- 用餐场景：${sceneMap[config.diningScene] || '家庭聚餐'}
-- 营养搭配：${nutritionMap[config.nutritionFocus] || '营养均衡'}`
+- 菜系风格：${styleText}
+- 用餐场景：${sceneText}
+- 营养搭配：${nutritionText}`
 
         if (config.customDishes.length > 0) {
             prompt += `\n- ${config.flexibleCount ? '优先考虑的菜品' : '必须包含的菜品'}：${config.customDishes.join('、')}${config.flexibleCount ? '（可以作为参考，根据搭配需要决定是否全部包含）' : '（请确保这些菜品都包含在菜单中）'
@@ -946,7 +950,7 @@ export const recommendSauces = async (preferences: SaucePreference): Promise<str
             hotpot: '火锅'
         }
 
-        const useCaseText = preferences.useCase.map(uc => useCaseMap[uc] || uc).join('、')
+        const useCaseText = preferences.useCase.map(uc => (useCaseMap as Record<string, string>)[uc] || uc).join('、')
         const ingredientsText = preferences.availableIngredients.length > 0
             ? preferences.availableIngredients.join('、')
             : '无特殊要求'
@@ -1506,3 +1510,88 @@ export const generateNumberFortune = async (params: NumberFortuneParams): Promis
 
 // 导出配置更新函数，供外部使用
 export { AI_CONFIG }
+
+/**
+ * 通用聊天（流式）
+ * @param messages 对话历史
+ * @param onDelta 每次增量文本回调
+ * @param onComplete 结束回调（携带完整文本）
+ * @param onError 错误回调
+ */
+export const chatStream = async (
+    messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }>,
+    onDelta: (deltaText: string) => void,
+    onComplete?: (fullText: string) => void,
+    onError?: (err: unknown) => void
+): Promise<void> => {
+    const url = AI_CONFIG.baseURL.replace(/\/$/, '') + '/chat/completions'
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${AI_CONFIG.apiKey}`
+    }
+
+    const body = JSON.stringify({
+        model: AI_CONFIG.model,
+        messages,
+        temperature: AI_CONFIG.temperature,
+        stream: true
+    })
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers,
+            body
+        })
+
+        if (!response.ok || !response.body) {
+            throw new Error(`请求失败: ${response.status}`)
+        }
+
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder('utf-8')
+        let buffer = ''
+        let fullText = ''
+
+        while (true) {
+            const { value, done } = await reader.read()
+            if (done) break
+            buffer += decoder.decode(value, { stream: true })
+
+            // 以SSE事件为单位切分
+            const parts = buffer.split(/\n\n/)
+            buffer = parts.pop() || ''
+
+            for (const part of parts) {
+                const lines = part.split('\n').map(l => l.trim()).filter(Boolean)
+                for (const line of lines) {
+                    if (!line.startsWith('data:')) continue
+                    const data = line.slice(5).trim()
+                    if (data === '[DONE]') {
+                        if (onComplete) onComplete(fullText)
+                        return
+                    }
+                    try {
+                        const json = JSON.parse(data)
+                        // 兼容OpenAI/同构流式规范
+                        const delta = json.choices?.[0]?.delta?.content ?? json.choices?.[0]?.message?.content ?? ''
+                        if (delta) {
+                            fullText += delta
+                            onDelta(delta)
+                        }
+                    } catch (e) {
+                        // 非JSON行，忽略
+                        continue
+                    }
+                }
+            }
+        }
+
+        // 读流结束但未收到DONE
+        if (onComplete) onComplete(fullText)
+    } catch (err) {
+        if (onError) onError(err)
+        else console.error('chatStream error:', err)
+        throw err
+    }
+}

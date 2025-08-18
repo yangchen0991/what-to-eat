@@ -13,6 +13,7 @@
     "dependencies": {
         "@vueuse/core": "^10.7.0",
         "axios": "^1.6.0",
+        "markdown-it": "^14.1.0",
         "party-js": "^2.2.0",
         "vue": "^3.4.0",
         "vue-router": "^4.2.0"
