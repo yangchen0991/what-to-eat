@@ -31,7 +31,7 @@
                 <div class="flex items-center gap-2">
                     <span class="text-xl">👨‍🍳</span>
                     <div>
-                        <div class="text-sm font-black text-gray-800">厨神助理</div>
+                        <div class="text-sm font-black text-gray-800">厨神小助手</div>
                         <div class="text-xs text-gray-600">会做饭的AI，问我任何烹饪问题～</div>
                     </div>
                 </div>
@@ -39,12 +39,16 @@
             </div>
 
             <!-- 消息列表 -->
-            <div ref="scrollContainer" class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50" :class="{ 'min-h-[60vh] md:min-h-[60vh]': messages.length <= 1 && !isMobile }">
+            <div
+                ref="scrollContainer"
+                class="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50 flex flex-col"
+                :class="{ 'min-h-[60vh] md:min-h-[60vh]': messages.length <= 1 && !isMobile }"
+            >
                 <div v-for="(m, idx) in messages" :key="idx" class="flex" :class="m.role === 'user' ? 'justify-end' : 'justify-start'">
                     <div v-if="m.role === 'assistant'" class="max-w-[80%] rounded-lg px-3 py-2 text-sm leading-6 bg-white border-2 border-[#0A0910] text-gray-800 markdown-body">
                         <div v-if="isLoading && idx === messages.length - 1">
                             <span class="animate-pulse">👨‍🍳</span>
-                            <span class="text-sm font-medium">大厨正在思考中···</span>
+                            <span class="text-sm font-medium">小助手正在思考中···</span>
                         </div>
                         <div v-else v-html="renderMarkdown(m.content)" />
                     </div>
@@ -93,7 +97,7 @@ onMounted(() => {
     checkMobile()
     window.addEventListener('resize', checkMobile)
 })
-const messages = ref([{ role: 'assistant', content: '你好，我是你的厨神助理！告诉我你有什么食材/口味/菜名，我来帮你出招～' }])
+const messages = ref([{ role: 'assistant', content: '你好！告诉我你有什么食材/口味/菜名，我来帮你出招～' }])
 const input = ref('')
 const isLoading = ref(false)
 const scrollContainer = ref(null)
@@ -105,12 +109,19 @@ const toggleOpen = () => {
     }
 }
 
+const scrollToBottomImmediate = () => {
+    if (!scrollContainer.value) return
+    const container = scrollContainer.value
+    // 即时滚动到底部，减去8px确保完全滚动
+    container.scrollTop = container.scrollHeight - 8
+}
+
 const scrollToBottom = () => {
     if (!scrollContainer.value) return
     const container = scrollContainer.value
-    // 使用平滑滚动并确保完全滚动到底部
+    // 使用平滑滚动并确保完全滚动到底部，减去8px确保完全滚动
     container.scrollTo({
-        top: container.scrollHeight,
+        top: container.scrollHeight - 8,
         behavior: 'smooth'
     })
 }
@@ -139,7 +150,7 @@ const handleSend = async () => {
             // 直接存储原始数据，在渲染时统一解码
             messages.value[messages.value.length - 1].content += delta
             // 使用requestAnimationFrame优化滚动性能
-            requestAnimationFrame(scrollToBottom)
+            requestAnimationFrame(scrollToBottomImmediate)
         })
     } catch (e) {
         isLoading.value = false
@@ -161,11 +172,9 @@ const escapeHtml = str => {
 
 const renderMarkdown = md => {
     if (!md) return ''
-    // 先转义所有HTML标签
-    let escapedMd = escapeHtml(md)
-    // 将转义后的<br>标签恢复为换行符
-    escapedMd = escapedMd.replace(/<br\s*\/?>/gi, '\n')
-    const lines = escapedMd.split('\n')
+    // 先处理换行符
+    let processedMd = md.replace(/<br\s*\/?>/gi, '\n')
+    const lines = processedMd.split('\n')
     let html = ''
     let inList = false
     let inCode = false
@@ -188,8 +197,8 @@ const renderMarkdown = md => {
     }
 
     const inline = s => {
-        let t = escapeHtml(s)
-        // inline code
+        let t = s
+        // 先处理inline code避免转义
         t = t.replace(/`([^`]+)`/g, '<code>$1</code>')
         // bold **text** or __text__
         t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
@@ -197,7 +206,8 @@ const renderMarkdown = md => {
         // italic *text* or _text_
         t = t.replace(/(^|\W)\*([^*]+)\*(?=\W|$)/g, '$1<em>$2</em>')
         t = t.replace(/(^|\W)_([^_]+)_(?=\W|$)/g, '$1<em>$2</em>')
-        return t
+        // 转义除markdown生成标签外的HTML
+        return t.replace(/<(?!\/?(strong|em|code|ul|li|h[1-3]|p)\b)[^>]+>/g, escapeHtml)
     }
 
     for (const raw of lines) {
