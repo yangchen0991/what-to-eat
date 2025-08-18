@@ -9,13 +9,9 @@
                 <div class="relative">
                     <div class="relative bg-white/90 backdrop-blur-sm border-2 border-purple-400 rounded-2xl p-6 mb-6">
                         <div class="text-6xl mb-4 animate-pulse">🔮</div>
-                        <h1 class="text-4xl md:text-5xl font-bold text-purple-600 mb-4">
-                            料理占卜师
-                        </h1>
-                     
-                        <div class="text-sm text-purple-600 italic">
-                            "{{ currentMysticalWord }}"
-                        </div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-purple-600 mb-4">料理占卜师</h1>
+
+                        <div class="text-sm text-purple-600 italic">"{{ currentMysticalWord }}"</div>
                     </div>
                 </div>
             </div>
@@ -33,9 +29,7 @@
                             @click="selectFortuneType(type.id)"
                             :class="[
                                 'p-6 rounded-xl border-2 border-[#0A0910] transition-all duration-300 transform hover:scale-105',
-                                selectedType === type.id
-                                    ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                selectedType === type.id ? 'bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             ]"
                         >
                             <div class="text-3xl mb-3">{{ type.icon }}</div>
@@ -64,9 +58,7 @@
                                         @click="dailyParams.zodiac = zodiac.id"
                                         :class="[
                                             'p-3 rounded-lg border-2 border-[#0A0910] transition-all duration-200 text-sm',
-                                            dailyParams.zodiac === zodiac.id
-                                                ? 'bg-purple-500 text-white'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            dailyParams.zodiac === zodiac.id ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >
                                         <div>{{ zodiac.symbol }}</div>
@@ -83,9 +75,7 @@
                                         @click="dailyParams.animal = animal.id"
                                         :class="[
                                             'p-3 rounded-lg border-2 border-[#0A0910] transition-all duration-200 text-sm',
-                                            dailyParams.animal === animal.id
-                                                ? 'bg-purple-500 text-white'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            dailyParams.animal === animal.id ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         ]"
                                     >
                                         <div class="text-lg">{{ animal.symbol }}</div>
@@ -107,9 +97,7 @@
                                     @click="toggleMood(mood.id)"
                                     :class="[
                                         'p-4 rounded-lg border-2 border-[#0A0910] transition-all duration-200',
-                                        moodParams.moods.includes(mood.id)
-                                            ? 'bg-purple-500 text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        moodParams.moods.includes(mood.id) ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     ]"
                                 >
                                     <div class="text-2xl mb-2">{{ mood.emoji }}</div>
@@ -179,7 +167,7 @@
                     <span class="font-bold">🌟 占卜结果</span>
                 </div>
                 <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
-                    <FortuneCard :fortune="fortuneResult" :show-actions="true" />
+                    <FortuneCard class="max-w-2xl mx-auto" :fortune="fortuneResult" :show-actions="true" />
                 </div>
             </div>
         </div>
@@ -320,7 +308,7 @@ const startFortune = async () => {
 
         // 添加延迟增加神秘感
         await new Promise(resolve => setTimeout(resolve, 2000))
-        
+
         fortuneResult.value = result
 
         // 滚动到结果区域
@@ -330,7 +318,6 @@ const startFortune = async () => {
                 resultElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
             }
         }, 100)
-
     } catch (error) {
         console.error('占卜失败:', error)
         // 可以添加错误提示
@@ -346,11 +333,8 @@ const startFortune = async () => {
     width: 1px;
     height: 1px;
     background: transparent;
-    box-shadow: 
-        1541px 1046px #fff, 1651px 1164px #fff, 1286px 1270px #fff,
-        1364px 1446px #fff, 1739px 1564px #fff, 1312px 1684px #fff,
-        1747px 1794px #fff, 1474px 1924px #fff, 1365px 2044px #fff,
-        1610px 2164px #fff, 1264px 2284px #fff, 1458px 2404px #fff;
+    box-shadow: 1541px 1046px #fff, 1651px 1164px #fff, 1286px 1270px #fff, 1364px 1446px #fff, 1739px 1564px #fff, 1312px 1684px #fff, 1747px 1794px #fff, 1474px 1924px #fff,
+        1365px 2044px #fff, 1610px 2164px #fff, 1264px 2284px #fff, 1458px 2404px #fff;
     animation: animStar 50s linear infinite;
 }
 
@@ -358,10 +342,8 @@ const startFortune = async () => {
     width: 2px;
     height: 2px;
     background: transparent;
-    box-shadow: 
-        679px 1506px #fff, 1717px 1626px #fff, 1157px 1746px #fff,
-        1222px 1866px #fff, 1695px 1986px #fff, 1590px 2106px #fff,
-        1652px 2226px #fff, 1458px 2346px #fff, 1517px 2466px #fff;
+    box-shadow: 679px 1506px #fff, 1717px 1626px #fff, 1157px 1746px #fff, 1222px 1866px #fff, 1695px 1986px #fff, 1590px 2106px #fff, 1652px 2226px #fff, 1458px 2346px #fff,
+        1517px 2466px #fff;
     animation: animStar 100s linear infinite;
 }
 
@@ -369,9 +351,7 @@ const startFortune = async () => {
     width: 3px;
     height: 3px;
     background: transparent;
-    box-shadow: 
-        1042px 1306px #fff, 1537px 1426px #fff, 1923px 1546px #fff,
-        1687px 1666px #fff, 1854px 1786px #fff, 1431px 1906px #fff;
+    box-shadow: 1042px 1306px #fff, 1537px 1426px #fff, 1923px 1546px #fff, 1687px 1666px #fff, 1854px 1786px #fff, 1431px 1906px #fff;
     animation: animStar 150s linear infinite;
 }
 
@@ -393,7 +373,7 @@ const startFortune = async () => {
     background: #a855f7;
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .slider-purple::-moz-range-thumb {
@@ -403,6 +383,6 @@ const startFortune = async () => {
     background: #a855f7;
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 </style>
