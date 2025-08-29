@@ -392,7 +392,7 @@
                                                     <span class="bg-white/20 px-2 py-1 rounded text-xs animate-pulse">{{ cuisineInfo.name }}</span>
                                                     <span class="flex items-center gap-1">
                                                         <span class="animate-spin">⏱️</span>
-                                                        预计2-3分钟
+                                                        预计10-20秒
                                                     </span>
                                                     <span>📊 精心制作</span>
                                                 </div>
