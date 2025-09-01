@@ -114,7 +114,8 @@
 -   **开发语言：** TypeScript 5.3+
 -   **样式方案：** Tailwind CSS 3.4+
 -   **构建工具：** Vite 5.0+
--   **AI 服务：** DeepSeek Chat API + 智谱 AI GLM-4-Flash
+-   **AI 服务：** 零一万物 Yi-Lightning（菜谱生成） + 智谱 AI CogView-3-Flash（图片生成）
+-   **备选方案：** DeepSeek Chat API（菜谱生成）
 -   **部署平台：** Netlify 自动化部署
 
 ## 🎯 快速开始
@@ -147,11 +148,24 @@ npm run dev
 ### 环境变量配置
 
 ```env
-# DeepSeek API 菜谱生成配置
-VITE_TEXT_DEEPSEEK_API_KEY=your_deepseek_api_key_here
+# 菜谱生成模型配置（文本生成）- 零一万物（默认）
+VITE_TEXT_GENERATION_BASE_URL=https://api.lingyiwanwu.com/v1/
+VITE_TEXT_GENERATION_API_KEY=your_text_api_key_here
+VITE_TEXT_GENERATION_MODEL=yi-lightning
+VITE_TEXT_GENERATION_TEMPERATURE=0.7
+VITE_TEXT_GENERATION_TIMEOUT=300000
 
-# Bigmodel API 图像生成配置
-VITE_IMAGE_BIGMODEL_API_KEY=your_image_api_key_here
+# 菜谱生成模型配置（文本生成）- Deepseek（备选）
+# VITE_TEXT_GENERATION_BASE_URL=https://api.deepseek.com/v1/
+# VITE_TEXT_GENERATION_API_KEY=your_deepseek_api_key_here
+# VITE_TEXT_GENERATION_MODEL=deepseek-chat
+# VITE_TEXT_GENERATION_TEMPERATURE=0.7
+# VITE_TEXT_GENERATION_TIMEOUT=300000
+
+# 图片生成模型配置
+VITE_IMAGE_GENERATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
+VITE_IMAGE_GENERATION_API_KEY=your_image_api_key_here
+VITE_IMAGE_GENERATION_MODEL=cogview-3-flash
 ```
 
 ## 📖 使用指南

@@ -1,25 +1,26 @@
 import axios from 'axios'
-import type { Recipe, CuisineType, NutritionAnalysis, WinePairing, SauceRecipe, SaucePreference, CustomSauceRequest, FortuneResult, DailyFortuneParams, MoodFortuneParams, CoupleFortuneParams, NumberFortuneParams } from '@/types'
+import type {
+    Recipe,
+    CuisineType,
+    NutritionAnalysis,
+    WinePairing,
+    SauceRecipe,
+    SaucePreference,
+    CustomSauceRequest,
+    FortuneResult,
+    DailyFortuneParams,
+    MoodFortuneParams,
+    CoupleFortuneParams,
+    NumberFortuneParams
+} from '@/types'
 
-// AI服务配置 - 从环境变量读取
+// AI服务配置 - 从环境变量读取（菜谱生成模型配置）
 const AI_CONFIG = {
-    // baseURL: 'https://api.deepseek.com/v1/',
-    // apiKey: import.meta.env.VITE_TEXT_DEEPSEEK_API_KEY,
-    // model: 'deepseek-chat',
-    // temperature: 0.7,
-    // timeout: 300000
-
-    // baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
-    // apiKey: import.meta.env.VITE_IMAGE_BIGMODEL_API_KEY,
-    // model: 'GLM-4-Flash-250414',
-    // temperature: 0.9,
-    // timeout: 300000
-
-    baseURL: 'https://api.lingyiwanwu.com/v1/',
-    apiKey: import.meta.env.VITE_TEXT_LINGYIWANGWU_API_KEY,
-    model: 'yi-lightning',
-    temperature: 0.7,
-    timeout: 300000
+    baseURL: import.meta.env.VITE_TEXT_GENERATION_BASE_URL || 'https://api.lingyiwanwu.com/v1/',
+    apiKey: import.meta.env.VITE_TEXT_GENERATION_API_KEY,
+    model: import.meta.env.VITE_TEXT_GENERATION_MODEL || 'yi-lightning',
+    temperature: Number(import.meta.env.VITE_TEXT_GENERATION_TEMPERATURE) || 0.7,
+    timeout: Number(import.meta.env.VITE_TEXT_GENERATION_TIMEOUT) || 300000
 }
 
 // 创建axios实例
@@ -187,8 +188,9 @@ export const generateTableMenu = async (config: {
 - 营养搭配：${nutritionText}`
 
         if (config.customDishes.length > 0) {
-            prompt += `\n- ${config.flexibleCount ? '优先考虑的菜品' : '必须包含的菜品'}：${config.customDishes.join('、')}${config.flexibleCount ? '（可以作为参考，根据搭配需要决定是否全部包含）' : '（请确保这些菜品都包含在菜单中）'
-                }`
+            prompt += `\n- ${config.flexibleCount ? '优先考虑的菜品' : '必须包含的菜品'}：${config.customDishes.join('、')}${
+                config.flexibleCount ? '（可以作为参考，根据搭配需要决定是否全部包含）' : '（请确保这些菜品都包含在菜单中）'
+            }`
         }
 
         if (config.customRequirement) {
@@ -782,7 +784,8 @@ export const generateDishRecipeByName = async (dishName: string): Promise<Recipe
             messages: [
                 {
                     role: 'system',
-                    content: '你是一位经验丰富的中华料理大师，精通各种菜系的制作方法。请根据用户提供的菜名，生成详细、实用的制作教程。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                    content:
+                        '你是一位经验丰富的中华料理大师，精通各种菜系的制作方法。请根据用户提供的菜名，生成详细、实用的制作教程。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
                 },
                 {
                     role: 'user',
@@ -881,7 +884,8 @@ export const generateSauceRecipe = async (sauceName: string): Promise<SauceRecip
             messages: [
                 {
                     role: 'system',
-                    content: '你是一位专业的酱料制作大师，精通各种传统和创新酱料的制作方法。请根据用户提供的酱料名称，生成详细、实用的制作教程。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                    content:
+                        '你是一位专业的酱料制作大师，精通各种传统和创新酱料的制作方法。请根据用户提供的酱料名称，生成详细、实用的制作教程。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
                 },
                 {
                     role: 'user',
@@ -951,9 +955,7 @@ export const recommendSauces = async (preferences: SaucePreference): Promise<str
         }
 
         const useCaseText = preferences.useCase.map(uc => (useCaseMap as Record<string, string>)[uc] || uc).join('、')
-        const ingredientsText = preferences.availableIngredients.length > 0
-            ? preferences.availableIngredients.join('、')
-            : '无特殊要求'
+        const ingredientsText = preferences.availableIngredients.length > 0 ? preferences.availableIngredients.join('、') : '无特殊要求'
 
         const prompt = `请根据以下用户偏好推荐合适的酱料：
 
@@ -1221,7 +1223,8 @@ export const generateDailyFortune = async (params: DailyFortuneParams): Promise<
             messages: [
                 {
                     role: 'system',
-                    content: '你是一位神秘而智慧的料理占卜师，精通星座学、生肖学和美食文化。你的话语充满神秘色彩，善于将占卜元素与美食完美结合。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                    content:
+                        '你是一位神秘而智慧的料理占卜师，精通星座学、生肖学和美食文化。你的话语充满神秘色彩，善于将占卜元素与美食完美结合。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
                 },
                 {
                     role: 'user',
@@ -1301,7 +1304,8 @@ export const generateMoodCooking = async (params: MoodFortuneParams): Promise<Fo
             messages: [
                 {
                     role: 'system',
-                    content: '你是一位温暖而智慧的情感治愈师，深谙美食与情感的关系。你善于通过菜品来抚慰人心，话语温暖治愈。请严格按照JSON���式返回，不要包含任何其他文字。请务必用中文回答。'
+                    content:
+                        '你是一位温暖而智慧的情感治愈师，深谙美食与情感的关系。你善于通过菜品来抚慰人心，话语温暖治愈。请严格按照JSON���式返回，不要包含任何其他文字。请务必用中文回答。'
                 },
                 {
                     role: 'user',
@@ -1385,7 +1389,8 @@ export const generateCoupleCooking = async (params: CoupleFortuneParams): Promis
             messages: [
                 {
                     role: 'system',
-                    content: '你是一位精通人际关系和美食文化的占卜师，善于分析人与人之间的默契和缘分。你的话语充满智慧和温暖。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                    content:
+                        '你是一位精通人际关系和美食文化的占卜师，善于分析人与人之间的默契和缘分。你的话语充满智慧和温暖。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
                 },
                 {
                     role: 'user',
@@ -1437,7 +1442,7 @@ export const generateCoupleCooking = async (params: CoupleFortuneParams): Promis
 export const generateNumberFortune = async (params: NumberFortuneParams): Promise<FortuneResult> => {
     try {
         const numberSource = params.isRandom ? '随机生成' : '用户选择'
-        
+
         const prompt = `你是一位精通数字占卜的料理大师，请根据幸运数字推荐菜品：
 
 幸运数字：${params.number}
@@ -1464,7 +1469,8 @@ export const generateNumberFortune = async (params: NumberFortuneParams): Promis
             messages: [
                 {
                     role: 'system',
-                    content: '你是一位精通数字学和美食文化的神秘占卜师，善于解读数字的深层含义并与菜品联系。你的话语充满神秘和智慧。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
+                    content:
+                        '你是一位精通数字学和美食文化的神秘占卜师，善于解读数字的深层含义并与菜品联系。你的话语充满神秘和智慧。请严格按照JSON格式返回，不要包含任何其他文字。请务必用中文回答。'
                 },
                 {
                     role: 'user',
@@ -1563,7 +1569,10 @@ export const chatStream = async (
             buffer = parts.pop() || ''
 
             for (const part of parts) {
-                const lines = part.split('\n').map(l => l.trim()).filter(Boolean)
+                const lines = part
+                    .split('\n')
+                    .map(l => l.trim())
+                    .filter(Boolean)
                 for (const line of lines) {
                     if (!line.startsWith('data:')) continue
                     const data = line.slice(5).trim()

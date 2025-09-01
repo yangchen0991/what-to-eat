@@ -1,7 +1,13 @@
 import type { Recipe } from '@/types'
 
-const API_KEY = import.meta.env.VITE_IMAGE_BIGMODEL_API_KEY
-const API_URL = 'https://open.bigmodel.cn/api/paas/v4/images/generations'
+// 图片生成模型配置 - 从环境变量读取
+const IMAGE_CONFIG = {
+    apiKey: import.meta.env.VITE_IMAGE_GENERATION_API_KEY,
+    baseURL: import.meta.env.VITE_IMAGE_GENERATION_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4/',
+    model: import.meta.env.VITE_IMAGE_GENERATION_MODEL || 'cogview-3-flash'
+}
+
+const API_URL = `${IMAGE_CONFIG.baseURL}images/generations`
 
 export interface GeneratedImage {
     url: string
@@ -19,10 +25,10 @@ export const generateRecipeImage = async (recipe: Recipe): Promise<GeneratedImag
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${API_KEY}`
+                Authorization: `Bearer ${IMAGE_CONFIG.apiKey}`
             },
             body: JSON.stringify({
-                model: 'cogview-3-flash',
+                model: IMAGE_CONFIG.model,
                 prompt: prompt,
                 size: `${sizeToUse.width}x${sizeToUse.height}`,
                 n: 1,
