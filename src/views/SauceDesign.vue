@@ -1,16 +1,12 @@
 <template>
-    <div class="min-h-screen bg-orange-400 px-2 md:px-4 py-6">
+    <div class="min-h-screen bg-yellowpx-2 md:px-4 py-6">
         <!-- 全局导航 -->
         <GlobalNavigation />
-
         <div class="max-w-7xl mx-auto">
-
-
-
             <!-- 智能推荐配置区域 -->
             <div class="mb-8">
                 <div class="bg-blue-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
-                    <span class="font-bold">🤖 智能推荐</span>
+                    <span class="font-bold">1.智能推荐</span>
                 </div>
                 <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <div class="grid md:grid-cols-2 gap-6">
@@ -83,9 +79,7 @@
                                     @click="toggleUseCase(useCase.id)"
                                     :class="[
                                         'p-3 rounded-lg border-2 border-[#0A0910] text-sm font-medium transition-all duration-200',
-                                        preferences.useCase.includes(useCase.id)
-                                            ? 'bg-blue-500 text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        preferences.useCase.includes(useCase.id) ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     ]"
                                 >
                                     <span class="mr-1">{{ useCase.icon }}</span>
@@ -109,12 +103,7 @@
                                     class="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full"
                                 >
                                     {{ ingredient }}
-                                    <button
-                                        @click="removeIngredient(ingredient)"
-                                        class="ml-1 text-orange-600 hover:text-orange-800"
-                                    >
-                                        ×
-                                    </button>
+                                    <button @click="removeIngredient(ingredient)" class="ml-1 text-orange-600 hover:text-orange-800">×</button>
                                 </span>
                             </div>
 
@@ -179,9 +168,7 @@
                             </button>
                         </div>
                         <div class="text-center pt-4 border-t border-gray-200">
-                            <p class="text-sm text-gray-500">
-                                💡 不满意推荐结果？试试调整上方的口味偏好或使用场景
-                            </p>
+                            <p class="text-sm text-gray-500">💡 不满意推荐结果？试试调整上方的口味偏好或使用场景</p>
                         </div>
                     </div>
                 </div>
@@ -190,7 +177,7 @@
             <!-- 酱料搜索区域 -->
             <div class="mb-8">
                 <div class="bg-green-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
-                    <span class="font-bold">🔍 酱料搜索</span>
+                    <span class="font-bold">2.酱料搜索</span>
                 </div>
                 <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <div class="flex gap-4">
@@ -226,7 +213,7 @@
             <!-- 制作教程区域 -->
             <div class="mb-8" data-results>
                 <div class="bg-teal-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
-                    <span class="font-bold">📋 制作教程</span>
+                    <span class="font-bold">3.制作教程</span>
                 </div>
                 <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <!-- 空状态 -->
@@ -244,7 +231,6 @@
                                 <span>🔍</span>
                                 <span>直接搜索想要制作的酱料</span>
                             </p>
-                            
                         </div>
                     </div>
 
@@ -282,12 +268,7 @@
                         >
                             {{ historyItem }}
                         </button>
-                        <button
-                            @click="clearHistory"
-                            class="px-3 py-2 text-sm text-red-600 hover:text-red-700 underline"
-                        >
-                            清除历史
-                        </button>
+                        <button @click="clearHistory" class="px-3 py-2 text-sm text-red-600 hover:text-red-700 underline">清除历史</button>
                     </div>
                 </div>
             </div>
@@ -338,8 +319,6 @@ onMounted(() => {
     }
 })
 
-
-
 // 切换使用场景
 const toggleUseCase = (useCaseId: string) => {
     const index = preferences.value.useCase.indexOf(useCaseId)
@@ -371,11 +350,11 @@ const removeIngredient = (ingredient: string) => {
 const getRecommendations = async () => {
     isLoadingRecommendations.value = true
     currentSauce.value = null
-    
+
     try {
         const result = await recommendSauces(preferences.value)
         recommendations.value = result
-        
+
         if (result.length === 0) {
             showErrorMessage('暂时没有找到合适的推荐，请尝试调整偏好设置')
         } else {
@@ -401,7 +380,7 @@ const searchSauce = async () => {
 
     const sauceName = searchQuery.value.trim()
     addToHistory(sauceName)
-    
+
     isLoadingSearch.value = true
     recommendations.value = []
     currentSauce.value = null
@@ -409,7 +388,7 @@ const searchSauce = async () => {
     try {
         const result = await generateSauceRecipe(sauceName)
         currentSauce.value = result
-        
+
         // 滚动到结果区域
         setTimeout(() => {
             const resultsElement = document.querySelector('[data-results]')
@@ -428,14 +407,14 @@ const searchSauce = async () => {
 // 选择推荐的酱料
 const selectRecommendedSauce = async (sauceName: string) => {
     addToHistory(sauceName)
-    
+
     isLoadingSearch.value = true
     currentSauce.value = null
 
     try {
         const result = await generateSauceRecipe(sauceName)
         currentSauce.value = result
-        
+
         // 滚动到结果区域
         setTimeout(() => {
             const resultsElement = document.querySelector('[data-results]')
@@ -515,7 +494,7 @@ const showErrorMessage = (message: string) => {
     background: #ef4444;
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .slider-yellow::-webkit-slider-thumb {
@@ -526,7 +505,7 @@ const showErrorMessage = (message: string) => {
     background: #eab308;
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .slider-blue::-webkit-slider-thumb {
@@ -537,7 +516,7 @@ const showErrorMessage = (message: string) => {
     background: #3b82f6;
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .slider-green::-webkit-slider-thumb {
@@ -548,7 +527,7 @@ const showErrorMessage = (message: string) => {
     background: #22c55e;
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .slider-red::-moz-range-thumb,
@@ -560,6 +539,6 @@ const showErrorMessage = (message: string) => {
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 </style>

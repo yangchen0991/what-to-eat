@@ -19,7 +19,7 @@
             <!-- 占卜类型选择 -->
             <div class="mb-8">
                 <div class="bg-purple-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
-                    <span class="font-bold">✨ 选择占卜类型</span>
+                    <span class="font-bold">1.选择占卜类型</span>
                 </div>
                 <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -43,7 +43,7 @@
             <!-- 占卜参数配置区域 -->
             <div v-if="selectedType" class="mb-8">
                 <div class="bg-indigo-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
-                    <span class="font-bold">🎯 配置占卜参数</span>
+                    <span class="font-bold">2.配置占卜参数</span>
                 </div>
                 <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <!-- 今日运势配置 -->
@@ -144,7 +144,7 @@
                         <button
                             @click="startFortune"
                             :disabled="!canStartFortune || isLoading"
-                            class="w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold text-lg rounded-lg border-2 border-[#0A0910] transition-all duration-300 transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed shadow-lg"
+                            class="w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold text-lg rounded-lg border-2 border-[#0A0910] transition-all duration-300 transform disabled:scale-100 disabled:cursor-not-allowed shadow-lg"
                         >
                             <span class="flex items-center gap-3 justify-center">
                                 <template v-if="isLoading">
@@ -164,7 +164,7 @@
             <!-- 占卜结果展示 -->
             <div v-if="fortuneResult" class="mb-8" data-fortune-result>
                 <div class="bg-pink-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
-                    <span class="font-bold">🌟 占卜结果</span>
+                    <span class="font-bold">3.占卜结果</span>
                 </div>
                 <div class="bg-white border-2 border-[#0A0910] rounded-lg rounded-tl-none p-4 md:p-6">
                     <FortuneCard class="max-w-2xl mx-auto" :fortune="fortuneResult" :show-actions="true" />

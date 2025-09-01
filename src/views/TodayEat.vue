@@ -262,7 +262,7 @@ const startRandomSelection = async () => {
 
 // 随机选择菜品
 const selectRandomDishes = async () => {
-    const dishCount = 4 // 固定生成4个菜品
+    const dishCount = 6 // 固定生成6个菜品
     let filteredDishes = [...allDishes.value]
 
     // 根据偏好过滤菜品
