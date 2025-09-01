@@ -1,6 +1,6 @@
 # 🍳 一饭封神
 
-> 🚀 **Vibe Coding**  
+> 🚀 **Vibe Coding**
 > 通过 Kiro 编辑器，实现了从需求分析、架构设计到代码实现的全流程开发。
 
 一个基于 AI 的智能菜谱生成平台，支持中华八大菜系 + 国际料理，提供营养分析、酒水推荐、菜谱效果图生成等全方位烹饪指导。
@@ -103,7 +103,7 @@
 
 ### 🖼️ 封神图鉴
 
--   **图片展示：** 浏览AI生成的精美菜品图片
+-   **图片展示：** 浏览 AI 生成的精美菜品图片
 -   **搜索筛选：** 按菜谱名称、菜系或食材搜索图片
 -   **下载功能：** 一键保存高清菜品图片
 -   **排序功能：** 按生成时间或菜名排序
@@ -171,7 +171,7 @@ VITE_IMAGE_BIGMODEL_API_KEY=your_image_api_key_here
 -   **酱汁设计** - 定制专属口味的酱料配方
 -   **料理占卜** - 探索趣味的饮食运势
 -   **收藏管理** - 保存和管理喜爱的菜谱
--   **图鉴浏览** - 欣赏和下载AI生成的菜品图片
+-   **图鉴浏览** - 欣赏和下载 AI 生成的菜品图片
 
 ## 🎨 设计特色
 
@@ -264,7 +264,9 @@ src/
 -   [DeepSeek](https://www.deepseek.com/) - 菜谱生成 API 服务支持
 -   [智谱 AI](https://open.bigmodel.cn/) - 菜品图片生成 API 服务支持
 
----
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=liu-ziting/what-to-eat&type=Date)](https://www.star-history.com/#liu-ziting/what-to-eat&Date)
 
 **🍽️ 让 AI 厨艺大师为你的食材注入灵魂，创造属于你的美味传奇！**
 
