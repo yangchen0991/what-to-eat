@@ -124,8 +124,16 @@ export const generateRecipe = async (ingredients: string[], cuisine: CuisineType
     } catch (error) {
         console.error(`生成${cuisine.name}菜谱失败:`, error)
 
-        // 抛出错误，让上层处理
-        throw new Error(`AI生成${cuisine.name}菜谱失败，请稍后重试`)
+        // 检查是否是400错误或其他特定错误
+        if (error && typeof error === 'object' && 'response' in error) {
+            const axiosError = error as any
+            if (axiosError.response?.status === 400) {
+                throw new Error(`${cuisine.name}表示这个食材搭配太有挑战性了`)
+            }
+        }
+
+        // 抛出友好的错误信息
+        throw new Error(`${cuisine.name}暂时学不会这道菜`)
     }
 }
 
@@ -261,7 +269,7 @@ export const generateTableMenu = async (config: {
         return menuData.dishes || []
     } catch (error) {
         console.error('生成一桌菜菜单失败:', error)
-        throw new Error('AI生成菜单失败，请稍后重试')
+        throw new Error('大厨表示这个菜单搭配太有挑战性了，请稍后重试')
     }
 }
 
@@ -340,7 +348,7 @@ export const generateDishRecipe = async (dishName: string, dishDescription: stri
         return recipe
     } catch (error) {
         console.error('生成菜品菜谱失败:', error)
-        throw new Error('AI生成菜谱失败，请稍后重试')
+        throw new Error('大厨表示这道菜太有挑战性了，请稍后重试')
     }
 }
 
@@ -416,7 +424,7 @@ export const generateCustomRecipe = async (ingredients: string[], customPrompt: 
         return recipe
     } catch (error) {
         console.error('生成自定义菜谱失败:', error)
-        throw new Error('AI生成自定义菜谱失败，请稍后重试')
+        throw new Error('大厨表示这个自定义要求太有挑战性了，请稍后重试')
     }
 }
 
@@ -425,6 +433,7 @@ export const generateMultipleRecipesStream = async (
     ingredients: string[],
     cuisines: CuisineType[],
     onRecipeGenerated: (recipe: Recipe, index: number, total: number) => void,
+    onRecipeError?: (error: Error, index: number, cuisine: CuisineType, total: number) => void,
     customPrompt?: string
 ): Promise<void> => {
     const total = cuisines.length
@@ -444,6 +453,14 @@ export const generateMultipleRecipesStream = async (
             onRecipeGenerated(recipe, index, total)
         } catch (error) {
             console.error(`生成${cuisine.name}菜谱失败:`, error)
+            
+            // 调用错误回调，让前端可以显示友好的错误信息
+            if (onRecipeError) {
+                const errorMessage = error instanceof Error ? error.message : `${cuisine.name}生成失败`
+                const friendlyError = new Error(`${cuisine.name}不会这道菜，哈哈`)
+                onRecipeError(friendlyError, index, cuisine, total)
+            }
+            
             // 即使某个菜系失败，也继续生成其他菜系
             continue
         }
@@ -827,7 +844,7 @@ export const generateDishRecipeByName = async (dishName: string): Promise<Recipe
         return recipe
     } catch (error) {
         console.error(`生成"${dishName}"菜谱失败:`, error)
-        throw new Error(`AI生成"${dishName}"菜谱失败，请稍后重试`)
+        throw new Error(`大厨表示"${dishName}"这道菜太有挑战性了，请稍后重试`)
     }
 }
 
@@ -935,7 +952,7 @@ export const generateSauceRecipe = async (sauceName: string): Promise<SauceRecip
         return sauceRecipe
     } catch (error) {
         console.error(`生成"${sauceName}"酱料配方失败:`, error)
-        throw new Error(`AI生成"${sauceName}"酱料配方失败，请稍后重试`)
+        throw new Error(`酱料大师表示"${sauceName}"这个配方太有挑战性了，请稍后重试`)
     }
 }
 
@@ -1006,7 +1023,7 @@ export const recommendSauces = async (preferences: SaucePreference): Promise<str
         return recommendationData.recommendations || []
     } catch (error) {
         console.error('获取酱料推荐失败:', error)
-        throw new Error('AI推荐酱料失败，请稍后重试')
+        throw new Error('酱料大师暂时想不出好的推荐，请稍后重试')
     }
 }
 
@@ -1130,7 +1147,7 @@ ${request.customRequirements ? `- 特殊要求：${request.customRequirements}` 
         return customSauce
     } catch (error) {
         console.error('创建自定义酱料失败:', error)
-        throw new Error('AI创建自定义酱料失败，请稍后重试')
+        throw new Error('酱料大师表示这个自定义配方太有挑战性了，请稍后重试')
     }
 }
 

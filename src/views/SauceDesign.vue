@@ -398,7 +398,7 @@ const searchSauce = async () => {
         }, 100)
     } catch (error) {
         console.error('搜索酱料失败:', error)
-        showErrorMessage('生成酱料配方失败，请稍后重试')
+        showErrorMessage('酱料大师表示这个配方太有挑战性了，哈哈！换个搭配试试吧~')
     } finally {
         isLoadingSearch.value = false
     }
@@ -424,7 +424,7 @@ const selectRecommendedSauce = async (sauceName: string) => {
         }, 100)
     } catch (error) {
         console.error('获取酱料配方失败:', error)
-        showErrorMessage('生成酱料配方失败，请稍后重试')
+        showErrorMessage('酱料大师挠了挠头说："这个配方我还没学会呢！"换个试试吧~')
     } finally {
         isLoadingSearch.value = false
     }

@@ -622,10 +622,10 @@ const testConnection = async () => {
         if (isConnected) {
             alert('AI连接测试成功！')
         } else {
-            alert('AI连接测试失败，请检查配置')
+            alert('大厨暂时不在厨房，请稍后再试~')
         }
     } catch (error) {
-        alert('AI连接测试失败：' + error)
+        alert('大厨暂时不在厨房：' + error)
     }
 }
 
@@ -651,7 +651,7 @@ const generateTableMenuAction = async () => {
     } catch (error) {
         console.error('生成菜单失败:', error)
         // 显示错误提示
-        alert('AI生成菜单失败，请检查网络连接或稍后重试')
+        alert('大厨表示这个菜单搭配太有挑战性了，哈哈！调整一下要求试试吧~')
     } finally {
         isGenerating.value = false
     }
@@ -687,8 +687,8 @@ const generateDishRecipeAction = async (dish: DishInfo, index: number) => {
         // disableBodyScroll()
     } catch (error) {
         console.error('生成菜谱失败:', error)
-        // 显示错误提示
-        alert(`生成${dish.name}菜谱失败，请稍后重试`)
+        // 显示友好的错误提示
+        alert(`大厨表示"${dish.name}"这道菜太有挑战性了，哈哈！换个菜试试吧~`)
     } finally {
         dish.isGeneratingRecipe = false
     }

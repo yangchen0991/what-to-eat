@@ -369,7 +369,11 @@ const generateRecipeFromSelection = async () => {
         showToast('菜谱生成成功', 'success')
     } catch (error) {
         console.error('生成菜谱失败:', error)
-        showToast('生成菜谱失败，请重试', 'error')
+        
+        // 显示友好的错误信息
+        const masterName = selectedMaster.value?.name || '大师'
+        const friendlyMessage = `${masterName}不会这道菜，哈哈！换个搭配试试吧~`
+        showToast(friendlyMessage, 'error')
     } finally {
         clearInterval(textInterval)
         isGenerating.value = false

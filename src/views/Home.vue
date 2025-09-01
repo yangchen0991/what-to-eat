@@ -378,6 +378,63 @@
                                 <!-- 如果菜谱已生成，显示菜谱卡片 -->
                                 <RecipeCard v-if="cuisineInfo.recipe" :recipe="cuisineInfo.recipe" />
 
+                                <!-- 如果菜谱生成失败，显示友好错误信息 -->
+                                <div v-else-if="cuisineInfo.error" class="bg-white error-card">
+                                    <!-- 错误头部 -->
+                                    <div class="bg-gradient-to-r from-red-400 to-orange-400 text-white p-4 md:p-6 border-b-2 border-black">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-bold mb-1 flex items-center gap-2">
+                                                    <span class="animate-bounce">😅</span>
+                                                    {{ cuisineInfo.name }}不会这道菜，哈哈
+                                                </h3>
+                                                <div class="flex items-center gap-3 text-sm">
+                                                    <span class="bg-white/20 px-2 py-1 rounded text-xs">{{ cuisineInfo.name }}</span>
+                                                    <span class="flex items-center gap-1">
+                                                        <span>😓</span>
+                                                        技能点不够
+                                                    </span>
+                                                    <span>🎯 换个大师试试</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-2xl ml-2">🤷‍♂️</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 错误内容区域 -->
+                                    <div class="p-4 md:p-6 text-center">
+                                        <div class="mb-4">
+                                            <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                                                <span class="text-orange-500 text-2xl">🤔</span>
+                                            </div>
+                                            <h4 class="text-lg font-bold text-gray-800 mb-2">大师表示很为难</h4>
+                                            <p class="text-gray-600 text-sm mb-4">
+                                                {{ cuisineInfo.name }}看了看你的食材，挠了挠头说："这个组合我还没学会呢！"
+                                            </p>
+                                        </div>
+
+                                        <!-- 建议区域 -->
+                                        <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 mb-4">
+                                            <h5 class="text-sm font-bold text-yellow-800 mb-2 flex items-center gap-1 justify-center">
+                                                💡 大师的建议
+                                            </h5>
+                                            <div class="text-xs text-yellow-700 space-y-1">
+                                                <p>• 试试其他菜系大师，他们可能有不同的想法</p>
+                                                <p>• 调整一下食材搭配，或许会有惊喜</p>
+                                                <p>• 使用自定义要求，给大师一些灵感</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- 重试按钮 -->
+                                        <button
+                                            @click="retryFailedCuisine(cuisineInfo)"
+                                            class="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-4 py-2 rounded-lg font-medium text-sm border-2 border-[#0A0910] transition-all duration-200 transform hover:scale-105"
+                                        >
+                                            🔄 再试一次
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <!-- 如果菜谱还在生成中，显示加载状态 -->
                                 <div v-else class="bg-white loading-card">
                                     <!-- 菜系头部 -->
@@ -561,7 +618,7 @@ import { ingredientCategories } from '@/config/ingredients'
 import RecipeCard from '@/components/RecipeCard.vue'
 import GlobalNavigation from '@/components/GlobalNavigation.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
-import { generateMultipleRecipes, generateCustomRecipe, generateMultipleRecipesStream } from '@/services/aiService'
+import { generateMultipleRecipes, generateCustomRecipe, generateMultipleRecipesStream, generateRecipe } from '@/services/aiService'
 import type { Recipe, CuisineType, NutritionAnalysis } from '@/types'
 
 // 响应式数据
@@ -585,6 +642,8 @@ interface CuisineSlot {
     recipe?: Recipe
     loadingText: string
     progress: number
+    error?: boolean
+    errorMessage?: string
 }
 const cuisineSlots = ref<CuisineSlot[]>([])
 
@@ -866,10 +925,11 @@ const generateRecipes = async () => {
                     recipes.value.push(recipe)
 
                     // 更新全局加载文字，显示进度
-                    loadingText.value = `已完成 ${recipes.value.length}/${total} 道菜谱...`
+                    const completedCount = recipes.value.length + cuisineSlots.value.filter(slot => slot.error).length
+                    loadingText.value = `已完成 ${completedCount}/${total} 道菜谱...`
 
-                    // 如果是最后一个菜谱，停止加载状态
-                    if (recipes.value.length === total) {
+                    // 检查是否所有菜系都已处理完成（成功或失败）
+                    if (completedCount === total) {
                         isLoading.value = false
                         // 清理所有进度定时器
                         progressIntervals.forEach(interval => clearInterval(interval))
@@ -878,6 +938,28 @@ const generateRecipes = async () => {
                         setTimeout(() => {
                             // 保持槽位显示，不清理，这样用户可以看到完整的生成过程
                         }, 1000)
+                    }
+                },
+                (error: Error, index: number, cuisine: CuisineType, total: number) => {
+                    // 处理菜谱生成失败
+                    const targetSlot = cuisineSlots.value.find(slot => selectedCuisineObjects[index] && slot.id === selectedCuisineObjects[index].id)
+
+                    if (targetSlot) {
+                        targetSlot.error = true
+                        targetSlot.errorMessage = error.message
+                        targetSlot.progress = 0
+                        targetSlot.loadingText = '生成失败'
+                    }
+
+                    // 更新全局加载文字，显示进度
+                    const completedCount = recipes.value.length + cuisineSlots.value.filter(slot => slot.error).length
+                    loadingText.value = `已完成 ${completedCount}/${total} 道菜谱...`
+
+                    // 检查是否所有菜系都已处理完成（成功或失败）
+                    if (completedCount === total) {
+                        isLoading.value = false
+                        // 清理所有进度定时器
+                        progressIntervals.forEach(interval => clearInterval(interval))
                     }
                 },
                 customPrompt.value.trim() || undefined
@@ -899,6 +981,57 @@ const generateRecipes = async () => {
             clearInterval(loadingInterval)
             loadingInterval = null
         }
+    }
+}
+
+// 重试失败的菜系
+const retryFailedCuisine = async (failedSlot: CuisineSlot) => {
+    // 重置错误状态
+    failedSlot.error = false
+    failedSlot.errorMessage = undefined
+    failedSlot.progress = 0
+    failedSlot.loadingText = '大师重新思考中...'
+
+    // 找到对应的菜系信息
+    const cuisine = cuisines.find(c => c.id === failedSlot.id)
+    if (!cuisine) return
+
+    // 开始进度动画
+    const progressInterval = setInterval(() => {
+        if (!failedSlot.recipe && !failedSlot.error) {
+            failedSlot.progress = Math.min(failedSlot.progress + Math.random() * 10, 85)
+        }
+    }, 500)
+
+    try {
+        // 添加随机延迟
+        const delay = 1000 + Math.random() * 2000
+        await new Promise(resolve => setTimeout(resolve, delay))
+
+        // 重新生成菜谱
+        const recipe = customPrompt.value.trim() 
+            ? await generateCustomRecipe(ingredients.value, customPrompt.value.trim())
+            : await generateRecipe(ingredients.value, cuisine, customPrompt.value.trim() || undefined)
+
+        // 成功生成，更新槽位
+        failedSlot.recipe = recipe
+        failedSlot.progress = 100
+        failedSlot.loadingText = '重新创作完成！'
+
+        // 添加到菜谱列表
+        recipes.value.push(recipe)
+
+        clearInterval(progressInterval)
+    } catch (error) {
+        console.error(`重试${cuisine.name}菜谱失败:`, error)
+        
+        // 重新设置错误状态
+        failedSlot.error = true
+        failedSlot.errorMessage = error instanceof Error ? error.message : `${cuisine.name}还是不会这道菜`
+        failedSlot.progress = 0
+        failedSlot.loadingText = '重试失败'
+
+        clearInterval(progressInterval)
     }
 }
 
