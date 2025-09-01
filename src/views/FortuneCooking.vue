@@ -4,17 +4,6 @@
         <GlobalNavigation />
 
         <div class="max-w-7xl mx-auto">
-            <!-- 页面标题和占卜师 -->
-            <div class="text-center mb-8">
-                <div class="relative">
-                    <div class="relative bg-white/90 backdrop-blur-sm border-2 border-purple-400 rounded-2xl p-6 mb-6">
-                        <div class="text-6xl mb-4 animate-pulse">🔮</div>
-                        <h1 class="text-4xl md:text-5xl font-bold text-purple-600 mb-4">料理占卜师</h1>
-
-                        <div class="text-sm text-purple-600 italic">"{{ currentMysticalWord }}"</div>
-                    </div>
-                </div>
-            </div>
 
             <!-- 占卜类型选择 -->
             <div class="mb-8">
