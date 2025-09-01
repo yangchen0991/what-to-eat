@@ -80,7 +80,7 @@
                         class="bg-white border-2 border-[#0A0910] rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 group"
                     >
                         <!-- 图片 -->
-                        <div class="relative aspect-[4/3] overflow-hidden">
+                        <div class="relative aspect-[4/3] overflow-hidden cursor-pointer" @click="openImageModal(image)">
                             <img
                                 :src="image.url"
                                 :alt="image.recipeName"
@@ -90,10 +90,10 @@
 
                             <!-- 悬浮信息层 -->
                             <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                             >
                                 <!-- 顶部操作按钮 -->
-                                <div class="absolute top-3 right-3 flex gap-2">
+                                <div class="absolute top-3 right-3 flex gap-2 pointer-events-auto">
                                     <button
                                         @click.stop="downloadImage(image)"
                                         class="p-2 bg-blue-500/80 hover:bg-blue-500 text-white rounded-full text-sm transition-colors backdrop-blur-sm"
@@ -171,7 +171,7 @@
         </div>
 
         <!-- 图片详情弹窗 -->
-        <ImageModal v-if="selectedImage" :image="selectedImage" @close="selectedImage = null" @delete="confirmDeleteImage" @download="downloadImage" />
+        <ImageModal v-if="selectedImage" :image="selectedImage" @close="selectedImage = null" />
 
         <!-- 删除确认弹窗 -->
         <ConfirmModal v-if="deletingImageId" title="确认删除图片" message="确定要删除这张图片吗？此操作不可恢复。" @confirm="deleteImage" @cancel="deletingImageId = null" />

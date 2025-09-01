@@ -187,8 +187,9 @@
                     <img
                         :src="generatedImage.url"
                         :alt="`${recipe.name}效果图`"
-                        class="w-full h-[20rem] object-cover rounded-lg border-2 border-[#0A0910]"
+                        class="w-full h-[20rem] object-cover rounded-lg border-2 border-[#0A0910] cursor-pointer transition-all duration-300 hover:brightness-110 hover:scale-[1.02]"
                         @error="handleImageError"
+                        @click="openImageModal"
                     />
                 </div>
 
@@ -205,6 +206,13 @@
             </div>
         </div>
     </div>
+
+    <!-- 图片弹窗 -->
+    <ImageModal
+        v-if="showImageModal && generatedImage"
+        :image="getModalImageData()!"
+        @close="closeImageModal"
+    />
 </template>
 
 <script setup lang="ts">
@@ -212,9 +220,11 @@ import { computed, ref, onUnmounted } from 'vue'
 import type { Recipe } from '@/types'
 import { generateRecipeImage, type GeneratedImage } from '@/services/imageService'
 import { getNutritionAnalysis, getWinePairing } from '@/services/aiService'
+import type { GalleryImage } from '@/services/galleryService'
 import FavoriteButton from './FavoriteButton.vue'
 import NutritionAnalysis from './NutritionAnalysis.vue'
 import WinePairing from './WinePairing.vue'
+import ImageModal from './ImageModal.vue'
 
 interface Props {
     recipe: Recipe
@@ -239,6 +249,7 @@ const isFetchingNutrition = ref(false)
 const nutritionError = ref('')
 const isFetchingWine = ref(false)
 const wineError = ref('')
+const showImageModal = ref(false)
 
 // 图片生成加载文字轮播
 const imageLoadingTexts = [
@@ -403,6 +414,34 @@ const fetchWinePairing = async () => {
     } finally {
         isFetchingWine.value = false
         clearInterval(interval)
+    }
+}
+
+// 打开图片弹窗
+const openImageModal = () => {
+    if (generatedImage.value) {
+        showImageModal.value = true
+    }
+}
+
+// 关闭图片弹窗
+const closeImageModal = () => {
+    showImageModal.value = false
+}
+
+// 创建适配ImageModal的图片数据
+const getModalImageData = (): GalleryImage | null => {
+    if (!generatedImage.value) return null
+    
+    return {
+        id: generatedImage.value.id,
+        url: generatedImage.value.url,
+        recipeName: props.recipe.name,
+        recipeId: props.recipe.id,
+        cuisine: props.recipe.cuisine,
+        ingredients: props.recipe.ingredients,
+        prompt: `一道精美的${props.recipe.cuisine.replace('大师', '').replace('菜', '')}菜肴：${props.recipe.name}`,
+        generatedAt: new Date().toISOString()
     }
 }
 

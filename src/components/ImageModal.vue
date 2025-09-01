@@ -1,6 +1,6 @@
 <template>
-    <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" @click="$emit('close')">
-        <div class="bg-white rounded-lg border-2 border-[#0A0910] max-w-4xl max-h-[90vh] overflow-hidden" @click.stop>
+    <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-2 md:p-4" @click="$emit('close')">
+        <div class="bg-white rounded-lg border-2 border-[#0A0910] w-full max-w-4xl max-h-[95vh] md:max-h-[90vh] overflow-hidden" @click.stop>
             <!-- 头部 -->
             <div class="bg-blue-500 text-white p-4 flex items-center justify-between">
                 <div>
@@ -11,48 +11,8 @@
             </div>
 
             <!-- 图片 -->
-            <div class="relative">
-                <img :src="image.url" :alt="image.recipeName" class="w-full max-h-[60vh] object-contain" />
-            </div>
-
-            <!-- 详情信息 -->
-            <div class="p-4 max-h-48 overflow-y-auto">
-                <!-- 食材 -->
-                <div class="mb-4">
-                    <h4 class="font-bold text-gray-800 mb-2 flex items-center gap-1">🥬 食材</h4>
-                    <div class="flex flex-wrap gap-1">
-                        <span v-for="ingredient in image.ingredients" :key="ingredient" class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm border">
-                            {{ ingredient }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- 生成提示词 -->
-                <div v-if="image.prompt" class="mb-4">
-                    <h4 class="font-bold text-gray-800 mb-2 flex items-center gap-1">🎨 生成提示</h4>
-                    <p class="text-gray-600 text-sm bg-gray-50 p-3 rounded border">
-                        {{ image.prompt }}
-                    </p>
-                </div>
-            </div>
-
-            <!-- 操作按钮 -->
-            <div class="bg-gray-50 border-t border-gray-200 p-4 flex items-center justify-between">
-                <div class="text-sm text-gray-500">生成于 {{ new Date(image.generatedAt).toLocaleString('zh-CN') }}</div>
-                <div class="flex items-center gap-2">
-                    <button
-                        @click="$emit('download', image)"
-                        class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium border-2 border-[#0A0910] transition-all duration-200 hover:scale-105"
-                    >
-                        📥 下载
-                    </button>
-                    <button
-                        @click="$emit('delete', image.id)"
-                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium border-2 border-[#0A0910] transition-all duration-200 hover:scale-105"
-                    >
-                        🗑️ 删除
-                    </button>
-                </div>
+            <div class="relative bg-black flex items-center justify-center min-h-[50vh] max-h-[80vh]">
+                <img :src="image.url" :alt="image.recipeName" class="max-w-full max-h-full object-contain" />
             </div>
         </div>
     </div>
@@ -69,8 +29,6 @@ defineProps<Props>()
 
 defineEmits<{
     close: []
-    delete: [imageId: string]
-    download: [image: GalleryImage]
 }>()
 
 // 格式化日期
