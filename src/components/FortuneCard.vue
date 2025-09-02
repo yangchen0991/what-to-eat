@@ -14,25 +14,19 @@
                             <span>⏱️</span>
                             <span>{{ fortune.cookingTime }}分钟</span>
                         </span>
-                        <span :class="[
-                            'px-2 py-1 rounded-full text-xs font-medium',
-                            getDifficultyStyle(fortune.difficulty)
-                        ]">
+                        <span :class="['px-2 py-1 rounded-full text-xs font-medium', getDifficultyStyle(fortune.difficulty)]">
                             {{ getDifficultyName(fortune.difficulty) }}
                         </span>
                     </div>
                 </div>
             </div>
-            
+
             <!-- 幸运指数 -->
             <div class="mt-4 flex items-center gap-4">
                 <div class="text-center">
                     <div class="text-xs opacity-80 mb-1">幸运指数</div>
                     <div class="flex items-center gap-1">
-                        <span v-for="i in 10" :key="i" :class="[
-                            'text-lg hidden sm:inline',
-                            i <= fortune.luckyIndex ? 'text-yellow-300' : 'text-white/30'
-                        ]">⭐</span>
+                        <span v-for="i in 10" :key="i" :class="['text-lg hidden sm:inline', i <= fortune.luckyIndex ? 'text-yellow-300' : 'text-white/30']">⭐</span>
                         <span class="text-xl font-bold text-yellow-300">{{ fortune.luckyIndex }}/10</span>
                     </div>
                 </div>
@@ -65,11 +59,7 @@
                     <span>神秘食材</span>
                 </h3>
                 <div class="grid md:grid-cols-2 gap-2">
-                    <div
-                        v-for="(ingredient, index) in fortune.ingredients"
-                        :key="index"
-                        class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
-                    >
+                    <div v-for="(ingredient, index) in fortune.ingredients" :key="index" class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
                         <span class="w-2 h-2 bg-purple-400 rounded-full"></span>
                         <span class="text-gray-700">{{ ingredient }}</span>
                     </div>
@@ -83,11 +73,7 @@
                     <span>神秘步骤</span>
                 </h3>
                 <div class="space-y-4">
-                    <div
-                        v-for="(step, index) in fortune.steps"
-                        :key="index"
-                        class="flex gap-4 p-4 bg-gray-50 rounded-lg border-l-4 border-purple-400"
-                    >
+                    <div v-for="(step, index) in fortune.steps" :key="index" class="flex gap-4 p-4 bg-gray-50 rounded-lg border-l-4 border-purple-400">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                                 {{ index + 1 }}
@@ -107,11 +93,7 @@
                     <span>神秘建议</span>
                 </h3>
                 <div class="space-y-2">
-                    <div
-                        v-for="(tip, index) in fortune.tips"
-                        :key="index"
-                        class="flex items-start gap-2 p-3 bg-yellow-50 rounded-lg border border-yellow-200"
-                    >
+                    <div v-for="(tip, index) in fortune.tips" :key="index" class="flex items-start gap-2 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                         <span class="text-yellow-600 mt-0.5">💫</span>
                         <span class="text-gray-700">{{ tip }}</span>
                     </div>
@@ -126,8 +108,6 @@
                 </h3>
                 <p class="text-gray-700 italic text-center">{{ fortune.mysticalMessage }}</p>
             </div>
-
-           
         </div>
     </div>
 </template>
@@ -137,12 +117,9 @@ import type { FortuneResult, FortuneType } from '@/types'
 
 interface Props {
     fortune: FortuneResult
-    showActions?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-    showActions: false
-})
+const { fortune } = defineProps<Props>()
 
 // 获取占卜类型名称
 const getFortuneTypeName = (type: FortuneType): string => {
@@ -175,39 +152,39 @@ const getDifficultyName = (difficulty: 'easy' | 'medium' | 'hard'): string => {
     return names[difficulty]
 }
 
-// 分享结果
-const shareResult = () => {
-    const shareText = `🔮 料理占卜师为我推荐了：${props.fortune.dishName}\n\n✨ ${props.fortune.reason}\n\n🌟 幸运指数：${props.fortune.luckyIndex}/10\n\n来"一饭封神"体验神秘的料理占卜吧！`
-    
-    if (navigator.share) {
-        navigator.share({
-            title: '料理占卜结果',
-            text: shareText,
-            url: window.location.href
-        })
-    } else {
-        navigator.clipboard.writeText(shareText).then(() => {
-            // 可以添加提示
-            console.log('占卜结果已复制到剪贴板')
-        })
-    }
-}
+// 分享结果 - 暂时未使用
+// const shareResult = () => {
+//     const shareText = `🔮 料理占卜师为我推荐了：${props.fortune.dishName}\n\n✨ ${props.fortune.reason}\n\n🌟 幸运指数：${props.fortune.luckyIndex}/10\n\n来"一饭封神"体验神秘的料理占卜吧！`
 
-// 保存结果
-const saveResult = () => {
-    try {
-        const savedResults = JSON.parse(localStorage.getItem('fortune_results') || '[]')
-        savedResults.unshift(props.fortune)
-        
-        // 只保留最近20个结果
-        if (savedResults.length > 20) {
-            savedResults.splice(20)
-        }
-        
-        localStorage.setItem('fortune_results', JSON.stringify(savedResults))
-        console.log('占卜结果已保存')
-    } catch (error) {
-        console.error('保存占卜结果失败:', error)
-    }
-}
+//     if (navigator.share) {
+//         navigator.share({
+//             title: '料理占卜结果',
+//             text: shareText,
+//             url: window.location.href
+//         })
+//     } else {
+//         navigator.clipboard.writeText(shareText).then(() => {
+//             // 可以添加提示
+//             console.log('占卜结果已复制到剪贴板')
+//         })
+//     }
+// }
+
+// 保存结果 - 暂时未使用
+// const saveResult = () => {
+//     try {
+//         const savedResults = JSON.parse(localStorage.getItem('fortune_results') || '[]')
+//         savedResults.unshift(props.fortune)
+
+//         // 只保留最近20个结果
+//         if (savedResults.length > 20) {
+//             savedResults.splice(20)
+//         }
+
+//         localStorage.setItem('fortune_results', JSON.stringify(savedResults))
+//         console.log('占卜结果已保存')
+//     } catch (error) {
+//         console.error('保存占卜结果失败:', error)
+//     }
+// }
 </script>

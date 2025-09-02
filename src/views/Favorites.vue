@@ -198,7 +198,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import type { Recipe, FavoriteRecipe } from '@/types'
+import type { FavoriteRecipe } from '@/types'
 import { FavoriteService } from '@/services/favoriteService'
 import RecipeCard from '@/components/RecipeCard.vue'
 import GlobalNavigation from '@/components/GlobalNavigation.vue'

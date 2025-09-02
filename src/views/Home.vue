@@ -394,7 +394,7 @@
                                                         <span>😓</span>
                                                         技能点不够
                                                     </span>
-                                                    <span>🎯 换个大师试试</span>
+                                                    <span>🎯 开小差了</span>
                                                 </div>
                                             </div>
                                             <div class="text-2xl ml-2">🤷‍♂️</div>
@@ -408,16 +408,12 @@
                                                 <span class="text-orange-500 text-2xl">🤔</span>
                                             </div>
                                             <h4 class="text-lg font-bold text-gray-800 mb-2">大师表示很为难</h4>
-                                            <p class="text-gray-600 text-sm mb-4">
-                                                {{ cuisineInfo.name }}看了看你的食材，挠了挠头说："这个组合我还没学会呢！"
-                                            </p>
+                                            <p class="text-gray-600 text-sm mb-4">{{ cuisineInfo.name }}看了看你的食材，挠了挠头说："这个组合我还没学会呢！"</p>
                                         </div>
 
                                         <!-- 建议区域 -->
                                         <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4 mb-4">
-                                            <h5 class="text-sm font-bold text-yellow-800 mb-2 flex items-center gap-1 justify-center">
-                                                💡 大师的建议
-                                            </h5>
+                                            <h5 class="text-sm font-bold text-yellow-800 mb-2 flex items-center gap-1 justify-center">💡 大师的建议</h5>
                                             <div class="text-xs text-yellow-700 space-y-1">
                                                 <p>• 试试其他菜系大师，他们可能有不同的想法</p>
                                                 <p>• 调整一下食材搭配，或许会有惊喜</p>
@@ -618,8 +614,8 @@ import { ingredientCategories } from '@/config/ingredients'
 import RecipeCard from '@/components/RecipeCard.vue'
 import GlobalNavigation from '@/components/GlobalNavigation.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
-import { generateMultipleRecipes, generateCustomRecipe, generateMultipleRecipesStream, generateRecipe } from '@/services/aiService'
-import type { Recipe, CuisineType, NutritionAnalysis } from '@/types'
+import { generateCustomRecipe, generateMultipleRecipesStream, generateRecipe } from '@/services/aiService'
+import type { Recipe, CuisineType } from '@/types'
 
 // 响应式数据
 const ingredients = ref<string[]>([])
@@ -647,16 +643,16 @@ interface CuisineSlot {
 }
 const cuisineSlots = ref<CuisineSlot[]>([])
 
-// 加载文字轮播
-const loadingTexts = [
-    '大师正在挑选食材...',
-    '大师正在起火热锅...',
-    '大师正在爆香配料...',
-    '大师正在调制秘制酱料...',
-    '大师正在掌控火候...',
-    '大师正在精心摆盘...',
-    '美味佳肴即将出炉...'
-]
+// 加载文字轮播 - 暂时未使用
+// const loadingTexts = [
+//     '大师正在挑选食材...',
+//     '大师正在起火热锅...',
+//     '大师正在爆香配料...',
+//     '大师正在调制秘制酱料...',
+//     '大师正在掌控火候...',
+//     '大师正在精心摆盘...',
+//     '美味佳肴即将出炉...'
+// ]
 
 let loadingInterval: NodeJS.Timeout | null = null
 
@@ -679,23 +675,25 @@ const tastePresets = [
     { id: 'crispy', name: '酥脆爽口', prompt: '口感酥脆，层次分明，嚼劲十足' }
 ]
 
-const healthPresets = [
-    { id: 'lowfat', name: '低脂健康', prompt: '低脂肪制作，健康营养，适合减脂期间食用' },
-    { id: 'highprotein', name: '高蛋白', prompt: '富含优质蛋白质，适合健身人群和成长期儿童' },
-    { id: 'vegetarian', name: '素食主义', prompt: '纯素食制作，不含任何动物性食材，营养均衡' },
-    { id: 'diabetic', name: '控糖友好', prompt: '低糖低GI，适合糖尿病患者或需要控制血糖的人群' },
-    { id: 'elderly', name: '老人友好', prompt: '软烂易消化，营养丰富，适合老年人食用' },
-    { id: 'children', name: '儿童喜爱', prompt: '造型可爱，营养全面，适合儿童的口味偏好' }
-]
+// 健康偏好预设 - 暂时未使用
+// const healthPresets = [
+//     { id: 'lowfat', name: '低脂健康', prompt: '低脂肪制作，健康营养，适合减脂期间食用' },
+//     { id: 'highprotein', name: '高蛋白', prompt: '富含优质蛋白质，适合健身人群和成长期儿童' },
+//     { id: 'vegetarian', name: '素食主义', prompt: '纯素食制作，不含任何动物性食材，营养均衡' },
+//     { id: 'diabetic', name: '控糖友好', prompt: '低糖低GI，适合糖尿病患者或需要控制血糖的人群' },
+//     { id: 'elderly', name: '老人友好', prompt: '软烂易消化，营养丰富，适合老年人食用' },
+//     { id: 'children', name: '儿童喜爱', prompt: '造型可爱，营养全面，适合儿童的口味偏好' }
+// ]
 
-const cookingPresets = [
-    { id: 'steam', name: '清蒸', prompt: '采用蒸制方法，保持食材原味和营养' },
-    { id: 'stirfry', name: '爆炒', prompt: '大火爆炒，锁住食材鲜味，口感脆嫩' },
-    { id: 'braise', name: '红烧', prompt: '红烧制作，色泽红亮，味道浓郁' },
-    { id: 'soup', name: '煲汤', prompt: '制作成汤品，清香鲜美，营养丰富' },
-    { id: 'cold', name: '凉拌', prompt: '凉拌制作，清爽开胃，适合夏季' },
-    { id: 'grill', name: '烧烤', prompt: '烧烤方式制作，香气四溢，口感独特' }
-]
+// 烹饪方式预设 - 暂时未使用
+// const cookingPresets = [
+//     { id: 'steam', name: '清蒸', prompt: '采用蒸制方法，保持食材原味和营养' },
+//     { id: 'stirfry', name: '爆炒', prompt: '大火爆炒，锁住食材鲜味，口感脆嫩' },
+//     { id: 'braise', name: '红烧', prompt: '红烧制作，色泽红亮，味道浓郁' },
+//     { id: 'soup', name: '煲汤', prompt: '制作成汤品，清香鲜美，营养丰富' },
+//     { id: 'cold', name: '凉拌', prompt: '凉拌制作，清爽开胃，适合夏季' },
+//     { id: 'grill', name: '烧烤', prompt: '烧烤方式制作，香气四溢，口感独特' }
+// ]
 
 // 添加食材
 const addIngredient = () => {
@@ -940,7 +938,7 @@ const generateRecipes = async () => {
                         }, 1000)
                     }
                 },
-                (error: Error, index: number, cuisine: CuisineType, total: number) => {
+                (error: Error, index: number, _cuisine: CuisineType, total: number) => {
                     // 处理菜谱生成失败
                     const targetSlot = cuisineSlots.value.find(slot => selectedCuisineObjects[index] && slot.id === selectedCuisineObjects[index].id)
 
@@ -1009,7 +1007,7 @@ const retryFailedCuisine = async (failedSlot: CuisineSlot) => {
         await new Promise(resolve => setTimeout(resolve, delay))
 
         // 重新生成菜谱
-        const recipe = customPrompt.value.trim() 
+        const recipe = customPrompt.value.trim()
             ? await generateCustomRecipe(ingredients.value, customPrompt.value.trim())
             : await generateRecipe(ingredients.value, cuisine, customPrompt.value.trim() || undefined)
 
@@ -1024,7 +1022,7 @@ const retryFailedCuisine = async (failedSlot: CuisineSlot) => {
         clearInterval(progressInterval)
     } catch (error) {
         console.error(`重试${cuisine.name}菜谱失败:`, error)
-        
+
         // 重新设置错误状态
         failedSlot.error = true
         failedSlot.errorMessage = error instanceof Error ? error.message : `${cuisine.name}还是不会这道菜`
@@ -1035,114 +1033,114 @@ const retryFailedCuisine = async (failedSlot: CuisineSlot) => {
     }
 }
 
-// 模拟AI调用（后续替换为真实接口）
-const simulateAICall = async () => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            // 获取要使用的菜系
-            let cuisinesToUse = cuisines.filter(c => selectedCuisines.value.includes(c.id))
-            if (cuisinesToUse.length === 0) {
-                // 随机选择2个菜系
-                const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
-                cuisinesToUse = shuffled.slice(0, 2)
-            }
+// 模拟AI调用（后续替换为真实接口）- 暂时未使用
+// const simulateAICall = async () => {
+//     return new Promise(resolve => {
+//         setTimeout(() => {
+//             // 获取要使用的菜系
+//             let cuisinesToUse = cuisines.filter(c => selectedCuisines.value.includes(c.id))
+//             if (cuisinesToUse.length === 0) {
+//                 // 随机选择2个菜系
+//                 const shuffled = [...cuisines].sort(() => 0.5 - Math.random())
+//                 cuisinesToUse = shuffled.slice(0, 2)
+//             }
 
-            // 检查是否有自定义提示词
-            let mockRecipes: Recipe[] = []
+//             // 检查是否有自定义提示词
+//             let mockRecipes: Recipe[] = []
 
-            if (customPrompt.value.trim()) {
-                // 生成自定义菜谱
-                mockRecipes = [
-                    {
-                        id: `recipe-custom-${Date.now()}`,
-                        name: `自定义：${ingredients.value.join('')}料理`,
-                        cuisine: '自定义',
-                        ingredients: ingredients.value,
-                        steps: [
-                            { step: 1, description: '准备所有食材，清洗干净', time: 5 },
-                            { step: 2, description: '根据要求进行烹饪处理', time: 10 },
-                            { step: 3, description: '调味并完成最后的制作', time: 8 },
-                            { step: 4, description: '装盘即可享用', time: 2 }
-                        ],
-                        cookingTime: 25,
-                        difficulty: 'medium',
-                        tips: ['根据个人喜好调整口味', '注意食材的新鲜度', '掌握好火候'],
-                        nutritionAnalysis: generateMockNutrition(ingredients.value)
-                    }
-                ]
-            } else {
-                // 生成菜系菜谱
-                mockRecipes = cuisinesToUse.map((cuisine, index) => {
-                    return {
-                        id: `recipe-${cuisine.id}-${Date.now()}-${index}`,
-                        name: `${cuisine.name}推荐：${ingredients.value.join('')}料理`,
-                        cuisine: cuisine.name,
-                        ingredients: ingredients.value,
-                        steps: [
-                            { step: 1, description: '准备所有食材，清洗干净', time: 5 },
-                            { step: 2, description: '热锅下油，爆香配料', time: 3 },
-                            { step: 3, description: '下主料翻炒至半熟', time: 8 },
-                            { step: 4, description: '调味炒制至熟透', time: 5 },
-                            { step: 5, description: '装盘即可享用', time: 1 }
-                        ],
-                        cookingTime: 22,
-                        difficulty: 'medium',
-                        tips: ['火候要掌握好，避免炒糊', '调料要适量，突出食材本味', '炒制过程中要勤翻动'],
-                        nutritionAnalysis: generateMockNutrition(ingredients.value)
-                    }
-                })
-            }
+//             if (customPrompt.value.trim()) {
+//                 // 生成自定义菜谱
+//                 mockRecipes = [
+//                     {
+//                         id: `recipe-custom-${Date.now()}`,
+//                         name: `自定义：${ingredients.value.join('')}料理`,
+//                         cuisine: '自定义',
+//                         ingredients: ingredients.value,
+//                         steps: [
+//                             { step: 1, description: '准备所有食材，清洗干净', time: 5 },
+//                             { step: 2, description: '根据要求进行烹饪处理', time: 10 },
+//                             { step: 3, description: '调味并完成最后的制作', time: 8 },
+//                             { step: 4, description: '装盘即可享用', time: 2 }
+//                         ],
+//                         cookingTime: 25,
+//                         difficulty: 'medium',
+//                         tips: ['根据个人喜好调整口味', '注意食材的新鲜度', '掌握好火候'],
+//                         nutritionAnalysis: generateMockNutrition(ingredients.value)
+//                     }
+//                 ]
+//             } else {
+//                 // 生成菜系菜谱
+//                 mockRecipes = cuisinesToUse.map((cuisine, index) => {
+//                     return {
+//                         id: `recipe-${cuisine.id}-${Date.now()}-${index}`,
+//                         name: `${cuisine.name}推荐：${ingredients.value.join('')}料理`,
+//                         cuisine: cuisine.name,
+//                         ingredients: ingredients.value,
+//                         steps: [
+//                             { step: 1, description: '准备所有食材，清洗干净', time: 5 },
+//                             { step: 2, description: '热锅下油，爆香配料', time: 3 },
+//                             { step: 3, description: '下主料翻炒至半熟', time: 8 },
+//                             { step: 4, description: '调味炒制至熟透', time: 5 },
+//                             { step: 5, description: '装盘即可享用', time: 1 }
+//                         ],
+//                         cookingTime: 22,
+//                         difficulty: 'medium',
+//                         tips: ['火候要掌握好，避免炒糊', '调料要适量，突出食材本味', '炒制过程中要勤翻动'],
+//                         nutritionAnalysis: generateMockNutrition(ingredients.value)
+//                     }
+//                 })
+//             }
 
-            recipes.value = mockRecipes
-            resolve(mockRecipes)
-        }, 3000)
-    })
-}
+//             recipes.value = mockRecipes
+//             resolve(mockRecipes)
+//         }, 3000)
+//     })
+// }
 
-// 生成模拟营养分析数据
-const generateMockNutrition = (ingredients: string[]): NutritionAnalysis => {
-    // 基于食材数量和类型估算营养成分
-    const baseCalories = ingredients.length * 50 + Math.floor(Math.random() * 100) + 200
-    const hasVegetables = ingredients.some(ing => ['菜', '瓜', '豆', '萝卜', '白菜', '菠菜', '西红柿', '黄瓜', '茄子', '土豆'].some(veg => ing.includes(veg)))
-    const hasMeat = ingredients.some(ing => ['肉', '鸡', '鱼', '虾', '蛋', '牛', '猪', '羊'].some(meat => ing.includes(meat)))
-    const hasGrains = ingredients.some(ing => ['米', '面', '粉', '饭', '面条', '馒头'].some(grain => ing.includes(grain)))
+// 生成模拟营养分析数据 - 暂时未使用
+// const generateMockNutrition = (ingredients: string[]): NutritionAnalysis => {
+//     // 基于食材数量和类型估算营养成分
+//     const baseCalories = ingredients.length * 50 + Math.floor(Math.random() * 100) + 200
+//     const hasVegetables = ingredients.some(ing => ['菜', '瓜', '豆', '萝卜', '白菜', '菠菜', '西红柿', '黄瓜', '茄子', '土豆'].some(veg => ing.includes(veg)))
+//     const hasMeat = ingredients.some(ing => ['肉', '鸡', '鱼', '虾', '蛋', '牛', '猪', '羊'].some(meat => ing.includes(meat)))
+//     const hasGrains = ingredients.some(ing => ['米', '面', '粉', '饭', '面条', '馒头'].some(grain => ing.includes(grain)))
 
-    // 生成饮食标签
-    const dietaryTags: string[] = []
-    if (hasVegetables && !hasMeat) dietaryTags.push('素食')
-    if (hasMeat) dietaryTags.push('高蛋白')
-    if (hasVegetables) dietaryTags.push('富含维生素')
-    if (!hasGrains) dietaryTags.push('低碳水')
-    if (baseCalories < 300) dietaryTags.push('低卡路里')
+//     // 生成饮食标签
+//     const dietaryTags: string[] = []
+//     if (hasVegetables && !hasMeat) dietaryTags.push('素食')
+//     if (hasMeat) dietaryTags.push('高蛋白')
+//     if (hasVegetables) dietaryTags.push('富含维生素')
+//     if (!hasGrains) dietaryTags.push('低碳水')
+//     if (baseCalories < 300) dietaryTags.push('低卡路里')
 
-    // 生成营养建议
-    const balanceAdvice: string[] = []
-    if (!hasVegetables) balanceAdvice.push('建议搭配新鲜蔬菜增加维生素和膳食纤维')
-    if (!hasMeat && !ingredients.some(ing => ['豆', '蛋', '奶'].some(protein => ing.includes(protein)))) {
-        balanceAdvice.push('建议增加蛋白质来源，如豆类或蛋类')
-    }
-    if (hasGrains && hasMeat) balanceAdvice.push('营养搭配均衡，适合日常食用')
-    if (ingredients.length > 5) balanceAdvice.push('食材丰富，营养全面')
+//     // 生成营养建议
+//     const balanceAdvice: string[] = []
+//     if (!hasVegetables) balanceAdvice.push('建议搭配新鲜蔬菜增加维生素和膳食纤维')
+//     if (!hasMeat && !ingredients.some(ing => ['豆', '蛋', '奶'].some(protein => ing.includes(protein)))) {
+//         balanceAdvice.push('建议增加蛋白质来源，如豆类或蛋类')
+//     }
+//     if (hasGrains && hasMeat) balanceAdvice.push('营养搭配均衡，适合日常食用')
+//     if (ingredients.length > 5) balanceAdvice.push('食材丰富，营养全面')
 
-    return {
-        nutrition: {
-            calories: baseCalories,
-            protein: hasMeat ? 20 + Math.floor(Math.random() * 15) : 8 + Math.floor(Math.random() * 8),
-            carbs: hasGrains ? 35 + Math.floor(Math.random() * 20) : 15 + Math.floor(Math.random() * 10),
-            fat: hasMeat ? 12 + Math.floor(Math.random() * 8) : 5 + Math.floor(Math.random() * 5),
-            fiber: hasVegetables ? 6 + Math.floor(Math.random() * 4) : 2 + Math.floor(Math.random() * 2),
-            sodium: 600 + Math.floor(Math.random() * 400),
-            sugar: 3 + Math.floor(Math.random() * 5),
-            vitaminC: hasVegetables ? 20 + Math.floor(Math.random() * 30) : undefined,
-            calcium: hasMeat || ingredients.some(ing => ['奶', '豆'].some(ca => ing.includes(ca))) ? 100 + Math.floor(Math.random() * 100) : undefined,
-            iron: hasMeat ? 2 + Math.floor(Math.random() * 3) : undefined
-        },
-        healthScore: Math.floor(Math.random() * 3) + (hasVegetables ? 6 : 4) + (hasMeat ? 1 : 0),
-        balanceAdvice: balanceAdvice.length > 0 ? balanceAdvice : ['营养搭配合理，可以放心享用'],
-        dietaryTags: dietaryTags.length > 0 ? dietaryTags : ['家常菜'],
-        servingSize: '1人份'
-    }
-}
+//     return {
+//         nutrition: {
+//             calories: baseCalories,
+//             protein: hasMeat ? 20 + Math.floor(Math.random() * 15) : 8 + Math.floor(Math.random() * 8),
+//             carbs: hasGrains ? 35 + Math.floor(Math.random() * 20) : 15 + Math.floor(Math.random() * 10),
+//             fat: hasMeat ? 12 + Math.floor(Math.random() * 8) : 5 + Math.floor(Math.random() * 5),
+//             fiber: hasVegetables ? 6 + Math.floor(Math.random() * 4) : 2 + Math.floor(Math.random() * 2),
+//             sodium: 600 + Math.floor(Math.random() * 400),
+//             sugar: 3 + Math.floor(Math.random() * 5),
+//             vitaminC: hasVegetables ? 20 + Math.floor(Math.random() * 30) : undefined,
+//             calcium: hasMeat || ingredients.some(ing => ['奶', '豆'].some(ca => ing.includes(ca))) ? 100 + Math.floor(Math.random() * 100) : undefined,
+//             iron: hasMeat ? 2 + Math.floor(Math.random() * 3) : undefined
+//         },
+//         healthScore: Math.floor(Math.random() * 3) + (hasVegetables ? 6 : 4) + (hasMeat ? 1 : 0),
+//         balanceAdvice: balanceAdvice.length > 0 ? balanceAdvice : ['营养搭配合理，可以放心享用'],
+//         dietaryTags: dietaryTags.length > 0 ? dietaryTags : ['家常菜'],
+//         servingSize: '1人份'
+//     }
+// }
 
 onUnmounted(() => {
     if (loadingInterval) {

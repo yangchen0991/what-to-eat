@@ -14,17 +14,13 @@
                             <span>⏱️</span>
                             <span>{{ sauce.makingTime }}分钟</span>
                         </span>
-                        <span :class="[
-                            'px-2 py-1 rounded-full text-xs font-medium',
-                            getDifficultyStyle(sauce.difficulty)
-                        ]">
+                        <span :class="['px-2 py-1 rounded-full text-xs font-medium', getDifficultyStyle(sauce.difficulty)]">
                             {{ getDifficultyName(sauce.difficulty) }}
                         </span>
                     </div>
                 </div>
-
             </div>
-            
+
             <!-- 口味特征 -->
             <div class="mt-4 grid grid-cols-4 gap-2 md:gap-4">
                 <div class="text-center">
@@ -71,11 +67,7 @@
                     <span>食材清单</span>
                 </h3>
                 <div class="grid md:grid-cols-2 gap-2">
-                    <div
-                        v-for="(ingredient, index) in sauce.ingredients"
-                        :key="index"
-                        class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
-                    >
+                    <div v-for="(ingredient, index) in sauce.ingredients" :key="index" class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
                         <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
                         <span class="text-gray-700">{{ ingredient }}</span>
                     </div>
@@ -89,11 +81,7 @@
                     <span>制作步骤</span>
                 </h3>
                 <div class="space-y-4">
-                    <div
-                        v-for="step in sauce.steps"
-                        :key="step.step"
-                        class="flex gap-4 p-4 bg-gray-50 rounded-lg border-l-4 border-orange-400"
-                    >
+                    <div v-for="step in sauce.steps" :key="step.step" class="flex gap-4 p-4 bg-gray-50 rounded-lg border-l-4 border-orange-400">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
                                 {{ step.step }}
@@ -127,11 +115,7 @@
                     <span>制作技巧</span>
                 </h3>
                 <div class="space-y-2">
-                    <div
-                        v-for="(tip, index) in sauce.tips"
-                        :key="index"
-                        class="flex items-start gap-2 p-3 bg-yellow-50 rounded-lg border border-yellow-200"
-                    >
+                    <div v-for="(tip, index) in sauce.tips" :key="index" class="flex items-start gap-2 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                         <span class="text-yellow-600 mt-0.5">💡</span>
                         <span class="text-gray-700">{{ tip }}</span>
                     </div>
@@ -169,11 +153,7 @@
                     <span>搭配建议</span>
                 </h3>
                 <div class="flex flex-wrap gap-2">
-                    <span
-                        v-for="pairing in sauce.pairings"
-                        :key="pairing"
-                        class="px-3 py-2 bg-green-100 text-green-800 rounded-full text-sm border border-green-200"
-                    >
+                    <span v-for="pairing in sauce.pairings" :key="pairing" class="px-3 py-2 bg-green-100 text-green-800 rounded-full text-sm border border-green-200">
                         {{ pairing }}
                     </span>
                 </div>
@@ -182,17 +162,9 @@
             <!-- 标签 -->
             <div v-if="sauce.tags.length > 0" class="mb-4">
                 <div class="flex flex-wrap gap-2">
-                    <span
-                        v-for="tag in sauce.tags"
-                        :key="tag"
-                        class="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs"
-                    >
-                        #{{ tag }}
-                    </span>
+                    <span v-for="tag in sauce.tags" :key="tag" class="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs"> #{{ tag }} </span>
                 </div>
             </div>
-
-
         </div>
     </div>
 </template>
@@ -203,10 +175,7 @@ import { getCategoryIcon, getCategoryName, getDifficultyStyle, getDifficultyName
 
 interface Props {
     sauce: SauceRecipe
-    showActions?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-    showActions: false
-})
+const { sauce } = defineProps<Props>()
 </script>

@@ -477,7 +477,7 @@ import type { Recipe } from '@/types'
 import RecipeCard from '@/components/RecipeCard.vue'
 import GlobalNavigation from '@/components/GlobalNavigation.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
-import { generateTableMenu, generateDishRecipe, testAIConnection } from '@/services/aiService'
+import { generateTableMenu, generateDishRecipe } from '@/services/aiService'
 
 // 配置选项
 interface TableConfig {
@@ -570,19 +570,19 @@ const toggleTaste = (tasteId: string) => {
     }
 }
 
-// 增加菜品数量
-const increaseDishCount = () => {
-    if (config.dishCount < 20) {
-        config.dishCount++
-    }
-}
+// 增加菜品数量 - 暂时未使用
+// const increaseDishCount = () => {
+//     if (config.dishCount < 20) {
+//         config.dishCount++
+//     }
+// }
 
-// 减少菜品数量
-const decreaseDishCount = () => {
-    if (config.dishCount > 1) {
-        config.dishCount--
-    }
-}
+// 减少菜品数量 - 暂时未使用
+// const decreaseDishCount = () => {
+//     if (config.dishCount > 1) {
+//         config.dishCount--
+//     }
+// }
 
 // 验证菜品数量输入
 const validateDishCount = (event: Event) => {
@@ -615,19 +615,19 @@ const removeCustomDish = (dish: string) => {
     }
 }
 
-// 测试AI连接
-const testConnection = async () => {
-    try {
-        const isConnected = await testAIConnection()
-        if (isConnected) {
-            alert('AI连接测试成功！')
-        } else {
-            alert('大厨暂时不在厨房，请稍后再试~')
-        }
-    } catch (error) {
-        alert('大厨暂时不在厨房：' + error)
-    }
-}
+// 测试AI连接 - 暂时未使用
+// const testConnection = async () => {
+//     try {
+//         const isConnected = await testAIConnection()
+//         if (isConnected) {
+//             alert('AI连接测试成功！')
+//         } else {
+//             alert('大厨暂时不在厨房，请稍后再试~')
+//         }
+//     } catch (error) {
+//         alert('大厨暂时不在厨房：' + error)
+//     }
+// }
 
 // 生成一桌菜
 const generateTableMenuAction = async () => {
@@ -668,7 +668,7 @@ const enableBodyScroll = () => {
 }
 
 // 生成单个菜品的菜谱
-const generateDishRecipeAction = async (dish: DishInfo, index: number) => {
+const generateDishRecipeAction = async (dish: DishInfo, _index: number) => {
     if (dish.recipe) {
         selectedRecipe.value = dish.recipe
         disableBodyScroll()
@@ -700,28 +700,28 @@ const closeRecipeModal = () => {
     enableBodyScroll()
 }
 
-// 测试弹窗功能
-const testModal = () => {
-    // 创建一个测试菜谱
-    const testRecipe: Recipe = {
-        id: 'test-recipe',
-        name: '测试菜谱 - 红烧肉',
-        cuisine: '中式',
-        ingredients: ['五花肉 500g', '生抽 2勺', '老抽 1勺', '冰糖 30g', '料酒 1勺', '葱段 适量', '姜片 适量'],
-        steps: [
-            { step: 1, description: '五花肉切块，冷水下锅焯水去腥', time: 5 },
-            { step: 2, description: '热锅下油，放入冰糖炒糖色', time: 3 },
-            { step: 3, description: '下入肉块翻炒上色', time: 5 },
-            { step: 4, description: '加入生抽、老抽、料酒调色调味', time: 2 },
-            { step: 5, description: '加入开水没过肉块，大火烧开转小火炖煮', time: 45 }
-        ],
-        cookingTime: 60,
-        difficulty: 'medium',
-        tips: ['糖色要炒到微微冒烟', '炖煮时要小火慢炖', '最后大火收汁']
-    }
+// 测试弹窗功能 - 暂时未使用
+// const testModal = () => {
+//     // 创建一个测试菜谱
+//     const testRecipe: Recipe = {
+//         id: 'test-recipe',
+//         name: '测试菜谱 - 红烧肉',
+//         cuisine: '中式',
+//         ingredients: ['五花肉 500g', '生抽 2勺', '老抽 1勺', '冰糖 30g', '料酒 1勺', '葱段 适量', '姜片 适量'],
+//         steps: [
+//             { step: 1, description: '五花肉切块，冷水下锅焯水去腥', time: 5 },
+//             { step: 2, description: '热锅下油，放入冰糖炒糖色', time: 3 },
+//             { step: 3, description: '下入肉块翻炒上色', time: 5 },
+//             { step: 4, description: '加入生抽、老抽、料酒调色调味', time: 2 },
+//             { step: 5, description: '加入开水没过肉块，大火烧开转小火炖煮', time: 45 }
+//         ],
+//         cookingTime: 60,
+//         difficulty: 'medium',
+//         tips: ['糖色要炒到微微冒烟', '炖煮时要小火慢炖', '最后大火收汁']
+//     }
 
-    selectedRecipe.value = testRecipe
-}
+//     selectedRecipe.value = testRecipe
+// }
 
 // 键盘事件处理
 const handleKeydown = (event: KeyboardEvent) => {

@@ -453,14 +453,13 @@ export const generateMultipleRecipesStream = async (
             onRecipeGenerated(recipe, index, total)
         } catch (error) {
             console.error(`生成${cuisine.name}菜谱失败:`, error)
-            
+
             // 调用错误回调，让前端可以显示友好的错误信息
             if (onRecipeError) {
-                const errorMessage = error instanceof Error ? error.message : `${cuisine.name}生成失败`
                 const friendlyError = new Error(`${cuisine.name}不会这道菜，哈哈`)
                 onRecipeError(friendlyError, index, cuisine, total)
             }
-            
+
             // 即使某个菜系失败，也继续生成其他菜系
             continue
         }

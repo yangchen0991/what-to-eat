@@ -283,7 +283,7 @@
 import { ref, onMounted } from 'vue'
 import { generateSauceRecipe, recommendSauces } from '@/services/aiService'
 import type { SauceRecipe, SaucePreference } from '@/types'
-import { useCaseOptions, tasteDescriptions } from '@/config/sauces'
+import { useCaseOptions } from '@/config/sauces'
 import SauceRecipeComponent from '@/components/SauceRecipe.vue'
 import GlobalNavigation from '@/components/GlobalNavigation.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
