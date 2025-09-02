@@ -9,9 +9,6 @@
 [![Netlify](https://img.shields.io/badge/🌐_Netlify-whattoeatai.netlify.app-00C7B7?style=for-the-badge&logo=netlify)](https://whattoeatai.netlify.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-liu--ziting/what--to--eat-black?style=for-the-badge&logo=github)](https://github.com/liu-ziting/what-to-eat)
 
-[![Vercel Deploy Status](https://img.shields.io/github/deployments/liu-ziting/what-to-eat/production?label=Vercel&logo=vercel&style=flat-square)](https://vercel.com/liu-ziting/what-to-eat)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/your-site-id/deploy-status)](https://app.netlify.com/sites/whattoeatai/deploys)
-
 ## 🚀 核心功能
 
 -   **智能菜谱生成** - 基于食材和菜系偏好生成专业菜谱
