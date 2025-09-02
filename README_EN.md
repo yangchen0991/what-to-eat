@@ -5,7 +5,12 @@
 An AI-powered intelligent recipe generation platform supporting Chinese Eight Great Cuisines + International Cuisine, providing nutritional analysis, wine pairing, recipe image generation, and comprehensive cooking guidance.
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-YiFan_FengShen-yellow?style=for-the-badge)](https://eat.lz-t.top/)
+[![Vercel](https://img.shields.io/badge/🚀_Vercel-yffs.vercel.app-black?style=for-the-badge&logo=vercel)](https://yffs.vercel.app/)
+[![Netlify](https://img.shields.io/badge/🌐_Netlify-whattoeatai.netlify.app-00C7B7?style=for-the-badge&logo=netlify)](https://whattoeatai.netlify.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-liu--ziting/what--to--eat-black?style=for-the-badge&logo=github)](https://github.com/liu-ziting/what-to-eat)
+
+[![Vercel Deploy Status](https://img.shields.io/github/deployments/liu-ziting/what-to-eat/production?label=Vercel&logo=vercel&style=flat-square)](https://vercel.com/liu-ziting/what-to-eat)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/your-site-id/deploy-status)](https://app.netlify.com/sites/whattoeatai/deploys)
 
 ## 🚀 Core Features
 
@@ -23,7 +28,7 @@ An AI-powered intelligent recipe generation platform supporting Chinese Eight Gr
 -   **Styling:** Tailwind CSS 3.4+
 -   **Build Tool:** Vite 5.0+
 -   **AI Services:** Yi-Lightning (01.AI) + CogView-3-Flash (Zhipu AI)
--   **Deployment:** Netlify
+-   **Deployment:** Vercel + Netlify
 
 ## 🚀 Quick Start
 
@@ -61,6 +66,18 @@ npm run build:netlify
 # Preview build
 npm run preview
 ```
+
+## 🚀 One-Click Deploy
+
+### Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/liu-ziting/what-to-eat&env=VITE_TEXT_GENERATION_BASE_URL,VITE_TEXT_GENERATION_API_KEY,VITE_TEXT_GENERATION_MODEL,VITE_IMAGE_GENERATION_BASE_URL,VITE_IMAGE_GENERATION_API_KEY,VITE_IMAGE_GENERATION_MODEL&envDescription=AI%20API%20Configuration&envLink=https://github.com/liu-ziting/what-to-eat%23environment-variables)
+
+### Deploy to Netlify
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/liu-ziting/what-to-eat)
+
+> 📖 For detailed deployment guide, see: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### Environment Variables
 

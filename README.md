@@ -5,7 +5,12 @@
 基于 AI 的智能菜谱生成平台，支持中华八大菜系 + 国际料理，提供营养分析、酒水推荐、菜谱效果图生成等功能。
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-一饭封神-yellow?style=for-the-badge)](https://eat.lz-t.top/)
+[![Vercel](https://img.shields.io/badge/🚀_Vercel-yffs.vercel.app-black?style=for-the-badge&logo=vercel)](https://yffs.vercel.app/)
+[![Netlify](https://img.shields.io/badge/🌐_Netlify-whattoeatai.netlify.app-00C7B7?style=for-the-badge&logo=netlify)](https://whattoeatai.netlify.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-liu--ziting/what--to--eat-black?style=for-the-badge&logo=github)](https://github.com/liu-ziting/what-to-eat)
+
+[![Vercel Deploy Status](https://img.shields.io/github/deployments/liu-ziting/what-to-eat/production?label=Vercel&logo=vercel&style=flat-square)](https://vercel.com/liu-ziting/what-to-eat)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/your-site-id/deploy-status)](https://app.netlify.com/sites/whattoeatai/deploys)
 
 ## 🚀 核心功能
 
@@ -23,7 +28,7 @@
 -   **样式方案：** Tailwind CSS 3.4+
 -   **构建工具：** Vite 5.0+
 -   **AI 服务：** 零一万物 Yi-Lightning + 智谱 AI CogView-3-Flash
--   **部署平台：** Netlify
+-   **部署平台：** Vercel + Netlify
 
 ## 🚀 快速开始
 
@@ -61,6 +66,18 @@ npm run build:netlify
 # 预览构建结果
 npm run preview
 ```
+
+## 🚀 一键部署
+
+### Vercel 部署
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/liu-ziting/what-to-eat&env=VITE_TEXT_GENERATION_BASE_URL,VITE_TEXT_GENERATION_API_KEY,VITE_TEXT_GENERATION_MODEL,VITE_IMAGE_GENERATION_BASE_URL,VITE_IMAGE_GENERATION_API_KEY,VITE_IMAGE_GENERATION_MODEL&envDescription=AI%20API%20配置&envLink=https://github.com/liu-ziting/what-to-eat%23环境变量配置)
+
+### Netlify 部署
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/liu-ziting/what-to-eat)
+
+> 📖 详细部署指南请参考：[DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### 环境变量配置
 
