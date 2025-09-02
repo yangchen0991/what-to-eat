@@ -4,9 +4,20 @@
         <GlobalNavigation />
 
         <div class="max-w-7xl mx-auto">
+            <!-- 页面标题和占卜师 -->
+            <!-- <div class="text-center mb-8">
+                <div class="relative">
+                    <div class="relative bg-white/90 backdrop-blur-sm border-2 border-purple-400 rounded-2xl p-6 mb-6">
+                        <div class="text-6xl mb-4 animate-pulse">🔮</div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-purple-600 mb-4">料理占卜师</h1>
+
+                        <div class="text-sm text-purple-600 italic">"{{ currentMysticalWord }}"</div>
+                    </div>
+                </div>
+            </div> -->
 
             <!-- 占卜类型选择 -->
-            <div class="mb-8">
+            <div class="mb-4">
                 <div class="bg-purple-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                     <span class="font-bold">1.选择占卜类型</span>
                 </div>
@@ -30,7 +41,7 @@
             </div>
 
             <!-- 占卜参数配置区域 -->
-            <div v-if="selectedType" class="mb-8">
+            <div v-if="selectedType" class="mb-4">
                 <div class="bg-indigo-500 text-white px-4 py-2 rounded-t-lg border-2 border-[#0A0910] border-b-0 inline-block">
                     <span class="font-bold">2.配置占卜参数</span>
                 </div>
@@ -198,7 +209,7 @@ const fortuneTypes = [
 ]
 
 // 响应式数据
-const selectedType = ref<FortuneType | null>(null)
+const selectedType = ref<FortuneType>('daily')
 const isLoading = ref(false)
 const fortuneResult = ref<FortuneResult | null>(null)
 const currentGreeting = ref('')
