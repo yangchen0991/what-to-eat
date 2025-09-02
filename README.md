@@ -1,5 +1,7 @@
 # 🍳 一饭封神
 
+> [English](./README_EN.md) | 中文
+
 基于 AI 的智能菜谱生成平台，支持中华八大菜系 + 国际料理，提供营养分析、酒水推荐、菜谱效果图生成等功能。
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-一饭封神-yellow?style=for-the-badge)](https://eat.lz-t.top/)
@@ -126,7 +128,7 @@ src/
 -   图片生成：`src/services/imageService.ts`
 -   支持多个 AI 服务商切换
 
-## � Star History
+## 📈 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=liu-ziting/what-to-eat&type=Date)](https://www.star-history.com/#liu-ziting/what-to-eat&Date)
 
