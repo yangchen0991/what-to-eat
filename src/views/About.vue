@@ -53,18 +53,46 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="bg-gradient-to-br from-orange-100 to-red-100 border-2 border-orange-200 rounded-lg p-2 md:p-6">
-                                    <div class="flex items-center gap-6">
-                                        <div class="flex-1">
-                                            <div class="flex items-center gap-3 mb-3">
-                                                <div class="text-3xl">☕</div>
-                                                <h4 class="font-bold text-dark-800 text-lg">投喂</h4>
+                                <!-- 打赏区域 - 优化版 -->
+                                <div
+                                    class="support-section bg-gradient-to-br from-orange-100 to-red-100 border-4 border-orange-300 rounded-xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                                >
+                                    <div class="text-center mb-4">
+                                        <div class="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full mb-3">
+                                            <div class="text-2xl animate-bounce">☕</div>
+                                            <h4 class="font-bold text-lg">支持开发者</h4>
+                                        </div>
+                                        <p class="text-sm text-gray-700 font-medium mb-2">🤖 AI需要成本，您的支持让项目走得更远</p>
+                                        <p class="text-xs text-orange-600 bg-orange-50 px-3 py-1 rounded-full inline-block">每一份支持都是对开源精神的鼓励</p>
+                                    </div>
+
+                                    <div class="flex flex-col md:flex-row items-center gap-4">
+                                        <div class="flex-1 text-center md:text-left">
+                                            <div class="space-y-2 mb-4">
+                                                <div class="flex items-center justify-center md:justify-start gap-2">
+                                                    <span class="text-green-500">✓</span>
+                                                    <span class="text-sm">维持AI服务运行</span>
+                                                </div>
+                                                <div class="flex items-center justify-center md:justify-start gap-2">
+                                                    <span class="text-green-500">✓</span>
+                                                    <span class="text-sm">持续功能更新</span>
+                                                </div>
+                                                <div class="flex items-center justify-center md:justify-start gap-2">
+                                                    <span class="text-green-500">✓</span>
+                                                    <span class="text-sm">开源项目维护</span>
+                                                </div>
                                             </div>
-                                            <p class="text-sm text-gray-600 mb-2">AI需要成本，想要使本项目存活更久</p>
                                             <p class="text-xs text-gray-500">扫码支持开发者 →</p>
                                         </div>
                                         <div class="flex-shrink-0">
-                                            <img src="/wx.jpg" alt="微信收款码" class="w-40 h-40 border-2 border-gray-300 rounded-lg shadow-md" />
+                                            <div class="relative">
+                                                <img
+                                                    src="/wx.jpg"
+                                                    alt="微信收款码"
+                                                    class="w-32 h-32 md:w-40 md:h-40 border-4 border-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+                                                />
+                                                <div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">微信</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -252,12 +280,33 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg">
-                            <div class="flex items-center gap-3">
-                                <div class="text-2xl">✨</div>
-                                <div>
-                                    <p class="text-sm font-medium text-purple-800">持续更新中</p>
-                                    <p class="text-xs text-purple-600">更多AI工具正在开发，敬请期待！</p>
+                        <div class="mt-6 space-y-4">
+                            <div class="p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="text-2xl">✨</div>
+                                    <div>
+                                        <p class="text-sm font-medium text-purple-800">持续更新中</p>
+                                        <p class="text-xs text-purple-600">更多AI工具正在开发，敬请期待！</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="text-2xl">☕</div>
+                                        <div>
+                                            <p class="text-sm font-medium text-orange-800">喜欢这些项目？</p>
+                                            <p class="text-xs text-orange-600">您的支持是最大的动力</p>
+                                        </div>
+                                    </div>
+                                    <a
+                                        href="#"
+                                        @click.prevent="scrollToSupport"
+                                        class="bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1 rounded-full transition-colors"
+                                    >
+                                        支持开发者
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -275,6 +324,14 @@
 import { ref } from 'vue'
 import GlobalNavigation from '@/components/GlobalNavigation.vue'
 import GlobalFooter from '@/components/GlobalFooter.vue'
+
+// 滚动到支持区域
+const scrollToSupport = () => {
+    const supportSection = document.querySelector('.support-section')
+    if (supportSection) {
+        supportSection.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+}
 
 // 中华八大菜系数据
 const chineseCuisines = ref([
