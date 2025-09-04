@@ -2,7 +2,6 @@
 
 > 🚀 **Vibe Coding**  
 > Through the Kiro editor, the full process development from requirements analysis, architecture design to code implementation is realized.
-
 > English | [中文](./README.md)
 
 An AI-powered intelligent recipe generation platform supporting Chinese Eight Great Cuisines + International Cuisine, providing nutritional analysis, wine pairing, recipe image generation, and comprehensive cooking guidance.
