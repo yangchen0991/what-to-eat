@@ -26,7 +26,7 @@
 -   **前端框架：** Vue 3.4 + Composition API + TypeScript 5.3+
 -   **样式方案：** Tailwind CSS 3.4+
 -   **构建工具：** Vite 5.0+
--   **AI 服务：** 零一万物 Yi-Lightning + 智谱 AI CogView-3-Flash
+-   **AI 服务：** 智谱 AI GLM-4 + 智谱 AI CogView-3-Flash
 -   **部署平台：** Vercel + Netlify
 
 ## 🚀 快速开始
@@ -81,10 +81,10 @@ npm run preview
 ### 环境变量配置
 
 ```env
-# 文本生成 API（零一万物）
-VITE_TEXT_GENERATION_BASE_URL=https://api.lingyiwanwu.com/v1/
-VITE_TEXT_GENERATION_API_KEY=your_text_api_key_here
-VITE_TEXT_GENERATION_MODEL=yi-lightning
+# 文本生成 API（智谱 AI）
+VITE_ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
+VITE_ZHIPU_API_KEY=your_zhipu_api_key_here
+VITE_ZHIPU_TEXT_MODEL=glm-4
 
 # 图片生成 API（智谱 AI）
 VITE_IMAGE_GENERATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
@@ -152,5 +152,5 @@ src/
 
 -   [Vue.js](https://vuejs.org/) - 渐进式 JavaScript 框架
 -   [Tailwind CSS](https://tailwindcss.com/) - 实用优先的 CSS 框架
--   [零一万物](https://www.lingyiwanwu.com/) - 菜谱生成 API
+-   [智谱 AI](https://open.bigmodel.cn/) - 菜谱生成 API
 -   [智谱 AI](https://open.bigmodel.cn/) - 图片生成 API

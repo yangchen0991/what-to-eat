@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态API配置测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .config-section {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+        .provider-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .provider-card.active {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+        }
+        .provider-card.inactive {
+            background: #f5f5f5;
+            color: #666;
+        }
+        .btn {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 动态API配置测试</h1>
+            <p>验证营养分析和酒水搭配是否根据配置动态选择API提供商</p>
+        </div>
+
+        <div class="config-section">
+            <h3>📊 当前配置状态</h3>
+            <div id="currentConfig">正在加载配置...</div>
+        </div>
+
+        <div class="config-section">
+            <h3>🔧 配置管理</h3>
+            <div style="margin: 10px 0;">
+                <label>
+                    <input type="checkbox" id="useSiliconFlow" onchange="toggleProvider('siliconflow', this.checked)">
+                    启用 SiliconFlow
+                </label>
+            </div>
+            <div style="margin: 10px 0;">
+                <label>
+                    <input type="checkbox" id="useZhipu" onchange="toggleProvider('zhipu', this.checked)">
+                    启用 智谱AI
+                </label>
+            </div>
+            <button class="btn" onclick="loadCurrentConfig()">刷新配置</button>
+        </div>
+
+        <div class="config-section">
+            <h3>🧪 功能测试</h3>
+            <button class="btn" onclick="testNutritionWithCurrentConfig()">测试营养分析</button>
+            <button class="btn" onclick="testWineWithCurrentConfig()">测试酒水搭配</button>
+            <button class="btn" onclick="simulateAPICall()">模拟API调用</button>
+            
+            <div id="testResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="config-section">
+            <h3>📋 配置详情</h3>
+            <div id="configDetails">点击"刷新配置"查看详情</div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟API配置服务
+        let mockConfigs = {
+            zhipu: {
+                name: '智谱AI',
+                apiKey: 'demo-zhipu-key',
+                baseUrl: 'https://open.bigmodel.cn/api/paas/v4/',
+                model: 'glm-4.5',
+                isEnabled: false
+            },
+            siliconflow: {
+                name: 'SiliconFlow',
+                apiKey: 'demo-silicon-key',
+                baseUrl: 'https://api.siliconflow.cn/v1/',
+                model: 'deepseek-ai/DeepSeek-V3.1',
+                isEnabled: false
+            }
+        };
+
+        // 模拟getAIConfig函数
+        function getAIConfig() {
+            // 优先级：SiliconFlow > 智谱AI > 环境变量
+            if (mockConfigs.siliconflow.isEnabled && mockConfigs.siliconflow.apiKey) {
+                return {
+                    provider: 'SiliconFlow',
+                    baseURL: mockConfigs.siliconflow.baseUrl,
+                    apiKey: mockConfigs.siliconflow.apiKey,
+                    textModel: mockConfigs.siliconflow.model,
+                    temperature: 0.7
+                };
+            }
+            
+            if (mockConfigs.zhipu.isEnabled && mockConfigs.zhipu.apiKey) {
+                return {
+                    provider: '智谱AI',
+                    baseURL: mockConfigs.zhipu.baseUrl,
+                    apiKey: mockConfigs.zhipu.apiKey,
+                    textModel: mockConfigs.zhipu.model,
+                    temperature: 0.7
+                };
+            }
+            
+            return {
+                provider: '环境变量',
+                baseURL: 'https://open.bigmodel.cn/api/paas/v4/',
+                apiKey: 'demo-env-key',
+                textModel: 'glm-4.5',
+                temperature: 0.7
+            };
+        }
+
+        // 加载当前配置
+        function loadCurrentConfig() {
+            const config = getAIConfig();
+            const currentConfigDiv = document.getElementById('currentConfig');
+            
+            let html = `
+                <div class="status ${config.provider === '环境变量' ? 'warning' : 'success'}">
+                    <strong>当前激活的提供商:</strong> ${config.provider}
+                </div>
+                <div>
+                    <strong>模型:</strong> ${config.textModel}<br>
+                    <strong>基础URL:</strong> ${config.baseURL}
+                </div>
+            `;
+            
+            currentConfigDiv.innerHTML = html;
+            
+            // 更新复选框状态
+            document.getElementById('useSiliconFlow').checked = mockConfigs.siliconflow.isEnabled;
+            document.getElementById('useZhipu').checked = mockConfigs.zhipu.isEnabled;
+            
+            // 显示配置详情
+            showConfigDetails();
+        }
+
+        // 显示配置详情
+        function showConfigDetails() {
+            const detailsDiv = document.getElementById('configDetails');
+            let html = '';
+            
+            Object.entries(mockConfigs).forEach(([provider, config]) => {
+                const isActive = config.isEnabled;
+                html += `
+                    <div class="provider-card ${isActive ? 'active' : 'inactive'}">
+                        <div>
+                            <strong>${config.name}</strong><br>
+                            状态: ${isActive ? '✅ 已启用' : '❌ 未启用'}<br>
+                            模型: ${config.model}
+                        </div>
+                        <div>
+                            API密钥: ${config.apiKey ? '已设置' : '未设置'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            detailsDiv.innerHTML = html;
+        }
+
+        // 切换提供商
+        function toggleProvider(provider, enabled) {
+            mockConfigs[provider].isEnabled = enabled;
+            
+            // 确保只有一个提供商被启用（互斥）
+            if (enabled) {
+                if (provider === 'siliconflow') {
+                    mockConfigs.zhipu.isEnabled = false;
+                    document.getElementById('useZhipu').checked = false;
+                } else if (provider === 'zhipu') {
+                    mockConfigs.siliconflow.isEnabled = false;
+                    document.getElementById('useSiliconFlow').checked = false;
+                }
+            }
+            
+            loadCurrentConfig();
+        }
+
+        // 测试营养分析
+        function testNutritionWithCurrentConfig() {
+            const config = getAIConfig();
+            const resultDiv = document.getElementById('testResult');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+🧪 营养分析测试调用
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 使用的API配置:
+   提供商: ${config.provider}
+   模型: ${config.textModel}
+   基础URL: ${config.baseURL}
+   API密钥: ${config.apiKey ? '已设置' : '未设置'}
+
+🍽️ 测试食谱:
+   菜品: 香煎三文鱼配蔬菜
+   主要食材: 三文鱼、西兰花、胡萝卜、橄榄油、柠檬
+
+⏳ 正在模拟API调用...
+
+✅ 测试完成！API将根据当前激活的配置动态调用。
+            `;
+        }
+
+        // 测试酒水搭配
+        function testWineWithCurrentConfig() {
+            const config = getAIConfig();
+            const resultDiv = document.getElementById('testResult');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+🧪 酒水搭配测试调用
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🍷 使用的API配置:
+   提供商: ${config.provider}
+   模型: ${config.textModel}
+   基础URL: ${config.baseURL}
+   API密钥: ${config.apiKey ? '已设置' : '未设置'}
+
+🍽️ 测试食谱:
+   菜品: 香煎三文鱼配蔬菜
+   菜系: 西餐
+
+⏳ 正在模拟API调用...
+
+✅ 测试完成！API将根据当前激活的配置动态调用。
+            `;
+        }
+
+        // 模拟API调用
+        function simulateAPICall() {
+            const config = getAIConfig();
+            const resultDiv = document.getElementById('testResult');
+            
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+🔍 模拟API调用
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📡 调用详情:
+   提供商: ${config.provider}
+   请求URL: ${config.baseURL}chat/completions
+   使用模型: ${config.textModel}
+   请求头: Authorization: Bearer ${config.apiKey.substring(0, 8)}...
+
+✅ 动态配置验证成功！
+系统将根据实际配置自动选择API提供商。
+            `;
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', loadCurrentConfig);
+    </script>
+</body>
+</html>

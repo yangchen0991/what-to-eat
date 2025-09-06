@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI服务测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .config-info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI服务测试工具</h1>
+    
+    <div class="test-section">
+        <h2>配置检查</h2>
+        <button class="test-button" onclick="checkConfig()">检查当前配置</button>
+        <div id="config-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>营养分析测试</h2>
+        <button class="test-button" onclick="testNutritionAnalysis()" id="nutrition-btn">测试营养分析</button>
+        <div id="nutrition-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>酒水搭配测试</h2>
+        <button class="test-button" onclick="testWinePairing()" id="wine-btn">测试酒水搭配</button>
+        <div id="wine-result" class="result"></div>
+    </div>
+
+    <script type="module">
+        // 模拟环境变量和配置
+        const mockConfig = {
+            VITE_ZHIPU_BASE_URL: 'https://open.bigmodel.cn/api/paas/v4/',
+            VITE_ZHIPU_API_KEY: localStorage.getItem('VITE_ZHIPU_API_KEY') || '',
+            VITE_ZHIPU_TEXT_MODEL: 'glm-4',
+            VITE_ZHIPU_TIMEOUT: 300000
+        };
+
+        // 模拟测试数据
+        const testRecipe = {
+            name: '红烧肉',
+            cuisine: '中式',
+            ingredients: ['五花肉', '生抽', '老抽', '冰糖', '料酒', '生姜', '大葱'],
+            cookingTime: 60,
+            difficulty: 'medium'
+        };
+
+        function checkConfig() {
+            const result = document.getElementById('config-result');
+            result.textContent = `当前配置：
+智谱API密钥: ${mockConfig.VITE_ZHIPU_API_KEY ? '已设置 (' + mockConfig.VITE_ZHIPU_API_KEY.substring(0, 8) + '...)' : '未设置'}
+基础URL: ${mockConfig.VITE_ZHIPU_BASE_URL}
+文本模型: ${mockConfig.VITE_ZHIPU_TEXT_MODEL}
+超时时间: ${mockConfig.VITE_ZHIPU_TIMEOUT}ms
+
+提示：请在localStorage中设置VITE_ZHIPU_API_KEY来测试真实API`;
+            result.className = 'result config-info';
+        }
+
+        async function testNutritionAnalysis() {
+            const btn = document.getElementById('nutrition-btn');
+            const result = document.getElementById('nutrition-result');
+            
+            btn.disabled = true;
+            btn.textContent = '测试中...';
+            result.textContent = '正在请求营养分析...';
+
+            try {
+                if (!mockConfig.VITE_ZHIPU_API_KEY) {
+                    throw new Error('API密钥未设置，请先在localStorage中设置VITE_ZHIPU_API_KEY');
+                }
+
+                const response = await fetch(mockConfig.VITE_ZHIPU_BASE_URL + 'chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${mockConfig.VITE_ZHIPU_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: mockConfig.VITE_ZHIPU_TEXT_MODEL,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: '你是一位专业的营养师，请根据菜品信息提供详细的营养分析。请严格按照JSON格式返回。'
+                            },
+                            {
+                                role: 'user',
+                                content: `请为以下菜品提供营养分析：\n菜品名称：${testRecipe.name}\n主要食材：${testRecipe.ingredients.join('、')}\n制作时间：${testRecipe.cookingTime}分钟`
+                            }
+                        ],
+                        temperature: 0.5,
+                        max_tokens: 1000
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+                result.className = 'result success';
+            } catch (error) {
+                result.textContent = `错误: ${error.message}`;
+                result.className = 'result error';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '测试营养分析';
+            }
+        }
+
+        async function testWinePairing() {
+            const btn = document.getElementById('wine-btn');
+            const result = document.getElementById('wine-result');
+            
+            btn.disabled = true;
+            btn.textContent = '测试中...';
+            result.textContent = '正在请求酒水搭配...';
+
+            try {
+                if (!mockConfig.VITE_ZHIPU_API_KEY) {
+                    throw new Error('API密钥未设置，请先在localStorage中设置VITE_ZHIPU_API_KEY');
+                }
+
+                const response = await fetch(mockConfig.VITE_ZHIPU_BASE_URL + 'chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${mockConfig.VITE_ZHIPU_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: mockConfig.VITE_ZHIPU_TEXT_MODEL,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: '你是一位专业的侍酒师，请根据菜品信息推荐合适的酒水搭配。请严格按照JSON格式返回。'
+                            },
+                            {
+                                role: 'user',
+                                content: `请为以下菜品推荐酒水搭配：\n菜名：${testRecipe.name}\n菜系：${testRecipe.cuisine}\n主要食材：${testRecipe.ingredients.join('、')}`
+                            }
+                        ],
+                        temperature: 0.6,
+                        max_tokens: 1000
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+                result.className = 'result success';
+            } catch (error) {
+                result.textContent = `错误: ${error.message}`;
+                result.className = 'result error';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '测试酒水搭配';
+            }
+        }
+
+        // 设置API密钥
+        if (!localStorage.getItem('VITE_ZHIPU_API_KEY')) {
+            const key = prompt('请输入智谱AI API密钥进行测试：');
+            if (key) {
+                localStorage.setItem('VITE_ZHIPU_API_KEY', key);
+                checkConfig();
+            }
+        }
+
+        // 初始检查
+        checkConfig();
+    </script>
+</body>
+</html>

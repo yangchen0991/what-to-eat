@@ -19,10 +19,10 @@
 部署前需要配置以下环境变量：
 
 ```env
-# 文本生成 API（零一万物）
-VITE_TEXT_GENERATION_BASE_URL=https://api.lingyiwanwu.com/v1/
-VITE_TEXT_GENERATION_API_KEY=your_text_api_key_here
-VITE_TEXT_GENERATION_MODEL=yi-lightning
+# 文本生成 API（智谱 AI）
+VITE_ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
+VITE_ZHIPU_API_KEY=your_zhipu_api_key_here
+VITE_ZHIPU_TEXT_MODEL=glm-4
 
 # 图片生成 API（智谱 AI）
 VITE_IMAGE_GENERATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4/

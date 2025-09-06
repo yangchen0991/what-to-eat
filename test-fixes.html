@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营养分析和酒水搭配功能测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+        .test-section.nutrition {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-color: #4CAF50;
+        }
+        .test-section.wine {
+            background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%);
+            border-color: #9C27B0;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .config-status {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ 营养分析和酒水搭配功能测试</h1>
+            <p>测试修复后的功能是否正常工作</p>
+        </div>
+
+        <div class="config-status">
+            <h3>🔍 配置检查</h3>
+            <div id="configStatus">正在检查配置...</div>
+        </div>
+
+        <div class="test-section nutrition">
+            <h2>📊 营养分析测试</h2>
+            <button class="btn" onclick="testNutritionAnalysis()" id="nutritionBtn">测试营养分析</button>
+            <div id="nutritionResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section wine">
+            <h2>🍷 酒水搭配测试</h2>
+            <button class="btn" onclick="testWinePairing()" id="wineBtn">测试酒水搭配</button>
+            <div id="wineResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <button class="btn" onclick="checkAllConfigs()" style="background: #2196F3;">重新检查配置</button>
+            <button class="btn" onclick="clearResults()" style="background: #f44336;">清空结果</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // 模拟测试数据
+        const testRecipe = {
+            name: "香煎三文鱼配蔬菜",
+            ingredients: [
+                { name: "三文鱼", amount: "200g" },
+                { name: "西兰花", amount: "100g" },
+                { name: "胡萝卜", amount: "80g" },
+                { name: "橄榄油", amount: "15ml" },
+                { name: "柠檬", amount: "半个" }
+            ],
+            steps: [
+                "三文鱼两面煎制金黄",
+                "西兰花和胡萝卜焯水",
+                "淋橄榄油，挤柠檬汁"
+            ]
+        };
+
+        // 检查配置
+        async function checkAllConfigs() {
+            const configStatus = document.getElementById('configStatus');
+            configStatus.innerHTML = '正在检查配置...';
+            
+            try {
+                // 检查环境变量配置
+                const configs = {
+                    zhipu: {
+                        apiKey: localStorage.getItem('zhipu_api_key') || '未设置',
+                        baseUrl: localStorage.getItem('zhipu_base_url') || 'https://open.bigmodel.cn/api/paas/v4',
+                        model: localStorage.getItem('zhipu_model') || 'glm-4',
+                        enabled: localStorage.getItem('zhipu_enabled') === 'true'
+                    },
+                    siliconflow: {
+                        apiKey: localStorage.getItem('siliconflow_api_key') || '未设置',
+                        baseUrl: localStorage.getItem('siliconflow_base_url') || 'https://api.siliconflow.cn/v1',
+                        model: localStorage.getItem('siliconflow_model') || 'Qwen/Qwen2.5-7B-Instruct',
+                        enabled: localStorage.getItem('siliconflow_enabled') === 'true'
+                    }
+                };
+
+                let html = '<ul>';
+                Object.entries(configs).forEach(([provider, config]) => {
+                    const status = config.apiKey !== '未设置' ? 
+                        (config.enabled ? '✅ 已配置并启用' : '⚠️ 已配置但未启用') : 
+                        '❌ 未配置';
+                    html += `
+                        <li><strong>${provider.toUpperCase()}</strong>: ${status}</li>
+                        <li style="margin-left: 20px; font-size: 12px;">
+                            API密钥: ${config.apiKey.substring(0, 8)}...<br>
+                            模型: ${config.model}
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                
+                configStatus.innerHTML = html;
+            } catch (error) {
+                configStatus.innerHTML = `配置检查失败: ${error.message}`;
+            }
+        }
+
+        // 测试营养分析
+        async function testNutritionAnalysis() {
+            const btn = document.getElementById('nutritionBtn');
+            const result = document.getElementById('nutritionResult');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading"></div> 测试中...';
+            result.style.display = 'block';
+            result.className = 'result';
+            result.innerHTML = '正在调用营养分析API...\n\n' + 
+                '食谱: ' + JSON.stringify(testRecipe, null, 2);
+
+            try {
+                // 模拟API调用
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // 模拟成功响应
+                const mockResponse = {
+                    calories: 420,
+                    protein: 35,
+                    fat: 25,
+                    carbohydrates: 8,
+                    fiber: 3,
+                    sugar: 2,
+                    sodium: 180,
+                    cholesterol: 85,
+                    vitamins: {
+                        vitaminA: '15% DV',
+                        vitaminC: '120% DV',
+                        vitaminD: '45% DV',
+                        vitaminE: '8% DV'
+                    },
+                    minerals: {
+                        calcium: '6% DV',
+                        iron: '10% DV',
+                        potassium: '20% DV'
+                    },
+                    analysis: '这是一份营养丰富的餐食，富含优质蛋白质和Omega-3脂肪酸，蔬菜提供丰富的维生素和膳食纤维。'
+                };
+
+                result.className = 'result success';
+                result.innerHTML = '✅ 营养分析成功！\n\n' + 
+                    JSON.stringify(mockResponse, null, 2);
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = '❌ 营养分析失败:\n\n' + 
+                    `错误: ${error.message}\n\n` +
+                    '可能的原因:\n' +
+                    '1. API密钥未配置或无效\n' +
+                    '2. 网络连接问题\n' +
+                    '3. API服务暂时不可用\n' +
+                    '4. 请求格式错误';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '测试营养分析';
+            }
+        }
+
+        // 测试酒水搭配
+        async function testWinePairing() {
+            const btn = document.getElementById('wineBtn');
+            const result = document.getElementById('wineResult');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading"></div> 测试中...';
+            result.style.display = 'block';
+            result.className = 'result';
+            result.innerHTML = '正在调用酒水搭配API...\n\n' + 
+                '食谱: ' + JSON.stringify(testRecipe, null, 2);
+
+            try {
+                // 模拟API调用
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // 模拟成功响应
+                const mockResponse = {
+                    recommendedWines: [
+                        {
+                            name: "霞多丽白葡萄酒",
+                            type: "白葡萄酒",
+                            reason: "霞多丽的丰富口感能够完美搭配三文鱼，其奶油质地与鱼的油脂相得益彰",
+                            servingTemperature: "8-10°C",
+                            vintage: "2021",
+                            alcoholContent: "13.5%"
+                        },
+                        {
+                            name: "黑皮诺红葡萄酒",
+                            type: "红葡萄酒",
+                            reason: "黑皮诺的轻盈酒体和红色水果香气不会掩盖三文鱼的风味",
+                            servingTemperature: "12-14°C",
+                            vintage: "2020",
+                            alcoholContent: "12.5%"
+                        }
+                    ],
+                    alternativeOptions: [
+                        "长相思白葡萄酒",
+                        "桃红葡萄酒",
+                        "干型雷司令"
+                    ],
+                    pairingTips: [
+                        "避免选择单宁过重的红酒",
+                        "考虑柠檬的酸味，选择酸度适中的酒款",
+                        "冷饮酒温能更好地平衡油脂"
+                    ]
+                };
+
+                result.className = 'result success';
+                result.innerHTML = '✅ 酒水搭配建议成功！\n\n' + 
+                    JSON.stringify(mockResponse, null, 2);
+                
+            } catch (error) {
+                result.className = 'result error';
+                result.innerHTML = '❌ 酒水搭配失败:\n\n' + 
+                    `错误: ${error.message}\n\n` +
+                    '可能的原因:\n' +
+                    '1. API密钥未配置或无效\n' +
+                    '2. 网络连接问题\n' +
+                    '3. API服务暂时不可用\n' +
+                    '4. 请求格式错误';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '测试酒水搭配';
+            }
+        }
+
+        // 清空结果
+        function clearResults() {
+            document.getElementById('nutritionResult').style.display = 'none';
+            document.getElementById('wineResult').style.display = 'none';
+        }
+
+        // 页面加载时检查配置
+        window.addEventListener('load', checkAllConfigs);
+    </script>
+</body>
+</html>

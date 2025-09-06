@@ -26,7 +26,7 @@ An AI-powered intelligent recipe generation platform supporting Chinese Eight Gr
 -   **Frontend Framework:** Vue 3.4 + Composition API + TypeScript 5.3+
 -   **Styling:** Tailwind CSS 3.4+
 -   **Build Tool:** Vite 5.0+
--   **AI Services:** Yi-Lightning (01.AI) + CogView-3-Flash (Zhipu AI)
+-   **AI Services:** GLM-4 (Zhipu AI) + CogView-3-Flash (Zhipu AI)
 -   **Deployment:** Vercel + Netlify
 
 ## 🚀 Quick Start
@@ -81,10 +81,10 @@ npm run preview
 ### Environment Variables
 
 ```env
-# Text Generation API (01.AI)
-VITE_TEXT_GENERATION_BASE_URL=https://api.lingyiwanwu.com/v1/
-VITE_TEXT_GENERATION_API_KEY=your_text_api_key_here
-VITE_TEXT_GENERATION_MODEL=yi-lightning
+# Text Generation API (Zhipu AI)
+VITE_ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
+VITE_ZHIPU_API_KEY=your_zhipu_api_key_here
+VITE_ZHIPU_TEXT_MODEL=glm-4
 
 # Image Generation API (Zhipu AI)
 VITE_IMAGE_GENERATION_BASE_URL=https://open.bigmodel.cn/api/paas/v4/
@@ -152,5 +152,5 @@ src/
 
 -   [Vue.js](https://vuejs.org/) - Progressive JavaScript framework
 -   [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
--   [01.AI](https://www.lingyiwanwu.com/) - Recipe generation API
+-   [Zhipu AI](https://open.bigmodel.cn/) - Recipe generation API
 -   [Zhipu AI](https://open.bigmodel.cn/) - Image generation API
