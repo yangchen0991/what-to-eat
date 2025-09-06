@@ -190,17 +190,20 @@
             const config = getAIConfig();
             const currentConfigDiv = document.getElementById('currentConfig');
             
-            let html = `
-                <div class="status ${config.provider === '环境变量' ? 'warning' : 'success'}">
-                    <strong>当前激活的提供商:</strong> ${config.provider}
-                </div>
-                <div>
-                    <strong>模型:</strong> ${config.textModel}<br>
-                    <strong>基础URL:</strong> ${config.baseURL}
-                </div>
+            // 使用DOM方法安全创建元素
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${config.provider === '环境变量' ? 'warning' : 'success'}`;
+            statusDiv.innerHTML = `<strong>当前激活的提供商:</strong> ${config.provider}`;
+            
+            const detailsDiv = document.createElement('div');
+            detailsDiv.innerHTML = `
+                <strong>模型:</strong> ${config.textModel}<br>
+                <strong>基础URL:</strong> ${config.baseURL}
             `;
             
-            currentConfigDiv.innerHTML = html;
+            currentConfigDiv.innerHTML = '';
+            currentConfigDiv.appendChild(statusDiv);
+            currentConfigDiv.appendChild(detailsDiv);
             
             // 更新复选框状态
             document.getElementById('useSiliconFlow').checked = mockConfigs.siliconflow.isEnabled;
